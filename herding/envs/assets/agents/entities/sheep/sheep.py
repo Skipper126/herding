@@ -1,7 +1,7 @@
-from .agent import PassiveAgent
+from ..agent import Agent
 
 
-class SheepSimple(PassiveAgent):
+class Sheep(Agent):
 
     def __init__(self, env):
         super().__init__(env)

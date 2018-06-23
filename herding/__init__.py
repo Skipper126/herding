@@ -4,9 +4,15 @@ from herding.manual_steering import play
 
 import gym
 
+
+class Envs:
+    HERDING_SINGLE_DOG ='herding-singleDog-v0'
+
+
 gym.envs.registration.register(
-    id='herding-singleDog-v0',
+    id=Envs.HERDING_SINGLE_DOG,
     entry_point='herding.envs:HerdingSingleDog',
     timestep_limit=1000,
     nondeterministic=False
 )
+

@@ -1,16 +1,12 @@
 from herding import Herding
-from herding import constants
 from pyglet.window import key
-import numpy as np
-import time
-import sys
 
 class ManualSteering:
 
     def __init__(self, env):
         self.env = env
         self.player_input = [0, 0, 0]
-        self.other_dogs_input = ([0, 0, 0],) * env.dog_count
+        self.other_dogs_input = ([0, 0, 0],) * (env.dog_count - 1)
         self.quit = False
 
     def key_press(self, k, mod):
@@ -57,8 +53,6 @@ class ManualSteering:
             state, reward, terminal, _ = self.env.step(env_input)
             episode_reward += reward
             self.env.render()
-
-            self.print_debug(episode_reward)
 
             if terminal:
                 self.env.reset()

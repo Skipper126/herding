@@ -1,10 +1,10 @@
 import gym
 import random
 from gym import spaces
-from .rendering.renderer import Renderer
 from . import constants
 from . import agents
 import math
+import numpy as np
 
 class Herding(gym.Env):
 
@@ -20,7 +20,6 @@ class Herding(gym.Env):
             sheep_type=constants.SheepType.SIMPLE,
             max_movement_speed=5,
             max_rotation_speed=90,
-            continuous_sheep_spread_rate=1,
             ray_count=180,
             ray_length=600,
             field_of_view=180,
@@ -37,33 +36,36 @@ class Herding(gym.Env):
         self.field_of_view = field_of_view
         self.rotation_mode = rotation_mode
 
-        self.map_width = 1280
-        self.map_height = 900
+        self.map_width = 800
+        self.map_height = 600
         self.agent_radius = 10
 
         self.herd_target_radius = 100
         self.max_episode_reward = 100
 
-        self.herd_centre_point = [0, 0]
+        self.herd_centre_point = np.zeros(2)
 
-        self.dog_list = None
-        self.sheep_list = None
-        self.dog_list, self.sheep_list = self._create_agents()
-        self._set_agents_lists()
+        self.dogs_positions = np.zeros((self.dog_count, 2))
+        self.sheep_positions = np.zeros((self.sheep_count, 2))
 
         self.reward_counter = RewardCounter(self)
+        self.agents_shared_state = AgentsSharedState(self)
+        self.agent_controller = AgentController(self)
+
+        self.agents_shared_state.link_arrays(self.agents_shared_state.dogs_positions, self.dogs_positions)
+        self.agents_shared_state.link_arrays(self.agents_shared_state.sheep_positions, self.sheep_positions)
+
+
+
         self.viewer = None
         self.agent_layout_function = AgentLayoutFunction.get_function(self.agent_layout)
 
     def step(self, action):
-        for i, dog in enumerate(self.dog_list):
-            dog.move(action[i])
-
-        for sheep in self.sheep_list:
-            sheep.move()
+        self.agent_controller.move_dogs(action)
+        self.agent_controller.move_sheep()
 
         self._update_herd_centre_point()
-        state = self._get_state()
+        state = self.agent_controller.get_observation()
         reward = self.reward_counter.get_reward()
         is_done = self.reward_counter.is_done()
 
@@ -73,7 +75,8 @@ class Herding(gym.Env):
 
     def reset(self):
         self._set_up_agents()
-        state = self._get_state()
+        self.reward_counter.reset()
+        state = self.agent_controller.get_observation()
 
         return state
 
@@ -85,67 +88,20 @@ class Herding(gym.Env):
             return
 
         if self.viewer is None:
+            from .rendering.renderer import Renderer
             self.viewer = Renderer(self)
 
         self.viewer.render()
 
     def seed(self, seed=None):
-        pass
+        seed = seed if seed is not None else 100
+        random.seed(seed)
 
     def close(self):
         self.viewer.close()
 
-    @property
-    def single_action_space(self):
-        dim = 3 if self.rotation_mode is constants.RotationMode.FREE else 2
-        single_action_space = spaces.Box(-1, 1, (dim,))
-        return single_action_space
-
-    @property
-    def action_space(self):
-        action_space = spaces.Tuple((self.single_action_space,) * self.dog_count)
-        return action_space
-
-    @property
-    def single_observation_space(self):
-        single_observation_space = spaces.Box(-1, 1, (2, self.ray_count))
-        return single_observation_space
-
-    @property
-    def observation_space(self):
-        observation_space = spaces.Tuple((self.single_observation_space,) * self.dog_count)
-        return observation_space
-
-    def _create_agents(self):
-        dog_list = []
-        sheep_list = []
-        Sheep = agents.get_sheep_class(self.sheep_type)
-
-        for i in range(self.dog_count):
-            dog_list.append(agents.Dog(self))
-        for i in range(self.sheep_count):
-            sheep_list.append(Sheep(self))
-
-        return dog_list, sheep_list
-
-    def _set_agents_lists(self):
-        for agent in self.dog_list + self.sheep_list:
-            agent.set_lists(self.dog_list, self.sheep_list)
-
-    def _get_state(self):
-        state = []
-        for dog in self.dog_list:
-            state.append(dog.get_observation())
-        return state
-
     def _update_herd_centre_point(self):
-        self.herd_centre_point[0] = self.herd_centre_point[1] = 0
-        for sheep in self.sheep_list:
-            self.herd_centre_point[0] += sheep.x
-            self.herd_centre_point[1] += sheep.y
-
-        self.herd_centre_point[0] /= self.sheep_count
-        self.herd_centre_point[1] /= self.sheep_count
+        self.herd_centre_point = np.mean(self.sheep_positions, axis=0)
 
     def _set_up_agents(self):
         self.agent_layout_function(self)
