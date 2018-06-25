@@ -12,6 +12,9 @@ class AgentsSharedState:
         self.dogs_done = mp.Array(c.c_bool, env.dog_count, lock=False)
         self.sheep_done = mp.Array(c.c_bool, env.sheep_count, lock=False)
 
+    def get_dogs_positions(self):
+        return self.get_linked_numpy_array(self.dogs_positions, ())
+
     @staticmethod
-    def link_arrays(source_array, dest_array):
-        dest_array[...] = np.frombuffer(source_array).reshape(dest_array.shape)
+    def get_linked_numpy_array(source_array, dim):
+        return np.frombuffer(source_array).reshape(dim)

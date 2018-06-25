@@ -1,7 +1,7 @@
 import math
 import numpy as np
 from .agent import ActiveAgent
-from .. import constants
+from herding.envs.assets.agents.entities import constants
 DEG2RAD = 0.01745329252
 
 
@@ -12,7 +12,6 @@ class Dog(ActiveAgent):
     LENGTH_TO_CENTER = 0
     TAN_TO_CENTER = 1
 
-    
     def __init__(self, env):
         super().__init__(env)
         

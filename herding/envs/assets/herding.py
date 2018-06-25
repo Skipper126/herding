@@ -44,16 +44,13 @@ class Herding(gym.Env):
         self.max_episode_reward = 100
 
         self.herd_centre_point = np.zeros(2)
-
-        self.dogs_positions = np.zeros((self.dog_count, 2))
-        self.sheep_positions = np.zeros((self.sheep_count, 2))
+        self.dogs_positions = self.agents_shared_state.get_linked_numpy_array(self.agents_shared_state.dogs_positions, (self.dog_count, 2))
+        self.dogs_positions = self.agents_shared_state.get_linked_numpy_array(self.agents_shared_state.sheep_positions, (self.sheep_count, 2))
 
         self.reward_counter = RewardCounter(self)
         self.agents_shared_state = AgentsSharedState(self)
         self.agent_controller = AgentController(self)
 
-        self.agents_shared_state.link_arrays(self.agents_shared_state.dogs_positions, self.dogs_positions)
-        self.agents_shared_state.link_arrays(self.agents_shared_state.sheep_positions, self.sheep_positions)
 
 
 

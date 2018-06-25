@@ -1,4 +1,4 @@
-from ..agent import Agent
+from herding.envs.assets.agents.agent import Agent
 
 
 class Sheep(Agent):
