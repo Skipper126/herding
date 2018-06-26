@@ -1,5 +1,5 @@
 import multiprocessing as mp
-from herding.envs.assets.controller.worker_process import WorkerProcess
+from herding.envs.assets.multiprocessing import WorkerController
 from herding.envs.assets.controller.workers import dog_worker, sheep_worker
 
 
@@ -31,11 +31,11 @@ class Controller:
 
     def _create_workers(self):
         for i in range(self.dog_workers_count):
-            worker = WorkerProcess(dog_worker.DogWorker)
+            worker = WorkerController(dog_worker.DogWorker)
             self.dog_workers.append(worker)
 
         for i in range(self.sheep_workers_count):
-            worker = WorkerProcess(sheep_worker.SheepWorker)
+            worker = WorkerController(sheep_worker.SheepWorker)
             self.sheep_workers.append(worker)
 
     def _start_workers(self):

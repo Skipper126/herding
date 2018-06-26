@@ -1,7 +1,7 @@
 import multiprocessing as mp
 
 
-class WorkerProcess:
+class WorkerController:
 
     def __init__(self, WorkerType):
         self.pipe, child_pipe = mp.Pipe()
