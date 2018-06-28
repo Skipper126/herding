@@ -30,7 +30,6 @@ class ActiveAgent(Agent):
 
     def __init__(self, env):
         super().__init__(env)
-        self.observation = np.ndarray(shape=(2, env.ray_count), dtype=float)
 
     def move(self, action):
         raise NotImplementedError

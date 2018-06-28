@@ -1,14 +1,15 @@
 import multiprocessing as mp
+from herding.envs.assets.multiprocessing import worker
 
 
 class WorkerController:
 
-    def __init__(self, WorkerType):
+    def __init__(self, worker_type, worker_args):
         self.pipe, child_pipe = mp.Pipe()
-        self.process = mp.Process(target=WorkerType.start, args=child_pipe)
+        self.process = mp.Process(target=worker.start, args=(child_pipe, worker_type, worker_args))
 
-    def execute(self, method, args=None):
-        self.pipe.send((method,args))
+    def execute(self, method, args=()):
+        self.pipe.send((method, args))
 
     def start(self):
         self.process.start()

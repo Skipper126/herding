@@ -11,12 +11,11 @@ class Controller:
         self.workers_count = mp.cpu_count()
         self.dog_workers_count, \
         self.sheep_workers_count = self._distribute_resources_over_workers()
-        self._create_workers()
-        self._set_workers_args(env)
+        self._create_workers(env)
 
     def move_dogs(self, action):
         for worker in self.dog_workers:
-            worker.execute('move_dogs', action)
+            worker.execute('move_dogs', (action,))
 
     def move_sheep(self):
         for worker in self.sheep_workers:
@@ -29,13 +28,13 @@ class Controller:
     def close(self):
         self._quit_workers()
 
-    def _create_workers(self):
+    def _create_workers(self, env):
         for i in range(self.dog_workers_count):
-            worker = WorkerController(dog_worker.DogWorker)
+            worker = WorkerController(dog_worker.DogWorker, self._get_dog_args(env))
             self.dog_workers.append(worker)
 
         for i in range(self.sheep_workers_count):
-            worker = WorkerController(sheep_worker.SheepWorker)
+            worker = WorkerController(sheep_worker.SheepWorker, self._get_sheep_args(env))
             self.sheep_workers.append(worker)
 
     def _start_workers(self):
@@ -51,5 +50,8 @@ class Controller:
         #TODO implement logic to distribute resources
         return 1, 1
 
-    def _set_workers_args(self, env):
+    def _get_dog_args(self, env):
+        pass
+
+    def _get_sheep_args(self, env):
         pass

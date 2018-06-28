@@ -1,23 +1,21 @@
-import multiprocessing as mp
+
+def start(pipe, worker_type, worker_args):
+    worker = worker_type(*worker_args)
+
+    while not worker.is_done():
+        task = pipe.recv()
+        getattr(worker, task[0])(*task[1])
 
 
 class Worker:
 
-    @staticmethod
-    def start(pipe):
-        worker = Worker()
-
-        while not worker.done:
-            task = pipe.recv()
-            if task[1] is not None:
-                getattr(worker, task[0])(*task[1])
-            else:
-                getattr(worker, task[0])()
-
     def __init__(self):
-        self.done = False
+        self.__done = False
 
     def quit(self):
-        self.done = True
+        self.__done = True
+
+    def is_done(self):
+        return self.__done
 
 
