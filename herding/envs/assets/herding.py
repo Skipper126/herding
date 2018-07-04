@@ -19,6 +19,7 @@ class Herding(gym.Env):
             sheep_count=3,
             agent_layout=constants.AgentLayout.RANDOM,
             sheep_type=constants.SheepType.SIMPLE,
+            agent_size=10,
             max_movement_speed=5,
             max_rotation_speed=90,
             herd_target_radius=100,
@@ -33,6 +34,7 @@ class Herding(gym.Env):
         self.params.sheep_count = sheep_count
         self.params.agent_layout = agent_layout
         self.params.sheep_type = sheep_type
+        self.params.agent_size = agent_size
         self.params.max_movement_speed = max_movement_speed
         self.params.max_rotation_speed = max_rotation_speed
         self.params.herd_target_radius = herd_target_radius
@@ -44,7 +46,6 @@ class Herding(gym.Env):
 
         self.map_width = 800
         self.map_height = 600
-        self.agent_radius = 10
 
         self.shared_data = SharedData(self.params)
 
@@ -52,8 +53,8 @@ class Herding(gym.Env):
         self.dogs_positions = self.shared_data.dogs_positions
         self.sheep_positions = self.shared_data.sheep_positions
 
-        self.reward_counter = RewardCounter(self.params)
-        self.agent_controller = Controller(self.params)
+        self.reward_counter = RewardCounter(self)
+        self.agent_controller = Controller(self)
 
         self.viewer = None
         self.agent_layout_function = AgentLayoutFunction.get_function(self.params.agent_layout)

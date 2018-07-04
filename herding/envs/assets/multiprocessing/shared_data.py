@@ -20,8 +20,7 @@ class SharedData:
         self._dogs_positions = SharedNumpy((env.dog_count, 2))
         self._sheep_positions = SharedNumpy((env.sheep_count, 2))
         self._herd_centre = SharedNumpy((2,))
-        self._dogs_done = SharedNumpy((env.dog_count,))
-        self._sheep_done = SharedNumpy((env.sheep_count,))
+        self._observation = SharedNumpy((env.dog_count, env.ray_count, 2))
 
     @property
     def dogs_positions(self):
@@ -34,11 +33,3 @@ class SharedData:
     @property
     def herd_centre(self):
         return self._herd_centre.get()
-
-    @property
-    def dogs_done(self):
-        return self._dogs_done.get()
-
-    @property
-    def sheep_done(self):
-        return self._sheep_done.get()

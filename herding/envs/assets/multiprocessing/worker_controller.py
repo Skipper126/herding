@@ -16,3 +16,6 @@ class WorkerController:
 
     def join(self):
         self.process.join()
+
+    def wait(self):
+        self.pipe.recv()
