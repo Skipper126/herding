@@ -4,22 +4,25 @@ from herding.envs.assets.agents import Dog
 
 class DogWorker(Worker):
 
-    def __init__(self, params, dog_params, dogs_range):
+    def __init__(self, params, shared_data, worker_range):
         super().__init__()
 
         self.shared_data = shared_data
-        self.dog_params = dog_params
-        self.dogs_range = dogs_range
-        self.dogs_list = []
+        self.params = params
+        self.worker_range = worker_range
+        self.dogs_list = self._create_dogs()
 
-        self.create_dogs()
+    def _create_dogs(self):
+        dogs_list = []
+        for i in self.worker_range:
+            dogs_list.append(Dog(self.params, self.shared_data, i))
 
-    def create_dogs(self):
-        for i in self.dogs_range:
-            self.dogs_list.append(Dog(i, *self.dog_params))
+        return dogs_list
 
-    def move(self):
-        pass
+    def move(self, action):
+        for i, dog in enumerate(self.dogs_list):
+            dog.move(action[i])
 
     def update_observation(self):
-        pass
+        for dog in self.dogs_list:
+            dog.update_observation()
