@@ -4,7 +4,7 @@ from herding.envs.assets.controller.workers import dog_worker, sheep_worker
 import math
 
 
-class Controller:
+class AgentsController:
 
     def __init__(self, env):
         self.dog_workers = []
@@ -23,7 +23,7 @@ class Controller:
     def move_dogs(self, action):
         for i, worker in enumerate(self.dog_workers):
             action_slice = [action[j] for j in self.dog_workers_ranges[i]]
-            worker.execute('move_dogs', (action_slice))
+            worker.execute('move_dogs', (action_slice,))
 
         for worker in self.dog_workers:
             worker.wait()

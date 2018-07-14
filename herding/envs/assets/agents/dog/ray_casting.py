@@ -1,7 +1,5 @@
 import math
 import numpy as np
-from .agent import ActiveAgent
-from herding.envs.assets import constants
 
 DEG2RAD = 0.01745329252
 

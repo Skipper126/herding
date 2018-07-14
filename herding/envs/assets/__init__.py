@@ -1,2 +1,1 @@
-from .herding import Herding
-from .constants import *
+from herding.envs.assets.herding import Herding

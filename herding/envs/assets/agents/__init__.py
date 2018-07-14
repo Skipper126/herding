@@ -1,9 +1,8 @@
-from .dog import Dog
 from .sheep_simple import SheepSimple
 from .sheep_complex import SheepComplex
 from .sheep_continuous import SheepContinuous
 
-from ..constants import SheepType
+from herding.envs.assets.configuration.constants import SheepType
 
 def get_sheep_class(sheep_type):
     return {

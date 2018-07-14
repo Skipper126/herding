@@ -1,0 +1,17 @@
+{
+  "dogs_count" : 1,
+  "sheep_count" : 3,
+  "agents_layout" : "random",
+  "sheep_type" : "simple",
+  "herd_target_radius" : 100,
+  "rotation_mode" : "free",
+  "agent_radius" : 10,
+  "max_movement_speed" : 5,
+  "max_rotation_speed" : 90,
+  "max_episode_reward" : 100,
+  "rays_count" : 180,
+  "ray_length" : 600,
+  "field_of_view" : 180,
+  "map_height" : 800,
+  "map_width" : 600
+}

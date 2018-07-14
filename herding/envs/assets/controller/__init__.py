@@ -1,1 +1,1 @@
-from herding.envs.assets.controller.controller import Controller
+from herding.envs.assets.controller.agents_controller import AgentsController
