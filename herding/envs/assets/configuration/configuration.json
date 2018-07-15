@@ -13,5 +13,6 @@
   "ray_length" : 600,
   "field_of_view" : 180,
   "map_height" : 800,
-  "map_width" : 600
+  "map_width" : 600,
+  "max_threads_count" : 0
 }

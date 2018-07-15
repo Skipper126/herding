@@ -15,6 +15,7 @@ class ConfigName:
     ROTATION_MODE = 'rotation_mode'
     MAP_HEIGHT = 'map_height'
     MAP_WIDTH = 'map_width'
+    MAX_THREADS_COUNT = 'max_threads_count'
 
 
 class AgentType:

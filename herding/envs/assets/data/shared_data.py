@@ -22,3 +22,7 @@ class SharedData:
     @property
     def herd_centre(self):
         return self._herd_centre.get()
+
+    @property
+    def observation(self):
+        return self._observation.get()

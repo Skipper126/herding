@@ -10,7 +10,7 @@ class RayCasting:
     LENGTH_TO_CENTER = 0
     TAN_TO_CENTER = 1
 
-    def __init__(self, env):
+    def __init__(self, dog, env_data):
 
         self.rotation_mode = env.rotation_mode
         self.ray_count = env.ray_count

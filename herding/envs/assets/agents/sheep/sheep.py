@@ -3,8 +3,8 @@ from herding.envs.assets.agents.agent import Agent
 
 class Sheep(Agent):
 
-    def __init__(self, env):
-        super().__init__(env)
+    def __init__(self, env_data, index):
+        super().__init__(env_data, index)
 
         self.max_movement_speed = env.max_movement_speed
 

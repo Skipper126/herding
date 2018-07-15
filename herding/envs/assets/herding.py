@@ -65,8 +65,8 @@ class Herding(gym.Env):
     def _get_env_data(self, params):
         config = configuration.get_default_configuration()
         config.update(params)
-
         shared_data = data.SharedData(params)
+
         env_data = data.EnvData(config, shared_data)
 
         return env_data
