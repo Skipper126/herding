@@ -17,6 +17,11 @@ class ConfigName:
     MAP_WIDTH = 'map_width'
 
 
+class AgentType:
+    DOG = 'dog'
+    SHEEP = 'sheep'
+
+
 class SheepType:
     SIMPLE = 'simple'
     COMPLEX = 'complex'

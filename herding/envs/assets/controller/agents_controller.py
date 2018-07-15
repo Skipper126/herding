@@ -1,24 +1,11 @@
-import multiprocessing as mp
 from herding.envs.assets.multiprocessing import WorkerController
-from herding.envs.assets.controller.workers import dog_worker, sheep_worker
 import math
 
 
 class AgentsController:
 
-    def __init__(self, env):
-        self.dog_workers = []
-        self.sheep_workers = []
-        self.workers_count = mp.cpu_count()
-        self.dog_workers_count, \
-        self.sheep_workers_count = self._get_workers_distribution()
-        self.dogs_count = env.params.dog_count
-        self.sheep_count = env.params.sheep_count
-
-        self.dog_workers_ranges = self._get_workers_ranges(self.dogs_count, self.dog_workers_count)
-        self.sheep_workers_ranges = self._get_workers_ranges(self.sheep_count, self.sheep_workers_count)
-
-        self._create_workers(env)
+    def __init__(self, env_data):
+        self.workers = self._get_workers(env_data)
 
     def move_dogs(self, action):
         for i, worker in enumerate(self.dog_workers):
@@ -66,17 +53,13 @@ class AgentsController:
         for worker in workers:
             worker.wait()
 
-    def _get_workers_distribution(self):
-        # TODO implement logic to distribute resources
-        return int(math.ceil(self.workers_count * 0.8)), int(math.floor(self.workers_count * 0.2))
-
     def _get_workers_ranges(self, agents_count, workers_count):
         workers_ranges = []
 
         j = 0
         for i in range(workers_count):
             workers_ranges.append([])
-            for _ in range(int(math.ceil((agents_count) / workers_count))):
+            for _ in range(int(math.ceil(agents_count / workers_count))):
                 if j < agents_count:
                     workers_ranges[i].append(j)
                     j += 1
