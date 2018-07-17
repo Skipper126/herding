@@ -31,7 +31,7 @@ class Herding(gym.Env):
         is_done = self.reward_counter.is_done()
 
         return state, reward, is_done, {
-            "scatter": self.reward_counter.scatter
+            #"scatter": self.reward_counter.scatter
         }
 
     def reset(self):
@@ -50,7 +50,7 @@ class Herding(gym.Env):
 
         if self.viewer is None:
             from .rendering.renderer import Renderer
-            self.viewer = Renderer(self)
+            self.viewer = Renderer(self.env_data)
 
         self.viewer.render()
 
@@ -66,7 +66,7 @@ class Herding(gym.Env):
     def _get_env_data(params):
         config = configuration.get_default_configuration()
         config.update(params)
-        shared_data = data.SharedData(params)
+        shared_data = data.SharedData(config)
 
         env_data = data.EnvData(config, shared_data)
 

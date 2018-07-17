@@ -6,7 +6,7 @@ import multiprocessing as mp
 class SharedNumpy:
 
     def __init__(self, shape):
-        self._value = mp.Array(c.c_double, np.prod(np.array(list(shape))), lock=False)
+        self._value = mp.Array(c.c_double, int(np.prod(np.array(list(shape)))), lock=False)
         self._shape = shape
 
     def get(self):

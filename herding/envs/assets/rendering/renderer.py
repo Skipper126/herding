@@ -14,16 +14,18 @@ class Renderer:
         for geom in self.geom_list:
             self.viewer.geoms.extend(geom.get_parts())
 
-    def _initRenderObjects(self, env):
+    def _initRenderObjects(self, env_data):
         geom_list = []
+        dogs_count = env_data.config[cn.DOGS_COUNT]
+        sheep_count = env_data.config[cn.SHEEP_COUNT]
 
-        for dog in env.dog_list:
-            geom_list.append(dog_geom.DogGeom(dog))
+        for i in range(dogs_count):
+            geom_list.append(dog_geom.DogGeom(env_data, i))
 
-        for sheep in env.sheep_list:
-            geom_list.append(sheep_geom.SheepGeom(sheep))
+        for i in range(sheep_count):
+            geom_list.append(sheep_geom.SheepGeom(env_data, i))
 
-        geom_list.append(crosshair.Crosshair(env))
+        geom_list.append(crosshair.Crosshair(env_data))
 
         return geom_list
 

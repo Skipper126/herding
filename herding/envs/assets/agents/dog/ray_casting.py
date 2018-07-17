@@ -28,9 +28,7 @@ class RayCasting:
         else:
             self.wide_view = False
 
-        for i, _ in enumerate(self.observation[self.RAYS]):
-            self.observation[self.RAYS][i] = 0
-            self.observation[self.TARGETS][i] = 0
+        self._clear_observation()
 
     def _clear_observation(self):
         self.observation[:] = 0

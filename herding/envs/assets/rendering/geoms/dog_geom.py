@@ -36,8 +36,8 @@ class DogGeom(Geom):
     def update(self):
         self.body.set_pos(self.dog_pos[coo.X], self.dog_pos[coo.Y])
         for i, ray in enumerate(self.rays):
-            ray.set_scale(1 - self.dog_observation[0][i], 0)
-            color = tuple(min(x * (1.5 - self.dog_observation[0][i]), 1) for x in self.COLOR[self.dog_observation[1][i]])
+            ray.set_scale(1 - self.dog_observation[i, 0], 0)
+            color = tuple(min(x * (1.5 - self.dog_observation[i, 0]), 1) for x in self.COLOR[self.dog_observation[i, 1]])
             ray.set_color(*color)
             # TODO check the ray_radian
             rot = self.dog_rotation# - self.object.ray_radian[i]

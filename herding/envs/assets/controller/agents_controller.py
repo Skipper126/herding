@@ -16,10 +16,12 @@ class AgentsController:
 
         for i in range(workers_count):
             self.workers.append(WorkerController(AgentsWorker, (env_data,
-                                                                dogs_workers_ranges,
-                                                                sheep_workers_ranges)))
+                                                                dogs_workers_ranges[i],
+                                                                sheep_workers_ranges[i])))
 
         self.dogs_workers_ranges = dogs_workers_ranges
+        self.observation = env_data.shared_data.observation
+        self._start_workers()
 
     def move_dogs(self, action):
         for i, worker in enumerate(self.workers):
@@ -30,10 +32,11 @@ class AgentsController:
             worker.wait()
 
     def move_sheep(self):
-        self._execute_and_wait(self.workers, 'move_sheep')
+        self._execute_and_wait('move_sheep')
 
     def get_observation(self):
-        self._execute_and_wait(self.workers, 'update_observations')
+        self._execute_and_wait('update_observation')
+        return self.observation
 
     def close(self):
         self._quit_workers()
