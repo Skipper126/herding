@@ -1,15 +1,14 @@
 from gym.envs.classic_control import rendering
+from herding.envs.assets.configuration.names import ConfigName as cn
 from .geoms import *
 
 
 class Renderer:
 
-    def __init__(self, env):
-        self.map_width = env.map_width
-        self.map_height = env.map_height
-        self.dog_list = env.dog_list
-        self.sheep_list = env.sheep_list
-        self.geom_list = self._initRenderObjects(env)
+    def __init__(self, env_data):
+        self.map_width = env_data.config[cn.MAP_WIDTH]
+        self.map_height = env_data.config[cn.MAP_HEIGHT]
+        self.geom_list = self._initRenderObjects(env_data)
         self.viewer = rendering.Viewer(self.map_width, self.map_height)
 
         for geom in self.geom_list:

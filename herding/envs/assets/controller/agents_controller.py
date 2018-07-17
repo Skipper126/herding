@@ -1,13 +1,25 @@
 from herding.envs.assets.multiprocessing import WorkerController
-from . import agents_workers_factory
-import math
+from herding.envs.assets.configuration.names import ConfigName as cn
+from .agents_workers_utils import get_workers_count, get_workers_ranges
+from .agents_worker import AgentsWorker
 
 
 class AgentsController:
 
     def __init__(self, env_data):
-        self.workers, \
-        self.dogs_workers_ranges = agents_workers_factory.get_workers(env_data)
+        self.workers = []
+        workers_count = get_workers_count(env_data)
+        dogs_count = env_data.config[cn.DOGS_COUNT]
+        sheep_count = env_data.config[cn.SHEEP_COUNT]
+        dogs_workers_ranges = get_workers_ranges(dogs_count, workers_count)
+        sheep_workers_ranges = get_workers_ranges(sheep_count, workers_count)
+
+        for i in range(workers_count):
+            self.workers.append(WorkerController(AgentsWorker, (env_data,
+                                                                dogs_workers_ranges,
+                                                                sheep_workers_ranges)))
+
+        self.dogs_workers_ranges = dogs_workers_ranges
 
     def move_dogs(self, action):
         for i, worker in enumerate(self.workers):

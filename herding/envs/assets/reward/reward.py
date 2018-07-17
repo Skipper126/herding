@@ -52,3 +52,8 @@ class RewardCounter:
         return math.sqrt(pow(sheep.x - self.herd_centre_point[0], 2) + \
                        pow(sheep.y - self.herd_centre_point[1], 2))
 
+    def reset(self):
+        pass
+
+    def update_herd_centre(self):
+        pass

@@ -1,4 +1,4 @@
-from herding.envs.assets.configuration import constants
+from herding.envs.assets.configuration import names
 from herding.envs.assets.herding import Herding
 from herding.manual_steering import play
 import gym

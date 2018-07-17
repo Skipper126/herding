@@ -25,7 +25,7 @@ class Herding(gym.Env):
         self.agents_controller.move_dogs(action)
         self.agents_controller.move_sheep()
 
-        self.reward_counter.update_herd_centre_point()
+        self.reward_counter.update_herd_centre()
         state = self.agents_controller.get_observation()
         reward = self.reward_counter.get_reward()
         is_done = self.reward_counter.is_done()
@@ -62,7 +62,8 @@ class Herding(gym.Env):
         self.viewer.close()
         self.agents_controller.close()
 
-    def _get_env_data(self, params):
+    @staticmethod
+    def _get_env_data(params):
         config = configuration.get_default_configuration()
         config.update(params)
         shared_data = data.SharedData(params)

@@ -1,6 +1,8 @@
 from .geom import *
 from gym.envs.classic_control import rendering
 import math
+from herding.envs.assets.configuration.names import ConfigName as cn
+from herding.envs.assets.configuration.constants import Coordinate as coo
 
 
 class DogGeom(Geom):
@@ -11,14 +13,19 @@ class DogGeom(Geom):
         1: (0, 1, 0)
     }
 
-    def __init__(self, dogObject):
-        self.object = dogObject
+    def __init__(self, env_data, dog_index):
+        self.dog_radius = env_data.config[cn.AGENT_RADIUS]
+        self.rays_count = env_data.config[cn.RAYS_COUNT]
+        self.ray_length = env_data.config[cn.RAY_LENGTH]
+        self.dog_pos = env_data.shared_data.dogs_positions[dog_index]
+        self.dog_rotation = env_data.shared_data.dogs_rotations[dog_index]
+        self.dog_observation = env_data.shared_data.observation[dog_index]
 
-        self.body = Part(rendering.make_circle(self.object.radius, res=50))
+        self.body = Part(rendering.make_circle(self.dog_radius, res=50))
         self.body.set_color(185 / 255, 14 / 255, 37 / 255)
         self.rays = []
-        for _ in range(self.object.ray_count):
-            self.rays.append(Part(rendering.Line((0, 0), (self.object.ray_length, 0))))
+        for _ in range(self.rays_count):
+            self.rays.append(Part(rendering.Line((0, 0), (self.ray_length, 0))))
 
     def get_parts(self):
         parts = [self.body.body]
@@ -27,13 +34,14 @@ class DogGeom(Geom):
         return parts
 
     def update(self):
-        self.body.set_pos(self.object.x, self.object.y)
+        self.body.set_pos(self.dog_pos[coo.X], self.dog_pos[coo.Y])
         for i, ray in enumerate(self.rays):
-            ray.set_scale(1 - self.object.observation[0][i], 0)
-            color = tuple(min(x * (1.5 - self.object.observation[0][i]), 1) for x in self.COLOR[self.object.observation[1][i]])
+            ray.set_scale(1 - self.dog_observation[0][i], 0)
+            color = tuple(min(x * (1.5 - self.dog_observation[0][i]), 1) for x in self.COLOR[self.dog_observation[1][i]])
             ray.set_color(*color)
-            rot = self.object.rotation - self.object.ray_radian[i]
+            # TODO check the ray_radian
+            rot = self.dog_rotation# - self.object.ray_radian[i]
             ray.set_rotation(rot)
-            x = math.cos(rot) * self.object.radius
-            y = math.sin(rot) * self.object.radius
-            ray.set_pos(self.object.x + x, self.object.y + y)
+            x = math.cos(rot) * self.dog_radius
+            y = math.sin(rot) * self.dog_radius
+            ray.set_pos(self.dog_pos[coo.X] + x, self.dog_pos[coo.Y] + y)
