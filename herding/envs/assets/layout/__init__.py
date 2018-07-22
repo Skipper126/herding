@@ -1,1 +1,1 @@
-from herding.envs.assets.layout.agents_layout import AgentsLayout
+from .agents_layout_factory import create_agents_layout

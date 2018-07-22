@@ -1,1 +1,1 @@
-from herding.envs.assets.reward.reward import RewardCounter
+from .reward_counter_factory import create_reward_counter

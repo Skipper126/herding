@@ -1,10 +1,9 @@
 import gym
 import numpy as np
-from herding.envs.assets import configuration
-from herding.envs.assets import data
-from herding.envs.assets.controller import AgentsController
-from herding.envs.assets.reward import RewardCounter
-from herding.envs.assets.layout import AgentsLayout
+from .data import create_env_data
+from .agents import create_agents_controller
+from .reward import create_reward_counter
+from .layout import create_agents_layout
 
 
 class Herding(gym.Env):
@@ -14,17 +13,14 @@ class Herding(gym.Env):
     }
 
     def __init__(self, **kwargs):
-        self.env_data = self._get_env_data(kwargs)
-
-        self.reward_counter = RewardCounter(self.env_data)
-        self.agents_controller = AgentsController(self.env_data)
-        self.agents_layout = AgentsLayout(self.env_data)
+        self.env_data = create_env_data(kwargs)
+        self.reward_counter = create_reward_counter(self.env_data)
+        self.agents_controller = create_agents_controller(self.env_data)
+        self.agents_layout = create_agents_layout(self.env_data)
         self.viewer = None
 
     def step(self, action):
-        self.agents_controller.move_dogs(action)
-        self.agents_controller.move_sheep()
-
+        self.agents_controller.move_agents(action)
         self.reward_counter.update_herd_centre()
         state = self.agents_controller.get_observation()
         reward = self.reward_counter.get_reward()
@@ -61,13 +57,3 @@ class Herding(gym.Env):
     def close(self):
         self.viewer.close()
         self.agents_controller.close()
-
-    @staticmethod
-    def _get_env_data(params):
-        config = configuration.get_default_configuration()
-        config.update(params)
-        shared_data = data.SharedData(config)
-
-        env_data = data.EnvData(config, shared_data)
-
-        return env_data

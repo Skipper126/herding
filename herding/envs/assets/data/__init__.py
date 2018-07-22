@@ -1,2 +1,2 @@
-from herding.envs.assets.data.env_data import EnvData
-from herding.envs.assets.data.shared_data import SharedData
+from .env_data import EnvData
+from .env_data_factory import create_env_data
