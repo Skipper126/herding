@@ -1,6 +1,6 @@
 from .geom import *
 from gym.envs.classic_control import rendering
-from herding.envs.assets.configuration.names import ConfigName as cn
+from gym.envs.assets.configuration.names import ConfigName as cn
 
 
 class Crosshair(Geom):

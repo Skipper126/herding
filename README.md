@@ -14,7 +14,7 @@ The environment can be created by gym.make. Available scenarios:
 import gym
 import herding
 
-env = gym.make('herding-singleDog-v0')
+env = gym.make(gym)
 ```
 ## 2. Use own configuration
 You can directly create Herding class object and specify the parameters.
