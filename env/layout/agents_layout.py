@@ -1,5 +1,5 @@
-from gym.envs.assets.configuration.names import ConfigName as cn
-from gym.envs.assets.configuration.constants import Coordinate as coo
+from openaigym.envs.assets.configuration.names import ConfigName as cn
+from openaigym.envs.assets.configuration.constants import Coordinate as coo
 import numpy as np
 
 

@@ -1,1 +1,1 @@
-from .agents_layout_factory import create_agents_layout
+from env.layout.agents_layout import AgentsLayout

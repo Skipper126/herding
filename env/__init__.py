@@ -1,1 +1,1 @@
-from gym.envs.assets.herding import Herding
+from env.herding import Herding

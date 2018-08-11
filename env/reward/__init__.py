@@ -1,1 +1,1 @@
-from .reward_counter_factory import create_reward_counter
+from env.reward.reward_counter import RewardCounter

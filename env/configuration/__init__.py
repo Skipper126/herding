@@ -1,2 +1,2 @@
-from gym.envs.assets.configuration.configuration import get_default_configuration
-from gym.envs.assets.configuration import names
+from env.configuration.configuration import get_default_configuration
+from env.configuration.names import names

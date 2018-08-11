@@ -5,8 +5,8 @@ import gym
 
 
 gym.envs.registration.register(
-    id='gym-singleDog-v0',
-    entry_point='gym.envs:HerdingSingleDog',
+    id='herding-singleDog-v0',
+    entry_point='herding.envs:HerdingSingleDog',
     timestep_limit=1000,
     nondeterministic=False
 )

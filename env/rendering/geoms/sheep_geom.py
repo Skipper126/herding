@@ -1,7 +1,7 @@
 from .geom import *
-from gym.envs.classic_control import rendering
-from gym.envs.assets.configuration.names import ConfigName as cn
-from gym.envs.assets.configuration.constants import Coordinate as coo
+from openaigym.envs.classic_control import rendering
+from openaigym.envs.assets.configuration.names import ConfigName as cn
+from openaigym.envs.assets.configuration.constants import Coordinate as coo
 
 
 class SheepGeom(Geom):

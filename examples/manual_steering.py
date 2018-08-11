@@ -1,4 +1,4 @@
-from gym import Herding
+from openaigym import Herding
 from pyglet.window import key
 
 class ManualSteering:

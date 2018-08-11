@@ -1,4 +1,4 @@
-from gym.envs.classic_control import rendering
+from openaigym.envs.classic_control import rendering
 
 
 class Part:

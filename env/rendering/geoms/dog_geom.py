@@ -1,8 +1,8 @@
 from .geom import *
-from gym.envs.classic_control import rendering
+from openaigym.envs.classic_control import rendering
 import math
-from gym.envs.assets.configuration.names import ConfigName as cn
-from gym.envs.assets.configuration.constants import Coordinate as coo
+from openaigym.envs.assets.configuration.names import ConfigName as cn
+from openaigym.envs.assets.configuration.constants import Coordinate as coo
 
 
 class DogGeom(Geom):

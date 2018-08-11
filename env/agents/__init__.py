@@ -1,1 +1,1 @@
-from .agents_controller_factory import create_agents_controller
+from env.agents.agents_controller import AgentsController

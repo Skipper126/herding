@@ -1,9 +1,9 @@
 import gym
 import numpy as np
-from .data import create_env_data
-from .agents import create_agents_controller
-from .reward import create_reward_counter
-from .layout import create_agents_layout
+from env.data import create_env_data
+from env.agents import AgentsController
+from env.layout import AgentsLayout
+from env.reward import RewardCounter
 
 
 class Herding(gym.Env):
@@ -14,9 +14,9 @@ class Herding(gym.Env):
 
     def __init__(self, **kwargs):
         self.env_data = create_env_data(kwargs)
-        self.reward_counter = create_reward_counter(self.env_data)
-        self.agents_controller = create_agents_controller(self.env_data)
-        self.agents_layout = create_agents_layout(self.env_data)
+        self.reward_counter = RewardCounter(self.env_data)
+        self.agents_controller = AgentsController(self.env_data)
+        self.agents_layout = AgentsLayout(self.env_data)
         self.viewer = None
 
     def step(self, action):
