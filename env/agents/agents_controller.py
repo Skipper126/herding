@@ -14,11 +14,7 @@ class AgentsController:
     def move_agents(self, action):
         cuda.memcpy_htod(self.env_data.gpu_action,
                          action)
-        self.gpu_move_agents(self.env_data.gpu_dogs_positions,
-                             self.env_data.gpu_dogs_rotations,
-                             self.env_data.gpu_sheep_positions,
-                             self.env_data.gpu_action,
-                             block=(1, 1, 1))
+        self.gpu_move_agents(self.env_data.gpu_env_data, block=(1, 1, 1))
         cuda.memcpy_dtoh(self.env_data.dogs_positions,
                          self.env_data.gpu_dogs_positions)
         cuda.memcpy_dtoh(self.env_data.dogs_rotations,

@@ -12,6 +12,7 @@ class EnvData(NamedTuple):
     observation: np.ndarray
     dogs_rotations: np.ndarray
 
+    gpu_env_data: c_longlong
     gpu_config: c_longlong
     gpu_dogs_positions: c_longlong
     gpu_sheep_positions: c_longlong

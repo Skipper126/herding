@@ -1,8 +1,8 @@
 #pragma once
 
-#define DOGS_COUNT 1
-#define SHEEP_COUNT 10
-#define RAYS_COUNT 128
+#define DOGS_COUNT $dogs_count
+#define SHEEP_COUNT $sheep_count
+#define RAYS_COUNT $rays_count
 
 struct Config {
     int dogs_count;
@@ -23,6 +23,6 @@ struct EnvData {
     float dogs_positions[DOGS_COUNT][2];
     float sheep_positions[SHEEP_COUNT][2];
     float herd_centre[2];
-    float observation[DOGS_COUNT][128];
+    float observation[DOGS_COUNT][RAYS_COUNT];
     float dogs_rotations[DOGS_COUNT];
 };
