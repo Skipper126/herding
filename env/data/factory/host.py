@@ -1,11 +1,12 @@
 from env import configuration
-from env.data.utils import get_env_data_size
+from env.data.factory import info
 import numpy as np
 
 
 def get_host_env_data(params):
     config = _create_config(params)
-    env_data_size = get_env_data_size(config)
+    env_data_info = info.get_gpu_env_data_info(config)
+
     env_data = np.empty((env_data_size,))
 
     return {
