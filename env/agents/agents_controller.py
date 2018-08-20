@@ -6,23 +6,21 @@ class AgentsController:
 
     def __init__(self, env_data: data.EnvData):
         self.env_data = env_data
-
-        self.module = cuda.compile_directory(os.getcwd() + '\kernels')
+        gpu_env_data_header_path = data.get_env_data_header_path()
+        self.module = cuda.compile_files(header_files=[gpu_env_data_header_path,
+                                                       'kernels/declarations.cuh'],
+                                         files=['kernels/agents_move.cu',
+                                                'kernels/ray_casting.cu'],
+                                         templates=env_data.config._asdict())
         self.gpu_move_agents = self.module.get_function('move_agents')
-        self.gpu_ray_casting = self.module.get_function('ray_casting')
+        self.gpu_ray_casting = self.module.get_function('cast_rays')
 
     def move_agents(self, action):
-        cuda.memcpy_htod(self.env_data.gpu_action,
-                         action)
+        cuda.memcpy_htod(self.env_data.gpu_action, action)
         self.gpu_move_agents(self.env_data.gpu_env_data, block=(1, 1, 1))
-        cuda.memcpy_dtoh(self.env_data.dogs_positions,
-                         self.env_data.gpu_dogs_positions)
-        cuda.memcpy_dtoh(self.env_data.dogs_rotations,
-                         self.env_data.gpu_dogs_rotations)
-        cuda.memcpy_dtoh(self.env_data.sheep_positions,
-                         self.env_data.gpu_sheep_positions)
-
-        return self.env_data.dogs_positions
+        data.sync.sync_dogs_positions(self.env_data)
+        data.sync.sync_dogs_rotations(self.env_data)
+        data.sync.sync_sheep_positions(self.env_data)
 
     def get_observation(self):
         raise NotImplementedError

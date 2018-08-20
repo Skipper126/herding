@@ -1,21 +1,24 @@
-from openaigym.envs.assets.configuration.names import ConfigName as cn
-from openaigym.envs.assets.configuration.constants import Coordinate as coo
 import numpy as np
+from env import cuda
+from env import data
 
 
 class AgentsLayout:
 
     def __init__(self, env_data):
-        self.dogs_positions = env_data.shared_data.dogs_positions
-        self.sheep_positions = env_data.shared_data.sheep_positions
-        self.dogs_rotations = env_data.shared_data.dogs_rotations
-        self.agent_radius = env_data.config[cn.AGENT_RADIUS]
-        self.map_width = env_data.config[cn.MAP_WIDTH]
-        self.map_height = env_data.config[cn.MAP_HEIGHT]
+        self.env_data = env_data
+        gpu_env_data_header_path = data.get_env_data_header_path()
+        self.module = cuda.compile_files(header_files=[gpu_env_data_header_path],
+                                         files=['kernels/random.cu'],
+                                         templates=dict(env_data.config))
+        self.gpu_random = self.module.get_function('random')
 
     def set_up_agents(self):
         # TODO
-        self._random()
+        self.gpu_random(self.env_data.gpu_env_data)
+        data.sync.sync_sheep_positions(self.env_data)
+        data.sync.sync_dogs_rotations(self.env_data)
+        data.sync.sync_dogs_positions(self.env_data)
 
     def _random(self):
         padding = 5

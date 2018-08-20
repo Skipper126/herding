@@ -1,6 +1,6 @@
 
 def malloc(size):
-    pass
+    return 0
 
 
 def memcpy_htod(dest, src):
