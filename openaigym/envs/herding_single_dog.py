@@ -1,4 +1,4 @@
-from .assets import Herding
+from env import Herding
 
 
 class HerdingSingleDog(Herding):

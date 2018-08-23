@@ -9,7 +9,7 @@ def get_device_arrays(config):
         'herd_centre': (2,),
         'observation': (config.dogs_count, config.rays_count),
         'dogs_rotations': (config.dogs_count,),
-        'action': (config.dogs_count, 3)
+        'action': (config.dogs_count, 3)  # TODO improve syncing host_arrays and device_arrays with action
     }
     arrays_info = get_arrays_info(arrays_shapes)
     arrays_buffer = cuda.malloc(arrays_info['size'])

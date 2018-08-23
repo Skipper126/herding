@@ -1,5 +1,6 @@
 
-void move_agents(EnvData *env_data);
-void move_dogs(EnvData *env_data);
-void move_sheep(EnvData *env_data);
-void cast_rays(EnvData *env_data);
+void move_agents(Arrays *arrays);
+void move_dogs(Arrays *arrays);
+void move_sheep_simple(Arrays *arrays);
+void move_sheep_complex(Arrays *arrays);
+void cast_rays(Arrays *arrays);

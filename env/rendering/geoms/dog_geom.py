@@ -1,8 +1,6 @@
 from .geom import *
-from openaigym.envs.classic_control import rendering
+from gym.envs.classic_control import rendering
 import math
-from openaigym.envs.assets.configuration.names import ConfigName as cn
-from openaigym.envs.assets.configuration.constants import Coordinate as coo
 
 
 class DogGeom(Geom):
@@ -14,12 +12,12 @@ class DogGeom(Geom):
     }
 
     def __init__(self, env_data, dog_index):
-        self.dog_radius = env_data.config[cn.AGENT_RADIUS]
-        self.rays_count = env_data.config[cn.RAYS_COUNT]
-        self.ray_length = env_data.config[cn.RAY_LENGTH]
-        self.dog_pos = env_data.shared_data.dogs_positions[dog_index]
-        self.dog_rotation = env_data.shared_data.dogs_rotations[dog_index]
-        self.dog_observation = env_data.shared_data.observation[dog_index]
+        self.dog_radius = env_data.config.agent_radius
+        self.rays_count = env_data.config.rays_count
+        self.ray_length = env_data.config.ray_length
+        self.dog_pos = env_data.dogs_positions[dog_index]
+        self.dog_rotation = env_data.dogs_rotations[dog_index]
+        self.dog_observation = env_data.observation[dog_index]
 
         self.body = Part(rendering.make_circle(self.dog_radius, res=50))
         self.body.set_color(185 / 255, 14 / 255, 37 / 255)
@@ -34,7 +32,7 @@ class DogGeom(Geom):
         return parts
 
     def update(self):
-        self.body.set_pos(self.dog_pos[coo.X], self.dog_pos[coo.Y])
+        self.body.set_pos(self.dog_pos[0], self.dog_pos[1])
         for i, ray in enumerate(self.rays):
             ray.set_scale(1 - self.dog_observation[i, 0], 0)
             color = tuple(min(x * (1.5 - self.dog_observation[i, 0]), 1) for x in self.COLOR[self.dog_observation[i, 1]])
@@ -44,4 +42,4 @@ class DogGeom(Geom):
             ray.set_rotation(rot)
             x = math.cos(rot) * self.dog_radius
             y = math.sin(rot) * self.dog_radius
-            ray.set_pos(self.dog_pos[coo.X] + x, self.dog_pos[coo.Y] + y)
+            ray.set_pos(self.dog_pos[0] + x, self.dog_pos[1] + y)

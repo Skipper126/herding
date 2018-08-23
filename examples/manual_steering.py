@@ -1,5 +1,6 @@
-from openaigym import Herding
+from env import Herding
 from pyglet.window import key
+
 
 class ManualSteering:
 
@@ -60,10 +61,12 @@ class ManualSteering:
 
         self.env.close()
 
-    def print_debug(self, *args):
+    @staticmethod
+    def print_debug(*args):
         print('\r', end='', flush=True)
         for arg in args:
             print(str(arg) + '\t', end='', flush=True)
+
 
 def play(my_env=None):
     env = my_env if my_env is not None else Herding()

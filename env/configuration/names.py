@@ -15,12 +15,7 @@ class ConfigName:
     ROTATION_MODE = 'rotation_mode'
     MAP_HEIGHT = 'map_height'
     MAP_WIDTH = 'map_width'
-    HARDWARE_ACCELERATION = 'hardware_acceleration'
-
-
-class AgentType:
-    DOG = 'dog'
-    SHEEP = 'sheep'
+    SKIP_FRAMES = 'skip_frames'
 
 
 class SheepType:

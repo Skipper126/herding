@@ -12,8 +12,8 @@ class Herding(gym.Env):
         'render.modes': ['human']
     }
 
-    def __init__(self, **kwargs):
-        self.env_data = create_env_data(kwargs)
+    def __init__(self, **params):
+        self.env_data = create_env_data(params)
         self.reward_counter = RewardCounter(self.env_data)
         self.agents_controller = AgentsController(self.env_data)
         self.agents_layout = AgentsLayout(self.env_data)
@@ -26,9 +26,7 @@ class Herding(gym.Env):
         reward = self.reward_counter.get_reward()
         is_done = self.reward_counter.is_done()
 
-        return state, reward, is_done, {
-            #"scatter": self.reward_counter.scatter
-        }
+        return state, reward, is_done, {}
 
     def reset(self):
         self.agents_layout.set_up_agents()
@@ -55,5 +53,5 @@ class Herding(gym.Env):
         np.random.seed(seed)
 
     def close(self):
-        self.viewer.close()
-        self.agents_controller.close()
+        if self.viewer is not None:
+            self.viewer.close()

@@ -1,13 +1,12 @@
 from .geom import *
-from openaigym.envs.classic_control import rendering
-from openaigym.envs.assets.configuration.names import ConfigName as cn
+from gym.envs.classic_control import rendering
 
 
 class Crosshair(Geom):
 
     def __init__(self, env_data):
-        self.herd_centre = env_data.shared_data.herd_centre
-        herd_target_radius = env_data.config[cn.HERD_TARGET_RADIUS]
+        self.herd_centre = env_data.herd_centre
+        herd_target_radius = env_data.config.herd_target_radius
         crosshair_size = 10
         color = (0, 0, 0)
         self.vertical_bar = Part(rendering.Line((-crosshair_size - 1, 0), (crosshair_size, 0)))
