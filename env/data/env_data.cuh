@@ -10,7 +10,7 @@
 #define RAY_LENGTH $ray_length
 #define FIELD_OF_VIEW $field_of_view
     
-struct EnvData {
+struct Arrays {
     float dogs_positions[DOGS_COUNT][2];
     float sheep_positions[SHEEP_COUNT][2];
     float herd_centre[2];

@@ -1,20 +1,5 @@
+from env import cuda
 
 
-def sync_dogs_positions(env_data):
-    pass
-
-
-def sync_sheep_positions(env_data):
-    pass
-
-
-def sync_herd_centre(env_data):
-    pass
-
-
-def sync_observation(env_data):
-    pass
-
-
-def sync_dogs_rotations(env_data):
-    pass
+def sync_arrays(env_data):
+    cuda.memcpy_dtoh(env_data.host_arrays, env_data.device_arrays)
