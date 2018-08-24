@@ -1,6 +1,6 @@
 from gym.envs.classic_control import rendering
-from env.rendering.geoms import *
-from env import data
+from herding.rendering.geoms import *
+from herding import data
 
 
 class Renderer:

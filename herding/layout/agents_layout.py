@@ -1,6 +1,6 @@
 import numpy as np
-from env import cuda
-from env import data
+from herding import cuda
+from herding import data
 
 
 class AgentsLayout:

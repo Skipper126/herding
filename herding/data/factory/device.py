@@ -1,5 +1,5 @@
-from env import cuda
-from env.data.factory.info import get_arrays_info
+from herding import cuda
+from herding.data.factory.info import get_arrays_info
 
 
 def get_device_arrays(config):

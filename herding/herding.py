@@ -1,9 +1,9 @@
 import gym
 import numpy as np
-from env.data import create_env_data
-from env.agents import AgentsController
-from env.layout import AgentsLayout
-from env.reward import RewardCounter
+from herding.data import create_env_data
+from herding.agents import AgentsController
+from herding.layout import AgentsLayout
+from herding.reward import RewardCounter
 
 
 class Herding(gym.Env):

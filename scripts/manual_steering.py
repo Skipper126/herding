@@ -1,4 +1,4 @@
-from env import Herding
+from herding import Herding
 from pyglet.window import key
 
 

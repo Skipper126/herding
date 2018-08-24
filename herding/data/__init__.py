@@ -1,5 +1,5 @@
-from env.data.env_data import EnvData, Config
-from env.data.factory import create_env_data
+from herding.data.env_data import EnvData, Config
+from herding.data.factory import create_env_data
 import os
 
 

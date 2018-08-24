@@ -1,4 +1,4 @@
-from env import cuda, data
+from herding import cuda, data
 import numpy as np
 
 

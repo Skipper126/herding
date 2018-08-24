@@ -1,5 +1,5 @@
 import numpy as np
-from env.data.factory.info import get_arrays_info
+from herding.data.factory.info import get_arrays_info
 
 
 def get_host_arrays(config):
