@@ -1,5 +1,5 @@
 from herding.data.env_data import EnvData, Config
-from herding.data.factory import host, device, info
+from herding.data.factory import host, device
 from herding import configuration
 
 

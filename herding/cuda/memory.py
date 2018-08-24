@@ -1,14 +1,15 @@
 import numpy as np
-from ctypes import c_longlong
+import pycuda.autoinit
+import pycuda.driver as cuda
 
 
 def malloc(size: int) -> int:
-    return 0
+    return cuda.mem_alloc(int(size))
 
 
-def memcpy_htod(dest: c_longlong, src: np.ndarray):
-    pass
+def memcpy_htod(dest, src: np.ndarray):
+    cuda.memcpy_htod(int(dest), src)
 
 
-def memcpy_dtoh(dest: np.ndarray, src: c_longlong):
-    pass
+def memcpy_dtoh(dest: np.ndarray, src):
+    cuda.memcpy_dtoh(dest, int(src))

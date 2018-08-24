@@ -1,6 +1,3 @@
 
-void move_agents(Arrays *arrays);
-void move_dogs(Arrays *arrays);
-void move_sheep_simple(Arrays *arrays);
-void move_sheep_complex(Arrays *arrays);
-void cast_rays(Arrays *arrays);
+__device__ void move_dogs(Arrays *arrays);
+__device__ void move_sheep_$sheep_type(Arrays *arrays);

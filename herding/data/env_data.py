@@ -1,6 +1,6 @@
 from typing import NamedTuple
+from pycuda.driver import DeviceAllocation
 import numpy as np
-from ctypes import c_longlong
 
 
 class Config(NamedTuple):
@@ -19,7 +19,7 @@ class Config(NamedTuple):
     field_of_view: int
     map_height: int
     map_width: int
-    hardware_acceleration: str
+    skip_frames: str
 
 
 class EnvData(NamedTuple):
@@ -31,10 +31,10 @@ class EnvData(NamedTuple):
     observation: np.ndarray
     dogs_rotations: np.ndarray
 
-    device_arrays: c_longlong
-    device_dogs_positions: c_longlong
-    device_sheep_positions: c_longlong
-    device_herd_centre: c_longlong
-    device_observation: c_longlong
-    device_dogs_rotations: c_longlong
-    device_action: c_longlong
+    device_arrays: DeviceAllocation
+    device_dogs_positions: int
+    device_sheep_positions: int
+    device_herd_centre: int
+    device_observation: int
+    device_dogs_rotations: int
+    device_action: int

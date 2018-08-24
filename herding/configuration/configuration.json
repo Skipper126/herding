@@ -10,9 +10,9 @@
   "max_rotation_speed" : 90,
   "max_episode_reward" : 100,
   "rays_count" : 180,
-  "ray_length" : 600,
+  "ray_length" : 300,
   "field_of_view" : 180,
+  "map_width" : 1000,
   "map_height" : 800,
-  "map_width" : 600,
   "skip_frames" : 1
 }

@@ -14,12 +14,14 @@ class AgentsLayout:
         self.set_up_function()
 
     def _random(self):
-        padding = 5
+        bottom = 50
+        top = 600
 
-        self.env_data.dogs_positions[:] = np.random.randint(padding, self.env_data.config.map_width,
+        self.env_data.dogs_positions[::] = np.random.randint(bottom, top,
                                                             size=(self.env_data.config.dogs_count, 2))
-        self.env_data.sheep_positions[:] = np.random.randint(padding, self.env_data.config.map_width,
-                                                             size=(self.env_data.config.dogs_count, 2))
+        self.env_data.dogs_rotations[::] = 0
+        self.env_data.sheep_positions[::] = np.random.randint(bottom, top,
+                                                             size=(self.env_data.config.sheep_count, 2))
         cuda.memcpy_htod(self.env_data.device_arrays, self.env_data.host_arrays)
 
 

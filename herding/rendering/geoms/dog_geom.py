@@ -38,7 +38,7 @@ class DogGeom(Geom):
             color = tuple(min(x * (1.5 - self.dog_observation[i, 0]), 1) for x in self.COLOR[self.dog_observation[i, 1]])
             ray.set_color(*color)
             # TODO check the ray_radian
-            rot = self.dog_rotation# - self.object.ray_radian[i]
+            rot = self.dog_rotation - ((math.pi / 180) * i) # - self.object.ray_radian[i]
             ray.set_rotation(rot)
             x = math.cos(rot) * self.dog_radius
             y = math.sin(rot) * self.dog_radius
