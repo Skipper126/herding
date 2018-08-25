@@ -8,7 +8,7 @@ def get_host_arrays(config):
         'sheep_positions': (config.sheep_count, 2),
         'herd_centre': (2,),
         'observation': (config.dogs_count, config.rays_count, 2),
-        'dogs_rotations': (config.dogs_count,)
+        'dogs_rotations': (config.dogs_count, 1)
     }
     arrays_info = get_arrays_info(arrays_shapes)
     arrays_buffer = np.empty((arrays_info['total_size'],), dtype=np.float32)
