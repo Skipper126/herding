@@ -19,7 +19,6 @@ class AgentsLayout:
 
         self.env_data.dogs_positions[::] = np.random.randint(bottom, top,
                                                             size=(self.env_data.config.dogs_count, 2))
-        self.env_data.dogs_positions[::] = - 10
         self.env_data.dogs_rotations[::] = 0
         self.env_data.sheep_positions[::] = np.random.randint(bottom, top,
                                                              size=(self.env_data.config.sheep_count, 2))

@@ -2,21 +2,17 @@
 
 Installation
 ============
+### 1. Install pycuda
+ https://wiki.tiker.net/PyCuda/Installation
+### 2. Install herding package
+
 ```
 pip install -e <package_directory>
 ```
 Running
 ============
-## 1. OpenAi Gym env
-The environment can be created by gym.make. Available scenarios:
-* herding-singleDog-v0
-```python
-import gym
-import herding
 
-env = gym.make(gym)
-```
-## 2. Use own configuration
+## 2. Create environment
 You can directly create Herding class object and specify the parameters.
 ```python
 import herding
@@ -24,7 +20,7 @@ import herding
 env = herding.Herding(
     dog_count=3,
     sheep_count=20,
-    sheep_type=herding.constants.SheepType.COMPLEX
+    sheep_type='simple'
 )
 ```
 ## 3. Manual steering
@@ -41,7 +37,7 @@ import herding
 env = herding.Herding(
     sheep_count=15,
     max_movement_speed=10,
-    rotation_mode=herding.constants.RotationMode.LOCKED_ON_HERD_CENTRE
+    rotation_mode='centered'
 )
 
 herding.play(env)
