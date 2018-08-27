@@ -17,10 +17,11 @@ class Config(NamedTuple):
     rays_count: int
     ray_length: int
     field_of_view: int
-    map_height: int
-    map_width: int
+    agents_layout_size: int
     skip_frames: str
-
+    window_width: int
+    window_height: int
+    agent_geom_resolution: int
 
 class EnvData(NamedTuple):
     config: Config

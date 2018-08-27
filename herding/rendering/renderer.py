@@ -6,10 +6,10 @@ from herding import data
 class Renderer:
 
     def __init__(self, env_data: data.EnvData):
-        self.map_width = env_data.config.map_width
-        self.map_height = env_data.config.map_height
+        self.window_width = env_data.config.window_width
+        self.window_height = env_data.config.window_height
         self.geom_list = self._init_render_objects(env_data)
-        self.viewer = rendering.Viewer(self.map_width, self.map_height)
+        self.viewer = rendering.Viewer(self.window_width, self.window_height)
 
         for geom in self.geom_list:
             self.viewer.geoms.extend(geom.get_parts())

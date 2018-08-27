@@ -1,2 +1,0 @@
-from herding.configuration.configuration import get_default_configuration
-from herding.configuration import names

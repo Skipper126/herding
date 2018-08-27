@@ -12,7 +12,9 @@
   "rays_count" : 180,
   "ray_length" : 300,
   "field_of_view" : 180,
-  "map_width" : 1000,
-  "map_height" : 800,
-  "skip_frames" : 1
+  "agents_layout_size": 1000,
+  "skip_frames" : 1,
+  "window_width" : 1000,
+  "window_height" : 800,
+  "agent_geom_resolution" : 10
 }

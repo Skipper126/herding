@@ -1,6 +1,6 @@
 from herding.data.env_data import EnvData, Config
 from herding.data.factory import host, device
-from herding import configuration
+from herding.data import configuration
 
 
 def create_env_data(params) -> EnvData:

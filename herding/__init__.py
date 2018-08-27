@@ -1,2 +1,2 @@
 from herding.herding import Herding
-from herding.configuration import names
+from herding.data.configuration import names
