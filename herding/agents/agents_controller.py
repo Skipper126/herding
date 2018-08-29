@@ -10,7 +10,8 @@ class AgentsController:
         self.device_arrays = env_data.device_arrays
         self.device_action = env_data.device_action
         self.observation = env_data.observation
-        self.device_observation = env_data.device_observation
+        self.rays = env_data.rays
+        self.device_rays = env_data.device_rays
 
         self.dogs_count = env_data.config.dogs_count
         self.rays_count = env_data.config.rays_count
@@ -27,12 +28,19 @@ class AgentsController:
 
     def get_observation(self) -> np.ndarray:
         self.device_cast_rays(self.device_arrays, block=(self.dogs_count, self.rays_count, 1))
-        cuda.memcpy_dtoh(self.observation, self.device_observation)
+        cuda.memcpy_dtoh(self.rays, self.device_rays)
+
 
         return self.observation
 
     def close(self):
         pass
+
+
+    def _convert_to_observation(self):
+        self.observation[:,:] = self.rays[:, :]
+
+        return self.observation
 
     @staticmethod
     def _get_device_module(env_data):

@@ -17,9 +17,9 @@ class DogGeom(Geom):
         self.ray_length = env_data.config.ray_length
         self.dog_pos = env_data.dogs_positions[dog_index]
         self.dog_rotation = env_data.dogs_rotations[dog_index]
-        self.dog_observation = env_data.observation[dog_index]
+        self.dog_rays = env_data.rays[dog_index]
 
-        self.body = Part(rendering.make_circle(self.dog_radius, res=50))
+        self.body = Part(rendering.make_circle(self.dog_radius, res=8))
         self.body.set_color(185 / 255, 14 / 255, 37 / 255)
         self.rays = []
         for _ in range(self.rays_count):
@@ -34,8 +34,8 @@ class DogGeom(Geom):
     def update(self):
         self.body.set_pos(self.dog_pos[0], self.dog_pos[1])
         for i, ray in enumerate(self.rays):
-            ray.set_scale(1 - self.dog_observation[i, 0], 0)
-            color = tuple(min(x * (1.5 - self.dog_observation[i, 0]), 1) for x in self.COLOR[self.dog_observation[i, 1]])
+            ray.set_scale(1 - self.dog_rays[i, 0], 0)
+            color = tuple(min(x * (1.5 - self.dog_rays[i, 0]), 1) for x in self.COLOR[self.dog_rays[i, 1]])
             ray.set_color(*color)
             # TODO check the ray_radian
             rot = self.dog_rotation - ((math.pi / 180) * i) # - self.object.ray_radian[i]

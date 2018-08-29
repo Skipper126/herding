@@ -5,8 +5,9 @@ from herding.data import configuration
 
 def create_env_data(params) -> EnvData:
     config = _get_config(params)
-    host_arrays = host.get_host_arrays(config)
-    device_arrays = device.get_device_arrays(config)
+    arrays_shapes = configuration.get_arrays_shapes(config)
+    host_arrays = host.get_host_arrays(arrays_shapes)
+    device_arrays = device.get_device_arrays(arrays_shapes)
     env_data_params = {
         **{'config': config},
         **host_arrays,

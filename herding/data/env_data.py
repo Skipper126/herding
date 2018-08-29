@@ -28,14 +28,14 @@ class EnvData(NamedTuple):
     host_arrays: np.ndarray
     dogs_positions: np.ndarray
     sheep_positions: np.ndarray
+    rays: np.array
+    dogs_rotations: np.ndarray
     herd_centre: np.ndarray
     observation: np.ndarray
-    dogs_rotations: np.ndarray
 
     device_arrays: DeviceAllocation
     device_dogs_positions: int
     device_sheep_positions: int
-    device_herd_centre: int
-    device_observation: int
+    device_rays: int
     device_dogs_rotations: int
     device_action: int

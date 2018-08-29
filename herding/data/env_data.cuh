@@ -12,8 +12,7 @@
 struct Arrays {
     float dogs_positions[DOGS_COUNT][2];
     float sheep_positions[SHEEP_COUNT][2];
-    float herd_centre[2];
-    float observation[DOGS_COUNT][RAYS_COUNT][2];
+    float rays[DOGS_COUNT][RAYS_COUNT][2];
     float dogs_rotations[DOGS_COUNT];
     float action[DOGS_COUNT][3];
 };

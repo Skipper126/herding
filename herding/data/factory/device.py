@@ -2,16 +2,12 @@ from herding import cuda
 from herding.data.factory.info import get_arrays_info
 
 
-def get_device_arrays(config):
-    arrays_shapes = {
-        'device_dogs_positions': (config.dogs_count, 2),
-        'device_sheep_positions': (config.sheep_count, 2),
-        'device_herd_centre': (2,),
-        'device_observation': (config.dogs_count, config.rays_count, 2),
-        'device_dogs_rotations': (config.dogs_count,),
-        'device_action': (config.dogs_count, 3)  # TODO improve syncing host_arrays and device_arrays with action
+def get_device_arrays(arrays_shapes):
+    device_arrays_shapes = {
+        **arrays_shapes['shared'],
+        **arrays_shapes['device']
     }
-    arrays_info = get_arrays_info(arrays_shapes)
+    arrays_info = get_arrays_info(device_arrays_shapes)
     arrays_device_allocation = cuda.malloc(arrays_info['total_size'] * 4)
     arrays_buffer = int(arrays_device_allocation)
 
@@ -19,6 +15,6 @@ def get_device_arrays(config):
         'device_arrays': arrays_device_allocation
     }
     for array, info in arrays_info['arrays'].items():
-            device_arrays[array] = arrays_buffer + (info['offset'] * 4)
+            device_arrays['device_' + array] = arrays_buffer + (info['offset'] * 4)
 
     return device_arrays
