@@ -1,5 +1,5 @@
 from gym.envs.classic_control import rendering
-from herding.rendering.geoms import *
+from herding.rendering.geoms import dog_geom, sheep_geom, target_geom
 from herding import data
 
 
@@ -26,7 +26,7 @@ class Renderer:
         for i in range(sheep_count):
             geom_list.append(sheep_geom.SheepGeom(env_data, i))
 
-        geom_list.append(crosshair.Crosshair(env_data))
+        geom_list.append(target_geom.Target(env_data))
 
         return geom_list
 

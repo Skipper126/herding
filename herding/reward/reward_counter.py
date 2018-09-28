@@ -56,9 +56,6 @@ class RewardCounter:
     def reset(self):
         pass
 
-    def update_herd_centre(self):
-        pass
-
     def get_reward(self):
         return 0
 

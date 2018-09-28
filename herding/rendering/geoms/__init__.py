@@ -1,1 +1,1 @@
-__all__ = ['crosshair', 'dog_geom', 'sheep_geom']
+__all__ = ['target_geom.py', 'dog_geom', 'sheep_geom']

@@ -1,8 +1,26 @@
 from .geom import *
 from gym.envs.classic_control import rendering
+from herding.data import get_color_tuple_from_config
 
 
-class Crosshair(Geom):
+class Target(Geom):
+    BODY = 0
+
+    def __init__(self, env_data):
+        self.target_pos = env_data.target
+        self.body = Part(rendering.make_circle(4, res=4))
+        #target_color = get_color_tuple_from_config(env_data.config.target_color)
+        self.body.set_color(*(env_data.config.target_color_r,
+                              env_data.config.target_color_g,
+                              env_data.config.target_color_b,))
+
+    def get_parts(self):
+        return [self.body.body]
+
+    def update(self):
+        self.body.set_pos(self.target_pos[0], self.target_pos[1])
+"""
+class Target(Geom):
 
     def __init__(self, env_data):
         self.herd_centre = env_data.herd_centre
@@ -24,3 +42,4 @@ class Crosshair(Geom):
         self.horizontal_bar.set_pos(self.herd_centre[0], self.herd_centre[1])
         self.vertical_bar.set_pos(self.herd_centre[0], self.herd_centre[1])
         self.herd_circle.set_pos(self.herd_centre[0], self.herd_centre[1])
+"""

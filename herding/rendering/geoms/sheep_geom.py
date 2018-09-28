@@ -1,5 +1,6 @@
 from .geom import *
 from gym.envs.classic_control import rendering
+from herding.data import get_color_tuple_from_config
 
 
 class SheepGeom(Geom):
@@ -9,7 +10,10 @@ class SheepGeom(Geom):
         self.sheep_radius = env_data.config.agent_radius
         self.sheep_pos = env_data.sheep_positions[sheep_index]
         self.body = Part(rendering.make_circle(self.sheep_radius, res=8))
-        self.body.set_color(181 / 255, 185 / 255, 215 / 255)
+        #sheep_color = get_color_tuple_from_config(env_data.config.sheep_color)
+        self.body.set_color(*(env_data.config.sheep_color_r,
+                              env_data.config.sheep_color_g,
+                              env_data.config.sheep_color_b,))
 
     def get_parts(self):
         return [self.body.body]

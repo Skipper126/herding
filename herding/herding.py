@@ -21,7 +21,6 @@ class Herding(gym.Env):
 
     def step(self, action):
         self.agents_controller.move_agents(action)
-        self.reward_counter.update_herd_centre()
         state = self.agents_controller.get_observation()
         reward = self.reward_counter.get_reward()
         is_done = self.reward_counter.is_done()

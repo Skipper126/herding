@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Dict
+from typing import Dict, Tuple
 from herding.data.env_data import Config
 from string import Template
 
@@ -23,3 +23,8 @@ def get_arrays_shapes(config: Config) -> Dict:
 
     return arrays_shapes
 
+def get_color_tuple_from_config(config_color: str) -> Tuple[int]:
+    striped_str = config_color.replace('{', '').replace('}', '')
+    num_tuple = tuple([int(color) for color in striped_str.split(',')])
+
+    return num_tuple

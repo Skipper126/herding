@@ -22,6 +22,7 @@ class AgentsLayout:
         self.env_data.dogs_rotations[::] = 0
         self.env_data.sheep_positions[::] = np.random.randint(bottom, top,
                                                              size=(self.env_data.config.sheep_count, 2))
+        self.env_data.target[::] = np.random.randint(bottom, top, size=(2,1))
         cuda.memcpy_htod(self.env_data.device_arrays, self.env_data.host_arrays)
 
 

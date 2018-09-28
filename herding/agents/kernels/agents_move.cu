@@ -5,7 +5,11 @@ __global__ void move_agents(Arrays *arrays)
     {
         move_dogs(arrays);
     }
+
     __syncthreads();
 
-    move_sheep_$sheep_type(arrays);
+    if (threadIdx.x < SHEEP_COUNT)
+    {
+        move_sheep_$sheep_type(arrays);
+    }
 }
