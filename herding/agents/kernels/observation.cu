@@ -55,4 +55,28 @@ __global__ void get_observation(Arrays *arrays)
         }
     }
 
+    for (int i = 0; i < DOGS_COUNT; ++i)
+    {
+        if (i == dog_index)
+            continue;
+
+        float agent_pos_x = arrays->dogs_positions[i][0];
+        float agent_pos_y = arrays->dogs_positions[i][1];
+        float distance = get_distance(dog_pos_x, dog_pos_y, agent_pos_x, agent_pos_y);
+
+        if (distance < min_distance)
+        {
+            float angle = (atan2f(dog_pos_y - agent_pos_y, dog_pos_x - agent_pos_x) + PI);
+
+            if (fabsf(angle - ray_angle) < atanf(AGENT_RADIUS / distance))
+            {
+                min_distance = distance;
+                arrays->observation[dog_index][ray_index][0][0] = DOG_COLOR_R;
+                arrays->observation[dog_index][ray_index][0][1] = DOG_COLOR_G;
+                arrays->observation[dog_index][ray_index][0][2] = DOG_COLOR_B;
+                arrays->rays_lengths[dog_index][ray_index] = distance / RAY_LENGTH;
+            }
+        }
+    }
+
 }
