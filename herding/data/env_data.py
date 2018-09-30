@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import NamedTuple, Dict, List
 from pycuda.driver import DeviceAllocation
 import numpy as np
 
@@ -21,18 +21,8 @@ class Config(NamedTuple):
     skip_frames: int
     window_width: int
     window_height: int
-    dog_color_r: int
-    dog_color_g: int
-    dog_color_b: int
-    sheep_color_r: int
-    sheep_color_g: int
-    sheep_color_b: int
-    target_color_r: int
-    target_color_g: int
-    target_color_b: int
-    dog_bark_color_r: int
-    dog_bark_color_g: int
-    dog_bark_color_b: int
+    colors : Dict[str, List[float]]
+
 
 class EnvData(NamedTuple):
     config: Config

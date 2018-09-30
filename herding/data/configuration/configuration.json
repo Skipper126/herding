@@ -16,16 +16,10 @@
   "skip_frames" : 1,
   "window_width" : 1000,
   "window_height" : 800,
-  "dog_color_r" : 1,
-  "dog_color_g" : 0,
-  "dog_color_b" : 0,
-  "sheep_color_r" : 0,
-  "sheep_color_g" : 1,
-  "sheep_color_b" : 0,
-  "target_color_r" : 0,
-  "target_color_g" : 0,
-  "target_color_b" : 1,
-  "dog_bark_color_r" : 1,
-  "dog_bark_color_g" : 0,
-  "dog_bark_color_b" : 1
+  "colors" : {
+    "dog" : [1, 0, 0],
+    "sheep" : [0, 1, 0],
+    "target" : [0, 0, 1],
+    "barking_dog" : [1, 0, 1]
+  }
 }

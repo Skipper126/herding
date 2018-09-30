@@ -10,9 +10,7 @@ class Target(Geom):
         self.target_pos = env_data.target
         self.body = Part(rendering.make_circle(4, res=4))
         #target_color = get_color_tuple_from_config(env_data.config.target_color)
-        self.body.set_color(*(env_data.config.target_color_r,
-                              env_data.config.target_color_g,
-                              env_data.config.target_color_b,))
+        self.body.set_color(*(env_data.config.colors['target']))
 
     def get_parts(self):
         return [self.body.body]

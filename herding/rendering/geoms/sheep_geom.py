@@ -11,9 +11,7 @@ class SheepGeom(Geom):
         self.sheep_pos = env_data.sheep_positions[sheep_index]
         self.body = Part(rendering.make_circle(self.sheep_radius, res=8))
         #sheep_color = get_color_tuple_from_config(env_data.config.sheep_color)
-        self.body.set_color(*(env_data.config.sheep_color_r,
-                              env_data.config.sheep_color_g,
-                              env_data.config.sheep_color_b,))
+        self.body.set_color(*(env_data.config.colors['sheep']))
 
     def get_parts(self):
         return [self.body.body]

@@ -2,6 +2,15 @@
 #define SHEEP 1
 #define DEG2RAD 0.01745329252
 
+struct Color{
+    float r, g, b;
+};
+
+__device__ static Color dog_color = $dog_color;
+__device__ static Color sheep_color = $sheep_color;
+__device__ static Color target_color = $target_color;
+__device__ static Color barking_dog_color = $barking_dog_color;
+
 __device__ void clear_observation(Arrays *arrays)
 {
     for (int i = 0; i < 2; ++i)
@@ -47,9 +56,9 @@ __global__ void get_observation(Arrays *arrays)
             if (fabsf(angle - ray_angle) < atanf(AGENT_RADIUS / distance))
             {
                 min_distance = distance;
-                arrays->observation[dog_index][ray_index][0][0] = SHEEP_COLOR_R;
-                arrays->observation[dog_index][ray_index][0][1] = SHEEP_COLOR_G;
-                arrays->observation[dog_index][ray_index][0][2] = SHEEP_COLOR_B;
+                arrays->observation[dog_index][ray_index][0][0] = sheep_color.r;
+                arrays->observation[dog_index][ray_index][0][1] = sheep_color.g;
+                arrays->observation[dog_index][ray_index][0][2] = sheep_color.b;
                 arrays->rays_lengths[dog_index][ray_index] = distance / RAY_LENGTH;
             }
         }
@@ -71,9 +80,9 @@ __global__ void get_observation(Arrays *arrays)
             if (fabsf(angle - ray_angle) < atanf(AGENT_RADIUS / distance))
             {
                 min_distance = distance;
-                arrays->observation[dog_index][ray_index][0][0] = DOG_COLOR_R;
-                arrays->observation[dog_index][ray_index][0][1] = DOG_COLOR_G;
-                arrays->observation[dog_index][ray_index][0][2] = DOG_COLOR_B;
+                arrays->observation[dog_index][ray_index][0][0] = dog_color.r;
+                arrays->observation[dog_index][ray_index][0][1] = dog_color.g;
+                arrays->observation[dog_index][ray_index][0][2] = dog_color.b;
                 arrays->rays_lengths[dog_index][ray_index] = distance / RAY_LENGTH;
             }
         }

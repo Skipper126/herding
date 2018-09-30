@@ -17,9 +17,7 @@ class DogGeom(Geom):
 
         self.body = Part(rendering.make_circle(self.dog_radius, res=8))
         #dog_color = get_color_tuple_from_config(env_data.config.dog_color)
-        self.body.set_color(*(env_data.config.dog_color_r,
-                              env_data.config.dog_color_g,
-                              env_data.config.dog_color_b,))
+        self.body.set_color(*(env_data.config.colors['dog']))
         self.rays = []
         for _ in range(self.rays_count):
             self.rays.append(Part(rendering.Line((0, 0), (self.ray_length, 0))))

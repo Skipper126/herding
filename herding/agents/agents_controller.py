@@ -1,6 +1,6 @@
 from herding import cuda, data
+from herding.agents.factory import get_device_module
 import numpy as np
-import os
 
 
 class AgentsController:
@@ -20,7 +20,7 @@ class AgentsController:
         self.device_rand_values = env_data.device_rand_values
         self.device_action = env_data.device_action
 
-        self.module = self._get_device_module(env_data)
+        self.module = get_device_module(env_data)
         self.device_move_agents = self.module.get_function('move_agents')
         self.device_get_observation = self.module.get_function('get_observation')
 
@@ -44,24 +44,14 @@ class AgentsController:
         cuda.memcpy_htod(self.device_rand_values, self.rand_values)
 
     @staticmethod
-    def _get_device_module(env_data):
-        gpu_env_data_header_path = data.get_env_data_header_path()
-        kernels_dir = os.path.join(os.path.dirname(__file__), 'kernels')
-        module = cuda.compile_files(header_files=[gpu_env_data_header_path,
-                                                  os.path.join(kernels_dir, 'declarations.cuh')],
-                                    files=[os.path.join(kernels_dir, 'agents_move.cu'),
-                                           os.path.join(kernels_dir, 'observation.cu'),
-                                           os.path.join(kernels_dir, 'sheep_simple_move.cu'),
-                                           os.path.join(kernels_dir, 'sheep_complex_move.cu'),
-                                           os.path.join(kernels_dir, 'dogs_move.cu')],
-                                    template=env_data.config._asdict())
-
-        return module
-
-    @staticmethod
     def _get_thread_count(env_data):
         return max(env_data.config.dogs_count, env_data.config.sheep_count)
 
     @staticmethod
     def _convert_action_input(action):
-        return np.array(list(action), dtype=np.float32)
+        if type(action) is np.ndarray:
+            return action
+        else:
+            return np.array(list(action), dtype=np.float32)
+
+
