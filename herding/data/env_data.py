@@ -26,21 +26,29 @@ class Config(NamedTuple):
 
 class EnvData(NamedTuple):
     config: Config
+
     host_arrays: np.ndarray
+    layout_arrays: np.ndarray
+    reward_arrays: np.ndarray
+    agents_controller_arrays: np.ndarray
+    agents_controller_arrays_input
+
     dogs_positions: np.ndarray
-    sheep_positions: np.ndarray
-    observation: np.ndarray
-    rays_lengths: np.ndarray
     dogs_rotations: np.ndarray
-    rand_values: np.ndarray
+    sheep_positions: np.ndarray
     target: np.ndarray
+    observation: np.ndarray
 
     device_arrays: DeviceAllocation
+
     device_dogs_positions: int
-    device_sheep_positions: int
-    device_observation: int
-    device_rays_lengths: int
     device_dogs_rotations: int
-    device_rand_values: int
+    device_sheep_positions: int
     device_target: int
+    device_observation: int
     device_action: int
+    device_rand_values: int
+
+    device_rays_lengths: int
+    device_rays_angles: int
+

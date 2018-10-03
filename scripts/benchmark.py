@@ -15,6 +15,17 @@ class BenchmarkParams(NamedTuple):
     single_benchmark_max_time = 10
     benchmark_iterations = 1000
 
+def run_benchmark(iterations, **env_params):
+    env = Herding(**env_params)
+    dogs_count = env.env_data.config.dogs_count
+    env.reset()
+    start_time = time.time()
+    for i in range(iterations):
+        env.step(np.random.rand(dogs_count, 3).astype(np.float32))
+    end_time = time.time()
+    result = end_time - start_time
+    print(result)
+
 
 def run_benchmarks(params: BenchmarkParams = BenchmarkParams(), log_dir:str = None, show_plot=False):
     dogs_counts = list(range(params.dogs_min, params.dogs_max, params.dogs_step))

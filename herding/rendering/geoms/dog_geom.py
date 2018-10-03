@@ -20,7 +20,7 @@ class DogGeom(Geom):
         self.body.set_color(*(env_data.config.colors['dog']))
         self.rays = []
         for _ in range(self.rays_count):
-            self.rays.append(Part(rendering.Line((0, 0), (self.ray_length, 0))))
+            self.rays.append(Part(rendering.Line((0, 0), (self.ray_length - self.dog_radius, 0))))
 
     def get_parts(self):
         parts = [self.body.body]
@@ -35,7 +35,7 @@ class DogGeom(Geom):
             color = tuple(self.dog_observation[i][0])
             ray.set_color(*color)
             # TODO check the ray_radian
-            rot = self.dog_rotation + (i / 128) * math.pi# - self.object.ray_radian[i]
+            rot = self.dog_rotation + (i / self.rays_count) * math.pi
             ray.set_rotation(rot)
             x = math.cos(rot) * self.dog_radius
             y = math.sin(rot) * self.dog_radius

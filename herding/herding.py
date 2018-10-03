@@ -20,8 +20,7 @@ class Herding(gym.Env):
         self.viewer = None
 
     def step(self, action):
-        self.agents_controller.move_agents(action)
-        state = self.agents_controller.get_observation()
+        state =self.agents_controller.act(action)
         reward = self.reward_counter.get_reward()
         is_done = self.reward_counter.is_done()
 

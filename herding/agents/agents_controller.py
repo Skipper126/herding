@@ -24,11 +24,14 @@ class AgentsController:
         self.device_move_agents = self.module.get_function('move_agents')
         self.device_get_observation = self.module.get_function('get_observation')
 
-    def move_agents(self, action):
+    def act(self, action) -> np.ndarray:
         cuda.memcpy_htod(self.device_action, self._convert_action_input(action))
-        self._fill_rand_values()
+        #self._fill_rand_values()
         self.device_move_agents(self.device_arrays, block=(self.thread_count, 1, 1))
+        self.device_get_observation(self.device_arrays, block=(self.dogs_count, self.rays_count, 1))
         cuda.memcpy_dtoh(self.host_arrays, self.device_arrays)
+
+        return self.observation
 
     def get_observation(self) -> np.ndarray:
         self.device_get_observation(self.device_arrays, block=(self.dogs_count, self.rays_count, 1))
