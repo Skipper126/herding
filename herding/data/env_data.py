@@ -21,25 +21,22 @@ class Config(NamedTuple):
     skip_frames: int
     window_width: int
     window_height: int
-    colors : Dict[str, List[float]]
+    channels_count: int
 
 
 class EnvData(NamedTuple):
     config: Config
 
-    host_arrays: np.ndarray
-    layout_arrays: np.ndarray
-    reward_arrays: np.ndarray
-    agents_controller_arrays: np.ndarray
-    agents_controller_arrays_input
+    host_buffer: np.ndarray
+    device_buffer: DeviceAllocation
 
     dogs_positions: np.ndarray
     dogs_rotations: np.ndarray
     sheep_positions: np.ndarray
     target: np.ndarray
     observation: np.ndarray
-
-    device_arrays: DeviceAllocation
+    action: np.ndarray
+    rand_values: np.ndarray
 
     device_dogs_positions: int
     device_dogs_rotations: int
@@ -48,7 +45,5 @@ class EnvData(NamedTuple):
     device_observation: int
     device_action: int
     device_rand_values: int
-
     device_rays_lengths: int
-    device_rays_angles: int
 

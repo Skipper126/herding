@@ -2,6 +2,7 @@ import numpy as np
 from herding.data.factory.info import get_arrays_info
 from herding import cuda
 
+
 def get_host_arrays(arrays_shapes):
     shared_arrays_info = get_arrays_info(arrays_shapes['shared'])
     shared_arrays_buffer = cuda.pagelocked_host_malloc(shared_arrays_info['total_size'])
@@ -10,7 +11,7 @@ def get_host_arrays(arrays_shapes):
     host_arrays_buffer = np.empty((host_arrays_info['total_size'],), dtype=np.float32)
 
     host_arrays = {
-        'host_arrays': shared_arrays_buffer,
+        'host_buffer': shared_arrays_buffer,
         **_get_arrays(shared_arrays_info['arrays'], shared_arrays_buffer),
         **_get_arrays(host_arrays_info['arrays'], host_arrays_buffer)
     }

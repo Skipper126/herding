@@ -8,17 +8,17 @@
 #define RAYS_COUNT $rays_count
 #define RAY_LENGTH $ray_length
 #define FIELD_OF_VIEW $field_of_view
+#define CHANNELS_COUNT $channels_count
 
 #define PI 3.14159
 
 struct Arrays {
     float dogs_positions[DOGS_COUNT][2];
-    float sheep_positions[SHEEP_COUNT][2];
-    float observation[DOGS_COUNT][RAYS_COUNT][2][3];
-    float rays_lengths[DOGS_COUNT][RAYS_COUNT];
     float dogs_rotations[DOGS_COUNT];
-    float rand_values[SHEEP_COUNT];
+    float sheep_positions[SHEEP_COUNT][2];
     float target[2];
+    float observation[DOGS_COUNT][RAYS_COUNT][CHANNELS_COUNT];
     float action[DOGS_COUNT][3];
-
+    float rand_values[SHEEP_COUNT];
+    float rays_lengths[DOGS_COUNT][RAYS_COUNT];
 };

@@ -4,6 +4,7 @@ from typing import Dict, Tuple
 from herding.data.env_data import Config
 from string import Template
 
+
 def get_default_configuration() -> Dict:
     config = {}
     conf_path = os.path.join(os.path.dirname(__file__), 'configuration.json')
@@ -12,6 +13,7 @@ def get_default_configuration() -> Dict:
         config.update(json_config)
 
     return config
+
 
 def get_arrays_shapes(config: Config) -> Dict:
 
@@ -22,9 +24,3 @@ def get_arrays_shapes(config: Config) -> Dict:
     arrays_shapes = json.loads(content)
 
     return arrays_shapes
-
-def get_color_tuple_from_config(config_color: str) -> Tuple[int]:
-    striped_str = config_color.replace('{', '').replace('}', '')
-    num_tuple = tuple([int(color) for color in striped_str.split(',')])
-
-    return num_tuple

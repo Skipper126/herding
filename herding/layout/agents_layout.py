@@ -8,6 +8,10 @@ class AgentsLayout:
     def __init__(self, env_data: data.EnvData):
         self.env_data = env_data
         self.set_up_function = self._random
+        self.layout_buffer: data.MemoryBuffer = data.get_memory_buffer(env_data, [
+            'sheep_positions',
+            'target'
+        ])
 
     def set_up_agents(self):
         # TODO
@@ -17,13 +21,13 @@ class AgentsLayout:
         bottom = 50
         top = 600
 
-        self.env_data.dogs_positions[::] = np.random.randint(bottom, top,
-                                                            size=(self.env_data.config.dogs_count, 2))
-        self.env_data.dogs_rotations[::] = 0
-        self.env_data.sheep_positions[::] = np.random.randint(bottom, top,
-                                                             size=(self.env_data.config.sheep_count, 2))
-        self.env_data.target[::] = np.random.randint(bottom, top, size=(2,1))
-        cuda.memcpy_htod(self.env_data.device_arrays, self.env_data.host_arrays)
+        np.copyto(self.env_data.dogs_positions,
+                  np.random.randint(bottom, top, size=(self.env_data.config.dogs_count, 2)))
+        self.env_data.dogs_rotations[:] = 0
+        np.copyto(self.env_data.sheep_positions,
+                  np.random.randint(bottom, top, size=(self.env_data.config.sheep_count, 2)))
+        np.copyto(self.env_data.target, np.random.randint(bottom, top, size=(2,1)))
+        self.layout_buffer.sync_htod()
 
 
     # TODO

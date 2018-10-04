@@ -12,7 +12,7 @@ def get_device_arrays(arrays_shapes):
     arrays_buffer = int(arrays_device_allocation)
 
     device_arrays = {
-        'device_arrays': arrays_device_allocation
+        'device_buffer': arrays_device_allocation
     }
     for array, info in arrays_info['arrays'].items():
             device_arrays['device_' + array] = arrays_buffer + (info['offset'] * 4)

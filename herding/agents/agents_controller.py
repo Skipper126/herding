@@ -1,5 +1,5 @@
 from herding import cuda, data
-from herding.agents.factory import get_device_module
+from herding.agents import factory
 import numpy as np
 
 
@@ -9,33 +9,32 @@ class AgentsController:
         self.dogs_count = env_data.config.dogs_count
         self.rays_count = env_data.config.rays_count
         self.sheep_count = env_data.config.sheep_count
-        self.thread_count = self._get_thread_count(env_data)
+        self.agents_move_thread_count = factory.get_agents_move_thread_count(env_data)
 
-        self.host_arrays = env_data.host_arrays
+        self.input_buffer: data.MemoryBuffer = factory.get_input_memory_buffer(env_data)
+        self.observation_buffer: data.MemoryBuffer = factory.get_observation_memory_buffer(env_data)
         self.observation = env_data.observation
         self.rand_values = env_data.rand_values
+        self.action = env_data.action
 
-        self.device_arrays = env_data.device_arrays
-        self.device_observation = env_data.device_observation
-        self.device_rand_values = env_data.device_rand_values
-        self.device_action = env_data.device_action
-
-        self.module = get_device_module(env_data)
+        self.device_buffer = env_data.device_buffer
+        self.module = factory.get_device_module(env_data)
         self.device_move_agents = self.module.get_function('move_agents')
         self.device_get_observation = self.module.get_function('get_observation')
 
     def act(self, action) -> np.ndarray:
-        cuda.memcpy_htod(self.device_action, self._convert_action_input(action))
-        #self._fill_rand_values()
-        self.device_move_agents(self.device_arrays, block=(self.thread_count, 1, 1))
-        self.device_get_observation(self.device_arrays, block=(self.dogs_count, self.rays_count, 1))
-        cuda.memcpy_dtoh(self.host_arrays, self.device_arrays)
+        self._convert_action_input(action)
+        #self._fill_rand_values() TODO
+        self.input_buffer.sync_htod()
+        self.device_move_agents(self.device_buffer, block=(self.agents_move_thread_count, 1, 1))
+        self.device_get_observation(self.device_buffer, block=(self.dogs_count, self.rays_count, 1))
+        self.observation_buffer.sync_dtoh()
 
         return self.observation
 
     def get_observation(self) -> np.ndarray:
-        self.device_get_observation(self.device_arrays, block=(self.dogs_count, self.rays_count, 1))
-        cuda.memcpy_dtoh(self.host_arrays, self.device_arrays)
+        self.device_get_observation(self.device_buffer, block=(self.dogs_count, self.rays_count, 1))
+        self.observation_buffer.sync_dtoh()
 
         return self.observation
 
@@ -43,18 +42,14 @@ class AgentsController:
         pass
 
     def _fill_rand_values(self):
-        self.rand_values[:] = np.random.rand(self.sheep_count, 1)
-        cuda.memcpy_htod(self.device_rand_values, self.rand_values)
+        np.copyto(self.rand_values, np.random.rand(*self.rand_values.shape))
 
-    @staticmethod
-    def _get_thread_count(env_data):
-        return max(env_data.config.dogs_count, env_data.config.sheep_count)
-
-    @staticmethod
-    def _convert_action_input(action):
+    def _convert_action_input(self, action):
+        converted_action = None
         if type(action) is np.ndarray:
-            return action
+            converted_action = action
         else:
-            return np.array(list(action), dtype=np.float32)
+            converted_action = np.array(list(action), dtype=np.float32)
+        np.copyto(self.action, converted_action)
 
 

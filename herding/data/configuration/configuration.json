@@ -16,10 +16,5 @@
   "skip_frames" : 1,
   "window_width" : 1000,
   "window_height" : 800,
-  "colors" : {
-    "dog" : [1, 0, 0],
-    "sheep" : [0, 1, 0],
-    "target" : [0, 0, 1],
-    "barking_dog" : [1, 0, 1]
-  }
+  "channels_count": 3
 }

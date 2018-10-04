@@ -1,16 +1,16 @@
 {
   "shared" : {
     "dogs_positions": [$dogs_count, 2],
-    "sheep_positions": [$sheep_count, 2],
-    "observation": [$dogs_count, $rays_count, 2, 3],
-    "rays_lengths": [$dogs_count, $rays_count],
     "dogs_rotations": [$dogs_count, 1],
+    "sheep_positions": [$sheep_count, 2],
+    "target": [2, 1],
+    "observation": [$dogs_count, $rays_count, $channels_count],
+    "rays_lengths": [$dogs_count, $rays_count],
     "rand_values": [$sheep_count, 1],
-    "target": [2, 1]
+    "action" : [$dogs_count, 3]
   },
   "host" : {
   },
   "device" : {
-    "action" : [$dogs_count, 3]
   }
 }

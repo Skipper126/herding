@@ -1,6 +1,18 @@
 import numpy as np
 
 
+"""
+arrays_info: {
+    total_size,
+    arrays[array_name]: {
+        shape,
+        size,
+        offset
+    }
+}
+"""
+
+
 def get_arrays_info(arrays_shapes):
     arrays_sizes = _get_arrays_sizes(arrays_shapes)
     arrays_offsets = _get_arrays_offsets(arrays_sizes)
