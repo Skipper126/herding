@@ -45,7 +45,6 @@ class AgentsController:
         np.copyto(self.rand_values, np.random.rand(*self.rand_values.shape))
 
     def _convert_action_input(self, action):
-        converted_action = None
         if type(action) is np.ndarray:
             converted_action = action
         else:

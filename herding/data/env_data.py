@@ -30,6 +30,7 @@ class EnvData(NamedTuple):
     host_buffer: np.ndarray
     device_buffer: DeviceAllocation
 
+    rays_lengths: np.ndarray
     dogs_positions: np.ndarray
     dogs_rotations: np.ndarray
     sheep_positions: np.ndarray
@@ -38,6 +39,7 @@ class EnvData(NamedTuple):
     action: np.ndarray
     rand_values: np.ndarray
 
+    device_rays_lengths: int
     device_dogs_positions: int
     device_dogs_rotations: int
     device_sheep_positions: int
@@ -45,5 +47,5 @@ class EnvData(NamedTuple):
     device_observation: int
     device_action: int
     device_rand_values: int
-    device_rays_lengths: int
+
 

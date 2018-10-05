@@ -1,10 +1,13 @@
 import math
-
+from herding import data
 
 class RewardCounter:
 
-    def __init__(self, env_data):
-        pass
+    def __init__(self, env_data: data.EnvData):
+        self.memory_buffer = data.get_memory_buffer(env_data, [
+            'sheep_positions',
+            'target'
+        ])
         # self.herd_centre_point = env.herd_centre_point
         #
         # self.sheep_list = env.sheep_list

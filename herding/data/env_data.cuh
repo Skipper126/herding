@@ -13,6 +13,7 @@
 #define PI 3.14159
 
 struct Arrays {
+    float rays_lengths[DOGS_COUNT][RAYS_COUNT];
     float dogs_positions[DOGS_COUNT][2];
     float dogs_rotations[DOGS_COUNT];
     float sheep_positions[SHEEP_COUNT][2];
@@ -20,5 +21,4 @@ struct Arrays {
     float observation[DOGS_COUNT][RAYS_COUNT][CHANNELS_COUNT];
     float action[DOGS_COUNT][3];
     float rand_values[SHEEP_COUNT];
-    float rays_lengths[DOGS_COUNT][RAYS_COUNT];
 };

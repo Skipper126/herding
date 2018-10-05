@@ -42,6 +42,8 @@ def _get_offset_and_count(env_data, start_index, end_index):
         else:
             count += array.size
         index += 1
+        if index == end_index:
+            break
 
     return offset, count
 
@@ -80,6 +82,6 @@ def _get_env_data_array_index(env_data_names, array_name):
 
 def _get_arrays_names_list_from_env_data(env_data):
     arrays_names = []
-    for key, value in env_data.config._asdict():
+    for key, value in env_data._asdict():
         arrays_names.append(key)
     return arrays_names

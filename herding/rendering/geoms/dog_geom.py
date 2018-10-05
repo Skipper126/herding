@@ -1,26 +1,24 @@
 from .geom import *
 from gym.envs.classic_control import rendering
-from herding.data import get_color_tuple_from_config
 import math
 
 
 class DogGeom(Geom):
 
     def __init__(self, env_data, dog_index):
-        self.dog_radius = env_data.config.agent_radius
+        self.agent_radius = env_data.config.agent_radius
         self.rays_count = env_data.config.rays_count
         self.ray_length = env_data.config.ray_length
-        self.dog_pos = env_data.dogs_positions[dog_index]
-        self.dog_rotation = env_data.dogs_rotations[dog_index]
-        self.dog_rays_lengths = env_data.rays_lengths[dog_index]
-        self.dog_observation = env_data.observation[dog_index]
+        self.position = env_data.dogs_positions[dog_index]
+        self.rotation = env_data.dogs_rotations[dog_index]
+        self.rays_lengths = env_data.rays_lengths[dog_index]
+        self.observation = env_data.observation[dog_index]
 
-        self.body = Part(rendering.make_circle(self.dog_radius, res=8))
-        #dog_color = get_color_tuple_from_config(env_data.config.dog_color)
-        self.body.set_color(*(env_data.config.colors['dog']))
+        self.body = Part(rendering.make_circle(self.agent_radius, res=8))
+        self.body.set_color(0.7, 0.1, 0.2)
         self.rays = []
         for _ in range(self.rays_count):
-            self.rays.append(Part(rendering.Line((0, 0), (self.ray_length - self.dog_radius, 0))))
+            self.rays.append(Part(rendering.Line((0, 0), (self.ray_length - self.agent_radius, 0))))
 
     def get_parts(self):
         parts = [self.body.body]
@@ -29,14 +27,14 @@ class DogGeom(Geom):
         return parts
 
     def update(self):
-        self.body.set_pos(self.dog_pos[0], self.dog_pos[1])
+        self.body.set_pos(self.position[0], self.position[1])
         for i, ray in enumerate(self.rays):
-            ray.set_scale(self.dog_rays_lengths[i], 0)
-            color = tuple(self.dog_observation[i][0])
+            ray.set_scale(self.rays_lengths[i], 0)
+            color = tuple(self.observation[i][0])
             ray.set_color(*color)
             # TODO check the ray_radian
-            rot = self.dog_rotation + (i / self.rays_count) * math.pi
+            rot = self.rotation + (i / self.rays_count) * math.pi
             ray.set_rotation(rot)
-            x = math.cos(rot) * self.dog_radius
-            y = math.sin(rot) * self.dog_radius
-            ray.set_pos(self.dog_pos[0] + x, self.dog_pos[1] + y)
+            x = math.cos(rot) * self.agent_radius
+            y = math.sin(rot) * self.agent_radius
+            ray.set_pos(self.position[0] + x, self.position[1] + y)

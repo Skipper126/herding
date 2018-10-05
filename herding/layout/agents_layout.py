@@ -9,6 +9,8 @@ class AgentsLayout:
         self.env_data = env_data
         self.set_up_function = self._random
         self.layout_buffer: data.MemoryBuffer = data.get_memory_buffer(env_data, [
+            'dogs_positions',
+            'dogs_rotations',
             'sheep_positions',
             'target'
         ])

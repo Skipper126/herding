@@ -10,7 +10,13 @@ class Renderer:
         self.window_height = env_data.config.window_height
         self.geom_list = self._init_render_objects(env_data)
         self.viewer = rendering.Viewer(self.window_width, self.window_height)
-
+        self.memory_buffer = data.get_memory_buffer(env_data, [
+            'rays_lengths',
+            'dogs_positions',
+            'dogs_rotations',
+            'sheep_positions',
+            'target'
+        ])
         for geom in self.geom_list:
             self.viewer.geoms.extend(geom.get_parts())
 
@@ -31,6 +37,7 @@ class Renderer:
         return geom_list
 
     def render(self):
+        self.memory_buffer.sync_dtoh()
         for geom in self.geom_list:
             geom.update()
 
