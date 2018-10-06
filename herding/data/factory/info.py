@@ -1,67 +1,29 @@
 import numpy as np
-from typing import NamedTuple, List
+from typing import NamedTuple, List, Dict
 
-"""
-arrays_info: {
-    total_size,
-    arrays[array_name]: {
-        shape,
-        size,
-        offset
-    }
-}
-"""
+
 class ArrayInfo(NamedTuple):
+    name: str
     shape: List[int]
     size: int
     offset: int
 
+def get_arrays_info(arrays_shapes: Dict[str, List[int]]) -> List[ArrayInfo]:
 
-class ArraysInfo(NamedTuple):
-    host_arrays: List[ArrayInfo]
-    device_arrays: List[ArrayInfo]
-
-def get_arrays_info(arrays_shapes):
-    arrays_sizes = _get_arrays_sizes(arrays_shapes)
-    arrays_offsets = _get_arrays_offsets(arrays_sizes)
-    arrays_total_size = _get_arrays_total_size(arrays_sizes)
-
-    arrays = {}
-    for key, _ in arrays_shapes.items():
-        arrays[key] = {
-            'shape': arrays_shapes[key],
-            'size': arrays_sizes[key],
-            'offset': arrays_offsets[key],
-        }
-
-    arrays_info = {
-        'total_size': arrays_total_size,
-        'arrays': arrays
-    }
+    arrays_info = []
+    offset = 0
+    for name, shape in arrays_shapes.items():
+        size = _get_array_size(shape)
+        arrays_info.append(ArrayInfo(
+            name=name,
+            shape=shape,
+            size=size,
+            offset=offset,
+        ))
+        offset += size * 4
 
     return arrays_info
 
 
-def _get_arrays_sizes(shapes):
-    sizes = {}
-
-    for key, value in shapes.items():
-        sizes[key] = np.prod(np.array(list(value)))
-
-    return sizes
-
-
-def _get_arrays_offsets(sizes):
-    offset = 0
-    info = {}
-
-    for key, value in sizes.items():
-        info[key] = offset
-        offset += value
-
-    return info
-
-
-def _get_arrays_total_size(sizes):
-
-    return sum(sizes.values())
+def _get_array_size(shape):
+    return int(np.prod(np.array(list(shape))))

@@ -1,31 +1,28 @@
 import numpy as np
 from herding.data.factory.info import get_arrays_info
+from herding.data.env_data import HostArrays
 from herding import cuda
 
 
 def get_host_arrays(arrays_shapes):
-    shared_arrays_info = get_arrays_info(arrays_shapes['shared'])
-    shared_arrays_buffer = cuda.pagelocked_host_malloc(shared_arrays_info['total_size'])
+    arrays_info = get_arrays_info({
+        **arrays_shapes['shared'],
+        **arrays_shapes['host']
+    })
+    total_size = sum(array_info.size for array_info in arrays_info)
+    arrays_buffer = cuda.pagelocked_host_malloc(total_size, np.float32)
 
-    host_arrays_info = get_arrays_info(arrays_shapes['host'])
-    host_arrays_buffer = np.empty((host_arrays_info['total_size'],), dtype=np.float32)
-
-    host_arrays = {
-        'host_buffer': shared_arrays_buffer,
-        **_get_arrays(shared_arrays_info['arrays'], shared_arrays_buffer),
-        **_get_arrays(host_arrays_info['arrays'], host_arrays_buffer)
-    }
-
-    return host_arrays
+    host_arrays = HostArrays(**_get_arrays(arrays_buffer, arrays_info))
+    return arrays_buffer, host_arrays
 
 
-def _get_arrays(info, buffer):
+def _get_arrays(buffer, arrays_info):
     arrays = {}
-    for array, info in info.items():
-        if array is not 'action':
-            arrays[array] = np.frombuffer(buffer,
-                         dtype=np.float32,
-                         offset=info['offset'] * 4,
-                         count=info['size']).reshape(info['shape'])
+    for array_info in arrays_info:
+        arrays[array_info.name] = \
+            np.frombuffer(buffer,
+                          dtype=np.float32,
+                          offset=array_info.offset,
+                          count=array_info.size).reshape(array_info.shape)
 
     return arrays

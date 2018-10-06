@@ -18,75 +18,21 @@ class MemoryBuffer:
 
 def get_memory_buffer(env_data: EnvData, arrays_names: List[str]) -> MemoryBuffer:
 
+    host_arrays = env_data.host_arrays._asdict()
+    device_arrays = env_data.device_arrays._asdict()
 
+    indexes = []
+    for name in arrays_names:
+        indexes.append(list(host_arrays.keys()).index(arrays_names[0]))
+    indexes.sort()
+    if indexes != list(range(indexes[0],indexes[-1])):
+        raise Exception('Arrays don\'t match host arrays.')
 
-    env_data_names = _get_arrays_names_list_from_env_data(env_data)
-    array_index_in_env_data = _get_env_data_array_index(env_data_names, arrays_names[0])
+    size = sum((list(host_arrays.values()))[index].size for index in indexes)
+    offset = sum((list(host_arrays.values()))[index].size for index in range(indexes[0])) * 4
 
-    if _check_arrays_set(env_data_names, arrays_names, array_index_in_env_data) is False:
-        raise Exception('Arrays don\'t fit env_data.')
-
-    end_index = array_index_in_env_data + len(arrays_names) - 1
-    offset, count = _get_offset_and_count(env_data, array_index_in_env_data, end_index)
-
-    host_buffer = np.frombuffer(env_data.host_buffer, np.float32, count, offset)
-    device_buffer = getattr(env_data, 'device_' + arrays_names[-1])
+    host_buffer = np.frombuffer(env_data.host_buffer, np.float32, size, offset)
+    device_buffer = device_arrays[arrays_names[0]]
     buffer = MemoryBuffer(host_buffer, device_buffer)
 
     return buffer
-
-def _get_offset_and_count(env_data, start_index, end_index):
-    offset = 0
-    count = 0
-    index = 0
-    for _, array in env_data._asdict().items():
-        if type(array) is not np.ndarray:
-            continue
-        if index < start_index:
-            offset += array.size * 4
-        else:
-            count += array.size
-        index += 1
-        if index == end_index:
-            break
-
-    return offset, count
-
-
-def _get_arrays_from_names(env_data, packet_names):
-    arrays = []
-    for packet_name in packet_names:
-        arrays.append(getattr(env_data, packet_name))
-
-    return arrays
-
-
-def _check_arrays_set(env_data_names, packet_names, array_index_in_env_data):
-    fits = True
-    for packet_name in packet_names:
-        if packet_name != env_data_names[array_index_in_env_data]:
-            fits = False
-            break
-        else:
-            array_index_in_env_data += 1
-
-    return fits
-
-
-def _get_env_data_array_index(env_data_names, array_name):
-    index = -1
-    for i in range(len(env_data_names)):
-        if env_data_names[i] == array_name:
-            index = i
-            break
-    if index == -1:
-        raise Exception('Array name not found in env_data.')
-
-    return index
-
-
-def _get_arrays_names_list_from_env_data(env_data):
-    arrays_names = []
-    for key, value in env_data._asdict().items():
-        arrays_names.append(key)
-    return arrays_names
