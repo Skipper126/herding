@@ -24,7 +24,7 @@ def run_benchmark(iterations, **env_params):
         env.step(np.random.rand(dogs_count, 3).astype(np.float32))
     end_time = time.time()
     result = end_time - start_time
-    print(result)
+    print(str(int(iterations / result)) + " iterations / s")
 
 
 def run_benchmarks(params: BenchmarkParams = BenchmarkParams(), log_dir:str = None, show_plot=False):
