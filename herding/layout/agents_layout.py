@@ -23,12 +23,12 @@ class AgentsLayout:
         bottom = 50
         top = 600
 
-        np.copyto(self.env_data.dogs_positions,
+        np.copyto(self.env_data.host_arrays.dogs_positions,
                   np.random.randint(bottom, top, size=(self.env_data.config.dogs_count, 2)))
-        self.env_data.dogs_rotations[:] = 0
-        np.copyto(self.env_data.sheep_positions,
+        self.env_data.host_arrays.dogs_rotations[:] = 0
+        np.copyto(self.env_data.host_arrays.sheep_positions,
                   np.random.randint(bottom, top, size=(self.env_data.config.sheep_count, 2)))
-        np.copyto(self.env_data.target, np.random.randint(bottom, top, size=(2,1)))
+        np.copyto(self.env_data.host_arrays.target, np.random.randint(bottom, top, size=(2,1)))
         self.layout_buffer.sync_htod()
 
 

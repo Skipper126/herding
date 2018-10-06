@@ -47,7 +47,7 @@ __global__ void get_observation(Arrays *arrays)
             if (fabsf(angle - ray_angle) < atanf(AGENT_RADIUS / distance))
             {
                 min_distance = distance;
-                arrays->observation[dog_index][ray_index][SHEEP] = 1
+                arrays->observation[dog_index][ray_index][SHEEP] = 1;
                 arrays->rays_lengths[dog_index][ray_index] = distance / RAY_LENGTH;
             }
         }
@@ -69,7 +69,7 @@ __global__ void get_observation(Arrays *arrays)
             if (fabsf(angle - ray_angle) < atanf(AGENT_RADIUS / distance))
             {
                 min_distance = distance;
-                arrays->observation[dog_index][ray_index][DOG] = 1
+                arrays->observation[dog_index][ray_index][DOG] = 1;
                 arrays->rays_lengths[dog_index][ray_index] = distance / RAY_LENGTH;
             }
         }

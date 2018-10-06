@@ -9,10 +9,10 @@ class DogGeom(Geom):
         self.agent_radius = env_data.config.agent_radius
         self.rays_count = env_data.config.rays_count
         self.ray_length = env_data.config.ray_length
-        self.position = env_data.dogs_positions[dog_index]
-        self.rotation = env_data.dogs_rotations[dog_index]
-        self.rays_lengths = env_data.rays_lengths[dog_index]
-        self.observation = env_data.observation[dog_index]
+        self.position = env_data.host_arrays.dogs_positions[dog_index]
+        self.rotation = env_data.host_arrays.dogs_rotations[dog_index]
+        self.rays_lengths = env_data.host_arrays.rays_lengths[dog_index]
+        self.observation = env_data.host_arrays.observation[dog_index]
 
         self.body = Part(rendering.make_circle(self.agent_radius, res=8))
         self.body.set_color(0.7, 0.1, 0.2)
@@ -30,7 +30,7 @@ class DogGeom(Geom):
         self.body.set_pos(self.position[0], self.position[1])
         for i, ray in enumerate(self.rays):
             ray.set_scale(self.rays_lengths[i], 0)
-            color = tuple(self.observation[i][0])
+            color = tuple(self.observation[i])
             ray.set_color(*color)
             # TODO check the ray_radian
             rot = self.rotation + (i / self.rays_count) * math.pi

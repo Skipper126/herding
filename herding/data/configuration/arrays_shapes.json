@@ -6,8 +6,8 @@
     "sheep_positions": [$sheep_count, 2],
     "target": [2, 1],
     "observation": [$dogs_count, $rays_count, $channels_count],
-    "rand_values": [$sheep_count, 1],
-    "action" : [$dogs_count, 3]
+    "action" : [$dogs_count, 3],
+    "rand_values": [$sheep_count, 1]
   },
   "host" : {
   },

@@ -12,12 +12,12 @@ def get_device_module(env_data):
                                        os.path.join(kernels_dir, 'sheep_simple_move.cu'),
                                        os.path.join(kernels_dir, 'sheep_complex_move.cu'),
                                        os.path.join(kernels_dir, 'dogs_move.cu')],
-                                template=_prepare_template(env_data.config._asdict()))
+                                template=env_data.config._asdict())
 
     return module
 
 def get_input_memory_buffer(env_data):
-    arrays = ['actions']
+    arrays = ['action']
     if env_data.config.sheep_type == 'complex':
         arrays.append('rand_values')
 
@@ -29,12 +29,3 @@ def get_observation_memory_buffer(env_data):
 
 def get_agents_move_thread_count(env_data):
     return max(env_data.config.dogs_count, env_data.config.sheep_count)
-
-def _prepare_template(config):
-    config.update({
-        "dog_color": str(config['colors']['dog']).replace('[', '{').replace(']','}'),
-        "sheep_color": str(config['colors']['sheep']).replace('[', '{').replace(']','}'),
-        "target_color": str(config['colors']['target']).replace('[', '{').replace(']','}'),
-        "barking_dog_color": str(config['colors']['barking_dog']).replace('[', '{').replace(']','}')
-    })
-    return config

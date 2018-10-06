@@ -13,9 +13,9 @@ class AgentsController:
 
         self.input_buffer: data.MemoryBuffer = factory.get_input_memory_buffer(env_data)
         self.observation_buffer: data.MemoryBuffer = factory.get_observation_memory_buffer(env_data)
-        self.observation = env_data.observation
-        self.rand_values = env_data.rand_values
-        self.action = env_data.action
+        self.observation = env_data.host_arrays.observation
+        self.rand_values = env_data.host_arrays.rand_values
+        self.action = env_data.host_arrays.action
 
         self.device_buffer = env_data.device_buffer
         self.module = factory.get_device_module(env_data)
@@ -50,5 +50,3 @@ class AgentsController:
         else:
             converted_action = np.array(list(action), dtype=np.float32)
         np.copyto(self.action, converted_action)
-
-

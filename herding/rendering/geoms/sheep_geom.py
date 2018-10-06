@@ -7,7 +7,7 @@ class SheepGeom(Geom):
 
     def __init__(self, env_data, sheep_index):
         self.sheep_radius = env_data.config.agent_radius
-        self.sheep_pos = env_data.sheep_positions[sheep_index]
+        self.sheep_pos = env_data.host_arrays.sheep_positions[sheep_index]
         self.body = Part(rendering.make_circle(self.sheep_radius, res=8))
         self.body.set_color(0.7, 0.7, 0.7)
 
