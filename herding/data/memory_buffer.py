@@ -17,6 +17,9 @@ class MemoryBuffer:
 
 
 def get_memory_buffer(env_data: EnvData, arrays_names: List[str]) -> MemoryBuffer:
+
+
+
     env_data_names = _get_arrays_names_list_from_env_data(env_data)
     array_index_in_env_data = _get_env_data_array_index(env_data_names, arrays_names[0])
 
@@ -37,6 +40,8 @@ def _get_offset_and_count(env_data, start_index, end_index):
     count = 0
     index = 0
     for _, array in env_data._asdict().items():
+        if type(array) is not np.ndarray:
+            continue
         if index < start_index:
             offset += array.size * 4
         else:
@@ -71,7 +76,7 @@ def _check_arrays_set(env_data_names, packet_names, array_index_in_env_data):
 def _get_env_data_array_index(env_data_names, array_name):
     index = -1
     for i in range(len(env_data_names)):
-        if env_data_names[i] == array_name[0]:
+        if env_data_names[i] == array_name:
             index = i
             break
     if index == -1:
@@ -82,6 +87,6 @@ def _get_env_data_array_index(env_data_names, array_name):
 
 def _get_arrays_names_list_from_env_data(env_data):
     arrays_names = []
-    for key, value in env_data._asdict():
+    for key, value in env_data._asdict().items():
         arrays_names.append(key)
     return arrays_names

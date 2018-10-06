@@ -1,5 +1,5 @@
 import numpy as np
-
+from typing import NamedTuple, List
 
 """
 arrays_info: {
@@ -11,7 +11,15 @@ arrays_info: {
     }
 }
 """
+class ArrayInfo(NamedTuple):
+    shape: List[int]
+    size: int
+    offset: int
 
+
+class ArraysInfo(NamedTuple):
+    host_arrays: List[ArrayInfo]
+    device_arrays: List[ArrayInfo]
 
 def get_arrays_info(arrays_shapes):
     arrays_sizes = _get_arrays_sizes(arrays_shapes)

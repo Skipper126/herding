@@ -23,13 +23,7 @@ class Config(NamedTuple):
     window_height: int
     channels_count: int
 
-
-class EnvData(NamedTuple):
-    config: Config
-
-    host_buffer: np.ndarray
-    device_buffer: DeviceAllocation
-
+class HostArrays(NamedTuple):
     rays_lengths: np.ndarray
     dogs_positions: np.ndarray
     dogs_rotations: np.ndarray
@@ -39,13 +33,19 @@ class EnvData(NamedTuple):
     action: np.ndarray
     rand_values: np.ndarray
 
-    device_rays_lengths: int
-    device_dogs_positions: int
-    device_dogs_rotations: int
-    device_sheep_positions: int
-    device_target: int
-    device_observation: int
-    device_action: int
-    device_rand_values: int
+class DeviceArrays(NamedTuple):
+    rays_lengths: int
+    dogs_positions: int
+    dogs_rotations: int
+    sheep_positions: int
+    target: int
+    observation: int
+    action: int
+    rand_values: int
 
-
+class EnvData(NamedTuple):
+    config: Config
+    host_buffer: np.ndarray
+    device_buffer: DeviceAllocation
+    host_arrays: HostArrays
+    device_arrays: DeviceArrays
