@@ -10,6 +10,7 @@ class Config(NamedTuple):
     sheep_type: str
     herd_target_radius: int
     rotation_mode: str
+    reward_type: str
     agent_radius: int
     max_movement_speed: int
     max_rotation_speed: int
@@ -31,7 +32,6 @@ class HostArrays(NamedTuple):
     target: np.ndarray
     observation: np.ndarray
     action: np.ndarray
-    rand_values: np.ndarray
 
 class DeviceArrays(NamedTuple):
     rays_lengths: int
@@ -41,7 +41,6 @@ class DeviceArrays(NamedTuple):
     target: int
     observation: int
     action: int
-    rand_values: int
 
 class EnvData(NamedTuple):
     config: Config

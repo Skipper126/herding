@@ -17,11 +17,7 @@ def get_device_module(env_data):
     return module
 
 def get_input_memory_buffer(env_data):
-    arrays = ['action']
-    if env_data.config.sheep_type == 'complex':
-        arrays.append('rand_values')
-
-    return data.get_memory_buffer(env_data, arrays)
+    return data.get_memory_buffer(env_data, ['action'])
 
 def get_observation_memory_buffer(env_data):
     return data.get_memory_buffer(env_data, ['observation'])

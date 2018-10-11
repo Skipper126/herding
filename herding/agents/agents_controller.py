@@ -14,7 +14,6 @@ class AgentsController:
         self.input_buffer: data.MemoryBuffer = factory.get_input_memory_buffer(env_data)
         self.observation_buffer: data.MemoryBuffer = factory.get_observation_memory_buffer(env_data)
         self.observation = env_data.host_arrays.observation
-        self.rand_values = env_data.host_arrays.rand_values
         self.action = env_data.host_arrays.action
 
         self.device_buffer = env_data.device_buffer
@@ -24,7 +23,6 @@ class AgentsController:
 
     def act(self, action) -> np.ndarray:
         self._convert_action_input(action)
-        #self._fill_rand_values() TODO
         self.input_buffer.sync_htod()
         self.device_move_agents(self.device_buffer, block=(self.agents_move_thread_count, 1, 1))
         self.device_get_observation(self.device_buffer, block=(self.dogs_count, self.rays_count, 1))
@@ -40,9 +38,6 @@ class AgentsController:
 
     def close(self):
         pass
-
-    def _fill_rand_values(self):
-        np.copyto(self.rand_values, np.random.rand(*self.rand_values.shape))
 
     def _convert_action_input(self, action):
         if type(action) is np.ndarray:

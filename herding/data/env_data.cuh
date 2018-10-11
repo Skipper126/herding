@@ -20,5 +20,4 @@ struct Arrays {
     float target[2];
     float observation[DOGS_COUNT][RAYS_COUNT][CHANNELS_COUNT];
     float action[DOGS_COUNT][3];
-    float rand_values[SHEEP_COUNT];
 };

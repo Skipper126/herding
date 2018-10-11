@@ -5,6 +5,7 @@
   "sheep_type" : "simple",
   "herd_target_radius" : 100,
   "rotation_mode" : "free",
+  "reward_type" : "furthest_sheep",
   "agent_radius" : 10,
   "max_movement_speed" : 5,
   "max_rotation_speed" : 90,

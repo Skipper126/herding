@@ -3,7 +3,7 @@ import numpy as np
 from herding.data import create_env_data
 from herding.agents import AgentsController
 from herding.layout import AgentsLayout
-from herding.reward import RewardCounter
+from herding.reward import create_reward_counter
 
 
 class Herding(gym.Env):
@@ -14,7 +14,7 @@ class Herding(gym.Env):
 
     def __init__(self, **params):
         self.env_data = create_env_data(params)
-        self.reward_counter = RewardCounter(self.env_data)
+        self.reward_counter = create_reward_counter(self.env_data)
         self.agents_controller = AgentsController(self.env_data)
         self.agents_layout = AgentsLayout(self.env_data)
         self.viewer = None
