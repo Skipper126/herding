@@ -75,4 +75,17 @@ __global__ void get_observation(Arrays *arrays)
         }
     }
 
+    float target_pos_x = arrays->target[0];
+    float target_pos_y = arrays->target[1];
+    float distance = get_distance(dog_pos_x, dog_pos_y, target_pos_x, target_pos_y);
+    if (distance < RAY_LENGTH)
+    {
+        float angle = (atan2f(dog_pos_y - target_pos_y, dog_pos_x - target_pos_x) + PI);
+
+        if (fabsf(angle - ray_angle) < atanf(AGENT_RADIUS / distance))
+        {
+            arrays->observation[dog_index][ray_index][TARGET] = 1;
+        }
+    }
+
 }

@@ -5,5 +5,8 @@ setup(
     version='0.0.1',
     install_requires=['gym', 'numpy', 'pycuda'],
     packages=[package for package in find_packages()
-              if package.startswith('herding')]
+              if package.startswith('herding')],
+    package_data={
+        '':['*.cu', '*.cuh', '*.json']
+    }
 )

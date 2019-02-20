@@ -32,7 +32,6 @@ class DogGeom(Geom):
             ray.set_scale(self.rays_lengths[i], 0)
             color = tuple(self.observation[i])
             ray.set_color(*color)
-            # TODO check the ray_radian
             rot = self.rotation + (i / self.rays_count) * math.pi
             ray.set_rotation(rot)
             x = math.cos(rot) * self.agent_radius
