@@ -1,5 +1,6 @@
-from typing import NamedTuple, Dict, List
-from pycuda.driver import DeviceAllocation
+from typing import NamedTuple
+import pyopencl as cl
+from herding.ocl import OpenCL
 import numpy as np
 
 
@@ -24,7 +25,8 @@ class Config(NamedTuple):
     window_height: int
     channels_count: int
 
-class HostArrays(NamedTuple):
+
+class Arrays(NamedTuple):
     rays_lengths: np.ndarray
     dogs_positions: np.ndarray
     dogs_rotations: np.ndarray
@@ -33,18 +35,10 @@ class HostArrays(NamedTuple):
     observation: np.ndarray
     action: np.ndarray
 
-class DeviceArrays(NamedTuple):
-    rays_lengths: int
-    dogs_positions: int
-    dogs_rotations: int
-    sheep_positions: int
-    target: int
-    observation: int
-    action: int
 
 class EnvData(NamedTuple):
     config: Config
+    arrays: Arrays
+    ocl: OpenCL
     host_buffer: np.ndarray
-    device_buffer: DeviceAllocation
-    host_arrays: HostArrays
-    device_arrays: DeviceArrays
+    device_buffer: cl.Buffer

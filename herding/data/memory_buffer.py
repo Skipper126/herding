@@ -3,6 +3,7 @@ from typing import List
 from herding.data import EnvData
 from herding import cuda
 
+
 class MemoryBuffer:
 
     def __init__(self, host_buffer, device_buffer):
