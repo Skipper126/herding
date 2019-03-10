@@ -17,7 +17,7 @@ def get_default_configuration() -> Dict:
 
 def get_arrays_shapes(config: Config) -> Dict:
 
-    path = os.path.join(os.path.dirname(__file__), 'arrays_shapes.json')
+    path = os.path.join(os.path.dirname(__file__), 'arrays.json')
     with open(path, 'r') as file:
         raw_content = file.read()
     content = Template(raw_content).substitute(config._asdict())

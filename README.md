@@ -2,12 +2,12 @@
 
 Installation
 ============
-### 1. Install pycuda
- https://wiki.tiker.net/PyCuda/Installation
+### 1. Install pyopencl
+https://wiki.tiker.net/PyOpenCL/Installation
 ### 2. Install herding package
 
 ```
-pip install -e <package_directory>
+pip install <package_directory>
 ```
 Running
 ============
