@@ -3,7 +3,8 @@
   "dogs_positions": [$dogs_count, 2],
   "dogs_rotations": [$dogs_count, 1],
   "sheep_positions": [$sheep_count, 2],
-  "target": [2, 1],
+  "target_position": [2, 1],
   "observation": [$dogs_count, $rays_count, $channels_count],
-  "action" : [$dogs_count, 3]
+  "action" : [$dogs_count, 3],
+  "seed" : [$entities_count]
 }

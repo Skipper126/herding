@@ -20,7 +20,10 @@ def get_arrays_shapes(config: Config) -> Dict:
     path = os.path.join(os.path.dirname(__file__), 'arrays.json')
     with open(path, 'r') as file:
         raw_content = file.read()
-    content = Template(raw_content).substitute(config._asdict())
+
+    config_dict = config._asdict()
+    config_dict['entities_count'] = config.dogs_count + config.sheep_count + 1
+    content = Template(raw_content).substitute(config_dict)
     arrays_shapes = json.loads(content)
 
     return arrays_shapes

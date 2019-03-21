@@ -1,26 +1,33 @@
 import pyopencl as cl
-from typing import List
 from herding.opencl import OpenCL
+from pathlib import Path
 
 
 class OpenClModule:
 
-    def __init__(self, ocl, prg, buffer):
+    def __init__(self, ocl, prg, function):
         self.queue = ocl.queue
         self.prg = prg
-        # assume only one kernel per module
-        self.kernel = prg.all_kernels()[0]
-        self.kernel.set_arg(0, buffer)
+        self.kernel = getattr(prg, function)
+        self.kernel.set_arg(0, ocl.buffer)
 
     def run(self, nd_range):
         cl.enqueue_nd_range_kernel(self.queue, self.kernel, nd_range, nd_range)
 
 
-def create_opencl_module(ocl: OpenCL, file: str, include_paths: List[str]) -> OpenClModule:
-    with open(file, 'r') as f:
+def create_module(ocl: OpenCL, file: str, function: str) -> OpenClModule:
+    project_root = _get_project_root_path()
+    with open(project_root + file, 'r') as f:
         source = f.read()
 
     prg = cl.Program(ocl.context, source).build(
-        options=['-I ' + path for path in include_paths]
+        options=['-I ' + project_root]
     )
-    return OpenClModule(ocl, prg, ocl.buffer)
+
+    return OpenClModule(ocl, prg, function)
+
+
+def _get_project_root_path():
+    file_path = Path(__file__)
+    # assume current file path is herding/opencl/opencl_module.py
+    return file_path.parent.parent.parent + '/'

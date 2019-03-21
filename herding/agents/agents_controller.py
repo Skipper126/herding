@@ -1,5 +1,4 @@
-from herding import cuda, data
-from herding.agents import factory
+from herding import opencl, data
 import numpy as np
 
 
@@ -9,39 +8,43 @@ class AgentsController:
         self.dogs_count = env_data.config.dogs_count
         self.rays_count = env_data.config.rays_count
         self.sheep_count = env_data.config.sheep_count
-        self.agents_move_thread_count = factory.get_agents_move_thread_count(env_data)
 
-        self.input_buffer: data.MemoryBuffer = factory.get_input_memory_buffer(env_data)
-        self.observation_buffer: data.MemoryBuffer = factory.get_observation_memory_buffer(env_data)
-        self.observation = env_data.host_arrays.observation
-        self.action = env_data.host_arrays.action
+        self.action_mapping = opencl.create_buffer_mapping(env_data, 'action')
+        self.observation_mapping = opencl.create_buffer_mapping(env_data, 'observation')
 
-        self.device_buffer = env_data.device_buffer
-        self.module = factory.get_device_module(env_data)
-        self.device_move_agents = self.module.get_function('move_agents')
-        self.device_get_observation = self.module.get_function('get_observation')
+        self.agents_move_kernel = opencl.create_module(env_data.ocl,
+                                                       'herding/agents/agents_move.cl',
+                                                       'move_agents')
+        self.observation_kernel = opencl.create_module(env_data.ocl,
+                                                       'herding/agents/observation.cl',
+                                                       'get_observation')
 
-    def act(self, action) -> np.ndarray:
-        self._convert_action_input(action)
-        self.input_buffer.sync_htod()
-        self.device_move_agents(self.device_buffer, block=(self.agents_move_thread_count, 1, 1))
-        self.device_get_observation(self.device_buffer, block=(self.dogs_count, self.rays_count, 1))
-        self.observation_buffer.sync_dtoh()
+        self.agents_move_workers = max(self.dogs_count, self.sheep_count)
 
-        return self.observation
+        # Observation is by default mapped to host memory.
+        # It is only unmapped in get_observation and mapped again.
+        self.observation_mapping.map_read()
+
+    def move_agents(self, action):
+        action_map = self.action_mapping.map_write()
+        input_action = self._sanitize_action_input(action)
+        np.copyto(action_map, input_action)
+        self.action_mapping.unmap()
+        self.agents_move_kernel.run(self.agents_move_workers)
 
     def get_observation(self) -> np.ndarray:
-        self.device_get_observation(self.device_buffer, block=(self.dogs_count, self.rays_count, 1))
-        self.observation_buffer.sync_dtoh()
+        self.observation_mapping.unmap()
+        self.observation_kernel.run(self.dogs_count * self.rays_count)
+        observation = self.observation_mapping.map_read()
 
-        return self.observation
+        return observation
 
     def close(self):
         pass
 
-    def _convert_action_input(self, action):
+    @staticmethod
+    def _sanitize_action_input(action):
         if type(action) is np.ndarray:
-            converted_action = action
+            return action
         else:
-            converted_action = np.array(list(action), dtype=np.float32)
-        np.copyto(self.action, converted_action)
+            return np.array(list(action), dtype=np.float32)
