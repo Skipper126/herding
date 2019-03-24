@@ -1,10 +1,11 @@
-from herding import opencl, data
+from herding import opencl
+from herding.data import EnvData
 import numpy as np
 
 
 class AgentsController:
 
-    def __init__(self, env_data: data.EnvData):
+    def __init__(self, env_data: EnvData):
         self.dogs_count = env_data.config.dogs_count
         self.rays_count = env_data.config.rays_count
         self.sheep_count = env_data.config.sheep_count
@@ -12,10 +13,10 @@ class AgentsController:
         self.action_mapping = opencl.create_buffer_mapping(env_data, 'action')
         self.observation_mapping = opencl.create_buffer_mapping(env_data, 'observation')
 
-        self.agents_move_kernel = opencl.create_module(env_data.ocl,
+        self.agents_move_kernel = opencl.create_module(env_data,
                                                        'herding/agents/agents_move.cl',
                                                        'move_agents')
-        self.observation_kernel = opencl.create_module(env_data.ocl,
+        self.observation_kernel = opencl.create_module(env_data,
                                                        'herding/agents/observation.cl',
                                                        'get_observation')
 

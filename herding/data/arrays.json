@@ -6,5 +6,6 @@
   "target_position": [2, 1],
   "observation": [$dogs_count, $rays_count, $channels_count],
   "action" : [$dogs_count, 3],
-  "seed" : [$entities_count]
+  "seed" : [$entities_count],
+  "common_output" : [1]
 }

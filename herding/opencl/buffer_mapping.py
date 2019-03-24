@@ -1,6 +1,6 @@
 import pyopencl as cl
 import numpy as np
-from herding.data import EnvData, ArrayInfo
+from herding.data.env_data import EnvData, ArrayInfo
 from typing import List
 
 

@@ -32,3 +32,7 @@ class AgentLayout:
     RANDOM = 'random'
     LAYOUT1 = 'layout_1'
     LAYOUT2 = 'layout_2'
+
+
+class RewardType:
+    FURTHEST_SHEEP = 'furthest_sheep'

@@ -1,12 +1,12 @@
-from herding import data
-from herding.reward import RewardCounter
+from herding.data import EnvData
 from herding.reward.furthest_sheep import FurthestSheepRewardCounter
-from typing import Dict
+from herding.reward import RewardCounter
 
 
-def create_reward_counter(env_data: data.EnvData) -> RewardCounter:
-    counters: Dict[str, RewardCounter] = {
-        'furthest_sheep': FurthestSheepRewardCounter
-    }
-    RewardCounterType = counters[env_data.config.reward_type]
-    return RewardCounterType(env_data)
+reward_counter_type = {
+    'furthest_sheep': FurthestSheepRewardCounter
+}
+
+
+def create_reward_counter(env_data: EnvData) -> RewardCounter:
+    return reward_counter_type[env_data.config.reward_type](env_data)

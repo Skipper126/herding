@@ -74,5 +74,6 @@ def play(my_env=None):
     manual_steering = ManualSteering(env)
     manual_steering.run_env()
 
+
 if __name__ == '__main__':
     play()

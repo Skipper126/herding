@@ -1,7 +1,6 @@
 from abc import ABC
 
 
-
 class RewardCounter(ABC):
 
     def reset(self):

@@ -8,10 +8,10 @@ __kernel void move_agents(Arrays *arrays)
         move_dogs(arrays);
     }
 
-    barrier(CLK_GLOBAL_MEM_FENCE)
+    barrier(CLK_GLOBAL_MEM_FENCE);
 
     if (threadIdx.x < SHEEP_COUNT)
     {
-        move_sheep_$sheep_type(arrays);
+        move_sheep_simple(arrays);
     }
 }
