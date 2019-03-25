@@ -1,4 +1,3 @@
-
 // Defines are taken directly from config
 #define PI 3.14159
 

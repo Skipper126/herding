@@ -1,16 +1,82 @@
 #include "herding/data/env_data.h"
-#include "herding/agents/kernels/declarations.h"
 
-__kernel void move_agents(Arrays *arrays)
+void move_dogs(__global struct Arrays *arrays)
 {
-    if (threadIdx.x < DOGS_COUNT)
+    int id = get_global_id(0);
+    arrays->dogs_positions[id][0] += arrays->action[id][0] * 10;
+    arrays->dogs_positions[id][1] -= arrays->action[id][1] * 10;
+    arrays->dogs_rotations[id] += arrays->action[id][2];
+    float rotation =  arrays->dogs_rotations[id];
+    if (rotation < 0)
+    {
+        arrays->dogs_rotations[id] = 2 * PI + rotation;
+    }
+    if (rotation > 2 * PI)
+    {
+        arrays->dogs_rotations[id] = rotation - 2 * PI;
+    }
+}
+
+void move_sheep_simple(__global struct Arrays *arrays)
+{
+    int id = get_global_id(0);
+    float delta_x = 0;
+    float delta_y = 0;
+    __global float *sheep_pos = arrays->sheep_positions[id];
+    float dog_max_distance = 200.0;
+    float dog_min_distance = 50.0;
+    for (int i = 0; i < DOGS_COUNT; ++i)
+    {
+        __global float *dog_pos = arrays->dogs_positions[i];
+        float pos_x_diff = sheep_pos[0] - dog_pos[0];
+        float pos_y_diff = sheep_pos[1] - dog_pos[1];
+        float distance = sqrt(pow(pos_x_diff, 2) +
+                               pow(pos_y_diff, 2));
+
+        if (distance < dog_max_distance)
+        {
+            if (distance < dog_min_distance)
+                distance = dog_min_distance;
+
+            delta_x += (pos_x_diff / distance) *
+                       (dog_max_distance - distance);
+            delta_y += (pos_y_diff / distance) *
+                       (dog_max_distance - distance);
+        }
+    }
+
+    if (delta_x > dog_min_distance || delta_y > dog_min_distance)
+    {
+        if (delta_x > delta_y)
+        {
+            delta_y = (delta_y / delta_x) * dog_min_distance;
+            delta_x = dog_min_distance;
+        }
+        else
+        {
+            delta_x = (delta_x / delta_y) * dog_min_distance;
+            delta_y = dog_min_distance;
+        }
+    }
+
+    delta_x = (delta_x / dog_min_distance) * MAX_MOVEMENT_SPEED;
+    delta_y = (delta_y / dog_min_distance) * MAX_MOVEMENT_SPEED;
+
+    sheep_pos[0] += delta_x;
+    sheep_pos[1] += delta_y;
+}
+
+__kernel void move_agents(__global struct Arrays *arrays)
+{
+    int id = get_global_id(0);
+    if (id < DOGS_COUNT)
     {
         move_dogs(arrays);
     }
 
     barrier(CLK_GLOBAL_MEM_FENCE);
 
-    if (threadIdx.x < SHEEP_COUNT)
+    if (id < SHEEP_COUNT)
     {
         move_sheep_simple(arrays);
     }

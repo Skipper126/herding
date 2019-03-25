@@ -3,32 +3,35 @@
 #define TARGET 2
 #define DEG2RAD 0.01745329252
 
+#include "herding/data/env_data.h"
 
-__device__ void clear_observation(Arrays *arrays)
+void clear_observation(__global struct Arrays *arrays)
 {
+    int dog_index = get_global_id(0);
+    int ray_index = get_global_id(1);
     for (int i = 0; i < 3; ++i)
     {
-        arrays->observation[threadIdx.x][threadIdx.y][i] = 0;
+        arrays->observation[dog_index][ray_index][i] = 0;
     }
 
-    arrays->rays_lengths[threadIdx.x][threadIdx.y] = 1;
+    arrays->rays_lengths[dog_index][ray_index] = 1;
 }
 
-__device__ float get_distance(float x1, float y1, float x2, float y2)
+float get_distance(float x1, float y1, float x2, float y2)
 {
     float x_diff = x1 - x2;
     float y_diff = y1 - y2;
-    return sqrtf((x_diff * x_diff) + (y_diff * y_diff));
+    return sqrt((x_diff * x_diff) + (y_diff * y_diff));
 }
 
-__global__ void get_observation(Arrays *arrays)
+__kernel void get_observation(__global struct Arrays *arrays)
 {
-    int dog_index = threadIdx.x;
-    int ray_index = threadIdx.y;
+    int dog_index = get_global_id(0);
+    int ray_index = get_global_id(1);
     clear_observation(arrays);
     float dog_pos_x = arrays->dogs_positions[dog_index][0];
     float dog_pos_y = arrays->dogs_positions[dog_index][1];
-    float ray_angle = arrays->dogs_rotations[dog_index] + (((float)threadIdx.y / RAYS_COUNT) * PI);
+    float ray_angle = arrays->dogs_rotations[dog_index] + (((float)ray_index / RAYS_COUNT) * PI);
     float min_distance = RAY_LENGTH;
     if (ray_angle > 2 * PI)
     {
@@ -42,9 +45,9 @@ __global__ void get_observation(Arrays *arrays)
         
         if (distance < min_distance)
         {
-            float angle = (atan2f(dog_pos_y - agent_pos_y, dog_pos_x - agent_pos_x) + PI);
+            float angle = (atan2(dog_pos_y - agent_pos_y, dog_pos_x - agent_pos_x) + PI);
 
-            if (fabsf(angle - ray_angle) < atanf(AGENT_RADIUS / distance))
+            if (fabs(angle - ray_angle) < atan(AGENT_RADIUS / distance))
             {
                 min_distance = distance;
                 arrays->observation[dog_index][ray_index][SHEEP] = 1;
@@ -64,9 +67,9 @@ __global__ void get_observation(Arrays *arrays)
 
         if (distance < min_distance)
         {
-            float angle = (atan2f(dog_pos_y - agent_pos_y, dog_pos_x - agent_pos_x) + PI);
+            float angle = (atan2(dog_pos_y - agent_pos_y, dog_pos_x - agent_pos_x) + PI);
 
-            if (fabsf(angle - ray_angle) < atanf(AGENT_RADIUS / distance))
+            if (fabs(angle - ray_angle) < atan(AGENT_RADIUS / distance))
             {
                 min_distance = distance;
                 arrays->observation[dog_index][ray_index][DOG] = 1;
@@ -75,14 +78,14 @@ __global__ void get_observation(Arrays *arrays)
         }
     }
 
-    float target_pos_x = arrays->target[0];
-    float target_pos_y = arrays->target[1];
+    float target_pos_x = arrays->target_position[0];
+    float target_pos_y = arrays->target_position[1];
     float distance = get_distance(dog_pos_x, dog_pos_y, target_pos_x, target_pos_y);
     if (distance < RAY_LENGTH)
     {
-        float angle = (atan2f(dog_pos_y - target_pos_y, dog_pos_x - target_pos_x) + PI);
+        float angle = (atan2(dog_pos_y - target_pos_y, dog_pos_x - target_pos_x) + PI);
 
-        if (fabsf(angle - ray_angle) < atanf(AGENT_RADIUS / distance))
+        if (fabs(angle - ray_angle) < atan(AGENT_RADIUS / distance))
         {
             arrays->observation[dog_index][ray_index][TARGET] = 1;
         }
