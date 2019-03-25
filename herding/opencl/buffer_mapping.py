@@ -61,10 +61,8 @@ class MultipleBufferMapping:
                                              cl.map_flags.READ,
                                              self.total_offset,
                                              self.total_size,
-                                             np.float32,
-                                             is_blocking=False)
+                                             np.float32)
         arrays = self._create_arrays()
-        self.mapping[1].wait()
         return arrays
 
     def map_write(self):
@@ -87,7 +85,7 @@ class MultipleBufferMapping:
         arrays = []
         for i in range(self.arrays_count):
             arrays.append(
-                np.frombuffer(self.mapping,
+                np.frombuffer(self.mapping[0],
                               np.float32,
                               self.sizes[i],
                               self.offsets[i]).reshape(self.shapes[i]))

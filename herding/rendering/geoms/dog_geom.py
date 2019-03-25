@@ -27,7 +27,7 @@ class DogGeom(Geom):
         self.body.set_pos(arrays.dogs_positions[self.index][0],
                           arrays.dogs_positions[self.index][1])
         for i, ray in enumerate(self.rays):
-            ray.set_scale(arrays.rays_lengths[i], 0)
+            ray.set_scale(arrays.rays_lengths[self.index][i], 0)
             color = tuple(arrays.observation[self.index][i])
             ray.set_color(*color)
             rot = arrays.dogs_rotations[self.index] + (i / self.rays_count) * math.pi

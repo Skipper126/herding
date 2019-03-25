@@ -13,7 +13,7 @@ class OpenClModule:
         self.kernel.set_arg(0, ocl.buffer)
 
     def run(self, nd_range):
-        cl.enqueue_nd_range_kernel(self.queue, self.kernel, nd_range, nd_range)
+        cl.enqueue_nd_range_kernel(self.queue, self.kernel, (nd_range,), (nd_range,))
 
 
 def create_module(env_data: EnvData, file: str, function: str) -> OpenClModule:

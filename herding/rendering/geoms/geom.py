@@ -1,5 +1,4 @@
 from gym.envs.classic_control import rendering
-from herding.rendering.renderer import Arrays
 
 
 class Part:
@@ -24,7 +23,7 @@ class Part:
 
 class Geom:
 
-    def update(self, arrays: Arrays):
+    def update(self, arrays):
         raise NotImplementedError
 
     def get_parts(self):

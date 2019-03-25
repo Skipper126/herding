@@ -50,11 +50,12 @@ class Renderer:
         return geom_list
 
     def render(self):
-        arrays = Arrays(**self.arrays_mapping.map_read())
+        arrays = Arrays(*self.arrays_mapping.map_read())
         for geom in self.geom_list:
             geom.update(arrays)
 
         self.viewer.render()
+        self.arrays_mapping.unmap()
 
     def close(self):
         self.viewer.close()

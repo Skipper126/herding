@@ -1,7 +1,7 @@
 #include "herding/data/env_data.h"
 #include "herding/opencl/random.h"
 
-__kernel void random_layout(__global struct Arrays *arrays)
+__kernel void random(__global struct Arrays *arrays)
 {
     int id = get_global_id(0);
     int seed = arrays->seed[id];

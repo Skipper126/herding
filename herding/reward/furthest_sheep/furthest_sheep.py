@@ -17,7 +17,7 @@ class FurthestSheepRewardCounter(RewardCounter):
     def get_reward(self):
         furthest_sheep_distance = self._get_furthest_sheep_distance()
 
-        reward = (self.previous_distance - furthest_sheep_distance[0]) * 100 / self.start_distance
+        reward = (self.previous_distance - furthest_sheep_distance) * 100 / self.start_distance
         self.previous_distance = furthest_sheep_distance
         self.total_reward += reward
         return reward
