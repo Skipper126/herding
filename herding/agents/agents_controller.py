@@ -1,4 +1,3 @@
-from herding import opencl
 from herding.data import EnvData
 import numpy as np
 
@@ -10,15 +9,18 @@ class AgentsController:
         self.rays_count = env_data.config.rays_count
         self.sheep_count = env_data.config.sheep_count
 
-        self.action_mapping = opencl.create_buffer_mapping(env_data, 'action')
-        self.observation_mapping = opencl.create_buffer_mapping(env_data, 'observation')
+        self.action_buffer = env_data.buffers.action
+        self.observation_buffer = env_data.buffers.observation
 
-        self.agents_move_kernel = opencl.create_module(env_data,
-                                                       'herding/agents/agents_move.cl',
-                                                       'move_agents')
-        self.observation_kernel = opencl.create_module(env_data,
-                                                       'herding/agents/observation.cl',
-                                                       'get_observation')
+        self.agents_move_kernel = env_data.ocl.create_module('herding/agents/agents_move.cl',
+                                                             'move_agents',
+                                                             [env_data.buffers.dogs_positions,
+                                                              env_data.buffers.dogs_rotations,
+                                                              env_data.buffers.sheep_positions])
+        self.observation_kernel = env_data.ocl.create_module(env_data,
+                                                             'herding/agents/observation.cl',
+                                                             'get_observation',
+                                                             [])
 
         self.agents_move_workers = max(self.dogs_count, self.sheep_count)
 
@@ -39,9 +41,6 @@ class AgentsController:
         observation = self.observation_mapping.map_read()
 
         return observation
-
-    def close(self):
-        pass
 
     @staticmethod
     def _sanitize_action_input(action):

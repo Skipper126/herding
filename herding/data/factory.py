@@ -1,7 +1,15 @@
 from herding.data import configuration
-from herding.data.env_data import Config, ArrayInfo, EnvData
+from herding.data.env_data import Config, EnvData
 from herding import opencl
 import numpy as np
+from typing import NamedTuple, Tuple
+
+
+class ArrayInfo(NamedTuple):
+    name: str
+    shape: Tuple[int]
+    size: int
+    offset: int
 
 
 def create_env_data(params):

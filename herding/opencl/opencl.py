@@ -1,16 +1,43 @@
 import pyopencl as cl
-from typing import NamedTuple
+from typing import Dict, Tuple, List
+import numpy as np
+from herding.opencl.buffer import Buffer
+from herding.opencl.module import Module
+from pathlib import Path
 
 
-class OpenCL(NamedTuple):
-    context: cl.Context
-    queue: cl.CommandQueue
-    buffer: cl.Buffer
+class OpenCL:
+
+    def __init__(self, definitions: Dict[str, int]):
+        self.context = cl.create_some_context(answers=[0, 0])
+        self.queue = cl.CommandQueue(self.context)
+        self.project_root = _get_project_root_path()
+        self.options = _convert_definitions(definitions)
+        self.options.append('-I ' + self.project_root)
+
+    def create_buffer(self, shape: Tuple[int], dtype: np.dtype, flags: cl.mem_flags = None) -> Buffer:
+        return Buffer(self.queue, self.context, shape, dtype, flags)
+
+    def create_module(self, file: str, function: str, args: List[Buffer]) -> Module:
+        with open(self.project_root + file, 'r') as f:
+            source = f.read()
+
+        prg = cl.Program(self.context, source).build(
+            options=self.options
+        )
+        buffers = [arg.buffer for arg in args]
+
+        return Module(self.queue, prg, function, buffers)
 
 
-def create_opencl(buffer_size):
-    ctx = cl.create_some_context(answers=[0, 0])
-    queue = cl.CommandQueue(ctx)
-    buffer = cl.Buffer(ctx, cl.mem_flags.ALLOC_HOST_PTR, buffer_size * 4)
+def _get_project_root_path():
+    file_path = Path(__file__)
+    # assume current file path is herding/opencl/opencl.py
+    root_path = file_path.parent.parent.parent
+    return str(root_path) + '/'
 
-    return OpenCL(ctx, queue, buffer)
+
+def _convert_definitions(definitions):
+    options = ['-D ' + name + '=' + str(value) for name, value in definitions.items()]
+
+    return options

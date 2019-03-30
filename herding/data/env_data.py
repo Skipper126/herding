@@ -1,4 +1,5 @@
-from typing import NamedTuple, List, Tuple, Any
+from typing import NamedTuple
+from herding import opencl
 
 
 class Config(NamedTuple):
@@ -24,14 +25,19 @@ class Config(NamedTuple):
     seed: int
 
 
-class ArrayInfo(NamedTuple):
-    name: str
-    shape: Tuple[int]
-    size: int
-    offset: int
+class Buffers(NamedTuple):
+    rays_lengths: opencl.Buffer
+    dogs_positions: opencl.Buffer
+    dogs_rotations: opencl.Buffer
+    sheep_positions: opencl.Buffer
+    target_position: opencl.Buffer
+    observation: opencl.Buffer
+    action: opencl.Buffer
+    seed: opencl.Buffer
+    common_output: opencl.Buffer
 
 
 class EnvData(NamedTuple):
     config: Config
-    arrays_info: List[ArrayInfo]
-    ocl: Any  # OpenCL type. "Any" to avoid circular dependency
+    buffers: Buffers
+    ocl: opencl.OpenCL
