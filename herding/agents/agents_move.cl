@@ -1,27 +1,26 @@
 #define PI 3.141592
 
 
-__kernel void move_dogs(__global int (*dogs_positions)[2],
-                        __global int (*dogs_rotations),
-                        __global int (*action)[3])
+__kernel void move_dogs(__global float (*dogs_positions)[3],
+                        __global float (*action)[3])
 {
     int id = get_global_id(0);
     dogs_positions[id][0] += action[id][0] * 10;
     dogs_positions[id][1] -= action[id][1] * 10;
-    dogs_rotations[id] += action[id][2];
-    float rotation = dogs_rotations[id];
+    dogs_positions[id][2] += action[id][2];
+    float rotation = dogs_positions[id][2];
     if (rotation < 0)
     {
-        dogs_rotations[id] = 2 * PI + rotation;
+        dogs_positions[id][2] = 2 * PI + rotation;
     }
     if (rotation > 2 * PI)
     {
-        dogs_rotations[id] = rotation - 2 * PI;
+        dogs_positions[id][2] = rotation - 2 * PI;
     }
 }
 
-__kernel void move_sheep_simple(__global int (*dogs_positions)[2],
-                                __global int (*sheep_positions)[2])
+__kernel void move_sheep_simple(__global float (*dogs_positions)[3],
+                                __global float (*sheep_positions)[2])
 {
     int id = get_global_id(0);
     float delta_x = 0;

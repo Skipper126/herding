@@ -15,8 +15,8 @@ class OpenCL:
         self.options = _convert_definitions(definitions)
         self.options.append('-I ' + self.project_root)
 
-    def create_buffer(self, shape: Tuple[int], dtype: np.dtype, flags: cl.mem_flags = None) -> Buffer:
-        return Buffer(self.queue, self.context, shape, dtype, flags)
+    def create_buffer(self, shape: Tuple, dtype) -> Buffer:
+        return Buffer(self.queue, self.context, shape, dtype)
 
     def create_module(self, file: str, function: str, args: List[Buffer]) -> Module:
         with open(self.project_root + file, 'r') as f:
@@ -38,6 +38,6 @@ def _get_project_root_path():
 
 
 def _convert_definitions(definitions):
-    options = ['-D ' + name + '=' + str(value) for name, value in definitions.items()]
+    options = ['-D ' + name.upper() + '=' + str(value) for name, value in definitions.items()]
 
     return options

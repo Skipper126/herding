@@ -7,7 +7,7 @@ class Module:
         self.queue = queue
         self.prg = prg
         self.kernel = getattr(prg, function)
-        self.kernel.set_args(args)
+        self.kernel.set_args(*args)
 
-    def run(self, nd_range):
-        cl.enqueue_nd_range_kernel(self.queue, self.kernel, (nd_range,), (nd_range,))
+    def run(self, global_size, local_size):
+        cl.enqueue_nd_range_kernel(self.queue, self.kernel, global_size, local_size)

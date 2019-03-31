@@ -1,24 +1,15 @@
 from herding.data import configuration
-from herding.data.env_data import Config, EnvData
+from herding.data.env_data import Config, EnvData, Buffers
 from herding import opencl
 import numpy as np
-from typing import NamedTuple, Tuple
-
-
-class ArrayInfo(NamedTuple):
-    name: str
-    shape: Tuple[int]
-    size: int
-    offset: int
 
 
 def create_env_data(params):
     config = _create_config(params)
-    arrays_info = _get_arrays_info(config)
-    buffer_size = sum(array_info.size for array_info in arrays_info)
-    ocl = opencl.create_opencl(buffer_size)
+    ocl = _create_opencl(config)
+    shared_buffers = _create_buffers(ocl, config)
 
-    env_data = EnvData(config, arrays_info, ocl)
+    env_data = EnvData(config, shared_buffers, ocl)
     _init_seed(env_data)
     return env_data
 
@@ -31,26 +22,28 @@ def _create_config(params):
     return config
 
 
-def _get_arrays_info(config):
-    arrays_shapes = configuration.get_arrays_shapes(config)
-    arrays_info = []
-    offset = 0
-    for name, shape in arrays_shapes.items():
-        size = int(np.prod(np.array(list(shape))))
-        arrays_info.append(ArrayInfo(
-            name=name,
-            shape=shape,
-            size=size,
-            offset=offset,
-        ))
-        offset += size
+def _create_opencl(params):
+    definitions = configuration.get_kernel_definitions(params)
+    ocl = opencl.OpenCL(definitions)
 
-    return arrays_info
+    return ocl
+
+
+def _create_buffers(ocl, config):
+    buffers_info = configuration.get_shared_buffers_info(config)
+    buffers_dict = {}
+    for buffer_info in buffers_info:
+        name = buffer_info.name
+        shape = buffer_info.shape
+        dtype = buffer_info.dtype
+        buffers_dict[name] = ocl.create_buffer(shape, dtype)
+
+    return Buffers(**buffers_dict)
 
 
 def _init_seed(env_data):
-    seed_mapping = opencl.create_buffer_mapping(env_data, 'seed')
-    seed_array = seed_mapping.map_write()
-    rand_array = np.random.randint(0, 2147483647)
+    seed_buffer = env_data.shared_buffers.seed
+    seed_array = seed_buffer.map_write()
+    rand_array = np.random.randint(0, 2147483647, seed_array.shape)
     np.copyto(seed_array, rand_array)
-    seed_mapping.unmap()
+    seed_buffer.unmap()

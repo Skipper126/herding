@@ -26,18 +26,15 @@ class Config(NamedTuple):
 
 
 class Buffers(NamedTuple):
-    rays_lengths: opencl.Buffer
     dogs_positions: opencl.Buffer
-    dogs_rotations: opencl.Buffer
     sheep_positions: opencl.Buffer
     target_position: opencl.Buffer
     observation: opencl.Buffer
-    action: opencl.Buffer
+    rays_lengths: opencl.Buffer
     seed: opencl.Buffer
-    common_output: opencl.Buffer
 
 
 class EnvData(NamedTuple):
     config: Config
-    buffers: Buffers
+    shared_buffers: Buffers
     ocl: opencl.OpenCL

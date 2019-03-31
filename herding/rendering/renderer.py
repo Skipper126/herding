@@ -6,12 +6,11 @@ import numpy as np
 
 
 class Arrays(NamedTuple):
-    rays_lengths: np.ndarray
     dogs_positions: np.ndarray
-    dogs_rotations: np.ndarray
     sheep_positions: np.ndarray
     target_position: np.ndarray
     observation: np.ndarray
+    rays_lengths: np.ndarray
 
 
 class Renderer:
@@ -21,15 +20,13 @@ class Renderer:
         self.window_height = env_data.config.window_height
         self.geom_list = self._init_render_objects(env_data)
         self.viewer = rendering.Viewer(self.window_width, self.window_height)
-        self.arrays_mapping = opencl.create_multiple_buffer_mapping(env_data,
-                                                                    [
-                                                                        'rays_lengths',
-                                                                        'dogs_positions',
-                                                                        'dogs_rotations',
-                                                                        'sheep_positions',
-                                                                        'target_position',
-                                                                        'observation'
-                                                                    ])
+        self.buffers = [
+            env_data.shared_buffers.dogs_positions,
+            env_data.shared_buffers.sheep_positions,
+            env_data.shared_buffers.target_position,
+            env_data.shared_buffers.observation,
+            env_data.shared_buffers.rays_lengths
+        ]
         for geom in self.geom_list:
             self.viewer.geoms.extend(geom.get_parts())
 
@@ -50,12 +47,13 @@ class Renderer:
         return geom_list
 
     def render(self):
-        arrays = Arrays(*self.arrays_mapping.map_read())
+        arrays = Arrays(*[buffer.map_read() for buffer in self.buffers])
         for geom in self.geom_list:
             geom.update(arrays)
 
         self.viewer.render()
-        self.arrays_mapping.unmap()
+        for buffer in self.buffers:
+            buffer.unmap()
 
     def close(self):
         self.viewer.close()
