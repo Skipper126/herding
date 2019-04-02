@@ -9,5 +9,5 @@ class Module:
         self.kernel = getattr(prg, function)
         self.kernel.set_args(*args)
 
-    def run(self, global_size, local_size):
+    def run(self, global_size, local_size=None):
         cl.enqueue_nd_range_kernel(self.queue, self.kernel, global_size, local_size)

@@ -9,7 +9,12 @@ from pathlib import Path
 class OpenCL:
 
     def __init__(self, definitions: Dict[str, int]):
-        self.context = cl.create_some_context(answers=[0, 0])
+        platform = cl.get_platforms()[0]
+        device = platform.get_devices(cl.device_type.GPU)[0]
+        if device is None:
+            device = platform.get_devices(cl.device_type.CPU)[0]
+
+        self.context = cl.Context([device])
         self.queue = cl.CommandQueue(self.context)
         self.project_root = _get_project_root_path()
         self.options = _convert_definitions(definitions)

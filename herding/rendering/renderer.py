@@ -1,6 +1,6 @@
 from gym.envs.classic_control import rendering
 from herding.rendering.geoms import dog_geom, sheep_geom, target_geom
-from herding import data, opencl
+from herding import data
 from typing import NamedTuple
 import numpy as np
 
@@ -20,6 +20,7 @@ class Renderer:
         self.window_height = env_data.config.window_height
         self.geom_list = self._init_render_objects(env_data)
         self.viewer = rendering.Viewer(self.window_width, self.window_height)
+
         self.buffers = [
             env_data.shared_buffers.dogs_positions,
             env_data.shared_buffers.sheep_positions,

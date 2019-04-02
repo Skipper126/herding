@@ -7,6 +7,7 @@ class FurthestSheepRewardCounter(RewardCounter):
 
     def __init__(self, env_data: data.EnvData):
         self.sheep_count = env_data.config.sheep_count
+        self.target_reward = env_data.config.max_episode_reward
         self.start_distance = 0
         self.previous_distance = 0
         self.total_reward = 0
@@ -21,17 +22,18 @@ class FurthestSheepRewardCounter(RewardCounter):
     def get_reward(self):
         furthest_sheep_distance = self._get_furthest_sheep_distance()
 
-        reward = (self.previous_distance - furthest_sheep_distance) * 100 / self.start_distance
+        reward = (self.previous_distance - furthest_sheep_distance) * self.target_reward / self.start_distance
         self.previous_distance = furthest_sheep_distance
         self.total_reward += reward
         return reward
 
     def is_done(self):
-        pass
+        return self.total_reward >= self.target_reward
 
     def reset(self):
         furthest_sheep_distance = self._get_furthest_sheep_distance()
         self.start_distance = self.previous_distance = furthest_sheep_distance
+        self.total_reward = 0
 
     def _get_furthest_sheep_distance(self):
         self.reward_module.run((self.sheep_count,), (self.sheep_count,))

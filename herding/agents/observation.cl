@@ -1,7 +1,6 @@
 #define DOG 0
 #define SHEEP 1
 #define TARGET 2
-#define DEG2RAD 0.01745329252
 #define PI 3.141592
 
 void clear_observation(__global float (*observation)[RAYS_COUNT][3],
@@ -9,11 +8,10 @@ void clear_observation(__global float (*observation)[RAYS_COUNT][3],
 {
     int dog_index = get_global_id(0);
     int ray_index = get_global_id(1);
-    for (int i = 0; i < 3; ++i)
-    {
-        observation[dog_index][ray_index][i] = 0;
-    }
 
+    observation[dog_index][ray_index][0] = 0;
+    observation[dog_index][ray_index][1] = 0;
+    observation[dog_index][ray_index][2] = 0;
     rays_lengths[dog_index][ray_index] = 1;
 }
 
@@ -94,5 +92,4 @@ __kernel void get_observation(__global float (*dogs_positions)[3],
             observation[dog_index][ray_index][TARGET] = 1;
         }
     }
-
 }

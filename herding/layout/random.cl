@@ -1,15 +1,15 @@
-#include "herding/opencl/random.h"
+#include "herding/opencl/rand.h"
 #define PI 3.141592
 
-__kernel void random(__global float (*dogs_positions)[3],
-                     __global float (*sheep_positions)[2],
-                     __global float (*target_position),
-                     __global int   (*seed))
+__kernel void set_up_agents(__global float (*dogs_positions)[3],
+                            __global float (*sheep_positions)[2],
+                            __global float (*target_position),
+                            __global int   (*seed))
 {
     int id = get_global_id(0);
     int seed_value = seed[id];
-    float x_pos = rand(&seed_value, AGENTS_LAYOUT_RANGE);
-    float y_pos = rand(&seed_value, AGENTS_LAYOUT_RANGE);
+    float x_pos = 20 + rand(&seed_value, AGENTS_LAYOUT_RANGE);
+    float y_pos = 20 + rand(&seed_value, AGENTS_LAYOUT_RANGE);
 
     if (id < DOGS_COUNT)
     {

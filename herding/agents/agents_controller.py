@@ -37,8 +37,8 @@ class AgentsController:
         input_action = self._sanitize_action_input(action)
         np.copyto(action_map, input_action)
         self.action_buffer.unmap()
-        self.move_dogs_kernel.run((self.dogs_count,), (1,))
-        self.move_sheep_kernel.run((self.sheep_count,), (1,))
+        self.move_dogs_kernel.run((self.dogs_count,))
+        self.move_sheep_kernel.run((self.sheep_count,))
 
     def get_observation(self) -> np.ndarray:
         self.observation_buffer.unmap()

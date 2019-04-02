@@ -7,13 +7,12 @@ __kernel void move_dogs(__global float (*dogs_positions)[3],
     int id = get_global_id(0);
     dogs_positions[id][0] += action[id][0] * 10;
     dogs_positions[id][1] -= action[id][1] * 10;
-    dogs_positions[id][2] += action[id][2];
-    float rotation = dogs_positions[id][2];
+    float rotation = dogs_positions[id][2] += action[id][2];
     if (rotation < 0)
     {
         dogs_positions[id][2] = 2 * PI + rotation;
     }
-    if (rotation > 2 * PI)
+    else if (rotation > 2 * PI)
     {
         dogs_positions[id][2] = rotation - 2 * PI;
     }
@@ -25,14 +24,18 @@ __kernel void move_sheep_simple(__global float (*dogs_positions)[3],
     int id = get_global_id(0);
     float delta_x = 0;
     float delta_y = 0;
-    __global float *sheep_pos = sheep_positions[id];
+
+    float sheep_pos_x = sheep_positions[id][0];
+    float sheep_pos_y = sheep_positions[id][1];
     float dog_max_distance = 200.0;
     float dog_min_distance = 50.0;
-    for (int i = 0; i < DOGS_COUNT; ++i)
+
+    for (int i = 0; i < DOGS_COUNT; i++)
     {
-        __global float *dog_pos = dogs_positions[i];
-        float pos_x_diff = sheep_pos[0] - dog_pos[0];
-        float pos_y_diff = sheep_pos[1] - dog_pos[1];
+        float dog_pos_x = dogs_positions[i][0];
+        float dog_pos_y = dogs_positions[i][1];
+        float pos_x_diff = sheep_pos_x - dog_pos_x;
+        float pos_y_diff = sheep_pos_y - dog_pos_y;
         float distance = sqrt(pow(pos_x_diff, 2) +
                                pow(pos_y_diff, 2));
 
@@ -65,6 +68,6 @@ __kernel void move_sheep_simple(__global float (*dogs_positions)[3],
     delta_x = (delta_x / dog_min_distance) * MAX_MOVEMENT_SPEED;
     delta_y = (delta_y / dog_min_distance) * MAX_MOVEMENT_SPEED;
 
-    sheep_pos[0] += delta_x;
-    sheep_pos[1] += delta_y;
+    sheep_positions[id][0] += delta_x;
+    sheep_positions[id][1] += delta_y;
 }
