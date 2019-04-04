@@ -41,3 +41,6 @@ class FurthestSheepRewardCounter(RewardCounter):
         self.distance_buffer.unmap()
 
         return furthest_sheep_distance
+
+    def get_episode_reward(self):
+        return self.total_reward

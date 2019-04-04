@@ -3,6 +3,7 @@ from herding.rendering.geoms import dog_geom, sheep_geom, target_geom
 from herding import data
 from typing import NamedTuple
 import numpy as np
+import pyglet
 
 
 class Arrays(NamedTuple):
@@ -20,7 +21,7 @@ class Renderer:
         self.window_height = env_data.config.window_height
         self.geom_list = self._init_render_objects(env_data)
         self.viewer = rendering.Viewer(self.window_width, self.window_height)
-
+        self.label = self._create_text_label(env_data)
         self.buffers = [
             env_data.shared_buffers.dogs_positions,
             env_data.shared_buffers.sheep_positions,
@@ -30,6 +31,22 @@ class Renderer:
         ]
         for geom in self.geom_list:
             self.viewer.geoms.extend(geom.get_parts())
+        self.viewer.add_geom(self.label)
+
+    def render(self):
+        arrays = Arrays(*[buffer.map_read() for buffer in self.buffers])
+        for geom in self.geom_list:
+            geom.update(arrays)
+
+        self.viewer.render()
+        for buffer in self.buffers:
+            buffer.unmap()
+
+    def set_text(self, text: str):
+        self.label.text = text
+
+    def close(self):
+        self.viewer.close()
 
     @staticmethod
     def _init_render_objects(env_data):
@@ -47,14 +64,14 @@ class Renderer:
 
         return geom_list
 
-    def render(self):
-        arrays = Arrays(*[buffer.map_read() for buffer in self.buffers])
-        for geom in self.geom_list:
-            geom.update(arrays)
+    @staticmethod
+    def _create_text_label(env_data):
+        label = pyglet.text.Label('',
+                                  font_name='Consolas',
+                                  font_size=15,
+                                  x=5, y=env_data.config.window_height - 10,
+                                  anchor_x='left', anchor_y='center',
+                                  color=(0, 0, 0, 255))
+        setattr(label, 'render', lambda: label.draw())
 
-        self.viewer.render()
-        for buffer in self.buffers:
-            buffer.unmap()
-
-    def close(self):
-        self.viewer.close()
+        return label

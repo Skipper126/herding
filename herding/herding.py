@@ -45,6 +45,8 @@ class Herding(gym.Env):
             from .rendering.renderer import Renderer
             self.viewer = Renderer(self.env_data)
 
+        reward_text = 'Reward: {:.2f}'.format(self.reward_counter.get_episode_reward())
+        self.viewer.set_text(reward_text)
         self.viewer.render()
 
     def seed(self, seed=None):

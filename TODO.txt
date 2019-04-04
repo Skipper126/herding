@@ -11,10 +11,11 @@ add spaces info to herding
 add gym setups in register_gym
 update names.py
 make reward counter max work group size independent
-make rays_lenght optional if rendering is used
+make rays_length optional if rendering is used
 add herding zone as episode target + render
 maybe delete BufferInfo class
 add complex sheep movement
 add sheep flee distance as env_data.config
 rework colors (rays colors etc)
 check the thing with herding.seed()
+make manual_steering accept command line parameters
