@@ -7,6 +7,6 @@ setup(
     packages=[package for package in find_packages()
               if package.startswith('herding')],
     package_data={
-        '': ['*.cu', '*.cuh', '*.json']
+        '': ['*.cl', '*.h']
     }
 )

@@ -69,8 +69,8 @@ class Renderer:
         label = pyglet.text.Label('',
                                   font_name='Consolas',
                                   font_size=15,
-                                  x=5, y=env_data.config.window_height - 10,
-                                  anchor_x='left', anchor_y='center',
+                                  x=5, y=env_data.config.window_height - 5,
+                                  anchor_x='left', anchor_y='top',
                                   color=(0, 0, 0, 255))
         setattr(label, 'render', lambda: label.draw())
 

@@ -1,6 +1,5 @@
 improve agents layout spawning out of window view
 put env_data.config into categories
-add label and debug view into renderer
 fix setup.py with .cl and .h files
 improve README.md
 rework benchmark
@@ -19,3 +18,4 @@ add sheep flee distance as env_data.config
 rework colors (rays colors etc)
 check the thing with herding.seed()
 make manual_steering accept command line parameters
+check multiline text drawing
