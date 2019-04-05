@@ -8,8 +8,8 @@ __kernel void set_up_agents(__global float (*dogs_positions)[3],
 {
     int id = get_global_id(0);
     int seed_value = seed[id];
-    float x_pos = 20 + rand(&seed_value, AGENTS_LAYOUT_RANGE);
-    float y_pos = 20 + rand(&seed_value, AGENTS_LAYOUT_RANGE);
+    float x_pos = 10 + rand(&seed_value, AGENTS_LAYOUT_RANGE);
+    float y_pos = 10 + rand(&seed_value, AGENTS_LAYOUT_RANGE);
 
     if (id < DOGS_COUNT)
     {
@@ -22,7 +22,7 @@ __kernel void set_up_agents(__global float (*dogs_positions)[3],
     {
         id -= DOGS_COUNT;
         sheep_positions[id][0] = x_pos;
-        sheep_positions[id][1] = x_pos;
+        sheep_positions[id][1] = y_pos;
     }
     else
     {

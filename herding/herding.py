@@ -4,6 +4,7 @@ from herding.data import create_env_data
 from herding.agents import AgentsController
 from herding.layout import AgentsLayout
 from herding.reward import create_reward_counter
+import warnings
 
 
 class Herding(gym.Env):
@@ -14,6 +15,7 @@ class Herding(gym.Env):
 
     def __init__(self, **params):
         self.env_data = create_env_data(params)
+        self._check_params(self.env_data)
         self.reward_counter = create_reward_counter(self.env_data)
         self.agents_controller = AgentsController(self.env_data)
         self.agents_layout = AgentsLayout(self.env_data)
@@ -50,9 +52,15 @@ class Herding(gym.Env):
         self.viewer.render()
 
     def seed(self, seed=None):
-        seed = seed if seed is not None else 100
-        np.random.seed(seed)
+        warnings.warn('Calling seed() will not take an effect. Pass the seed as env parameter instead.')
 
     def close(self):
         if self.viewer is not None:
             self.viewer.close()
+
+    @staticmethod
+    def _check_params(env_data):
+        max_workgroup_size = env_data.ocl.get_max_work_group_size()
+        if max_workgroup_size < env_data.config.sheep_count:
+            raise ValueError('Sheep count should be below ' + \
+                             str(max_workgroup_size) + '.')

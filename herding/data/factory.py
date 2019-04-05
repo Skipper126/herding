@@ -42,6 +42,8 @@ def _create_buffers(ocl, config):
 
 
 def _init_seed(env_data):
+    if env_data.config.seed is not None:
+        np.random.seed(env_data.config.seed)
     seed_buffer = env_data.shared_buffers.seed
     seed_array = seed_buffer.map_write()
     rand_array = np.random.randint(0, 2147483647, seed_array.shape)

@@ -1,4 +1,4 @@
-from herding import data, opencl
+from herding import data
 from herding.reward import RewardCounter
 import numpy as np
 

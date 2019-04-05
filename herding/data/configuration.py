@@ -60,12 +60,12 @@ def get_default_configuration() -> Dict:
         "rays_count": 128,
         "ray_length": 300,
         "field_of_view": 180,
-        "agents_layout_range": 800,
+        "agents_layout_range": 750,
         "skip_frames": 1,
         "window_width": 1000,
         "window_height": 800,
         "channels_count": 3,
-        "seed": 100
+        "seed": None
     }
 
 

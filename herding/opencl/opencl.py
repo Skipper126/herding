@@ -19,6 +19,7 @@ class OpenCL:
         self.project_root = _get_project_root_path()
         self.options = _convert_definitions(definitions)
         self.options.append('-I ' + self.project_root)
+        self.max_work_group_size = device.get_info(cl.device_info.MAX_WORK_GROUP_SIZE)
 
     def create_buffer(self, shape: Tuple, dtype) -> Buffer:
         return Buffer(self.queue, self.context, shape, dtype)
@@ -33,6 +34,9 @@ class OpenCL:
         buffers = [arg.buffer for arg in args]
 
         return Module(self.queue, prg, function, buffers)
+
+    def get_max_work_group_size(self):
+        return self.max_work_group_size
 
 
 def _get_project_root_path():

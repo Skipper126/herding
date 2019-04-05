@@ -1,6 +1,7 @@
 from herding import Herding
 from pyglet.window import key
-
+import argparse
+import sys
 
 class ManualSteering:
 
@@ -70,10 +71,19 @@ class ManualSteering:
 
 def play(my_env=None):
     env = my_env if my_env is not None else Herding()
-
     manual_steering = ManualSteering(env)
     manual_steering.run_env()
 
 
 if __name__ == '__main__':
-    play()
+    args = {}
+    if len(sys.argv) > 1:
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--dogs_count', type=int)
+        parser.add_argument('--sheep_count', type=int)
+        args_all = vars(parser.parse_args())
+        for name, value in args_all.items():
+            if args_all[name] is not None:
+                args[name] = value
+
+    play(Herding(**args))
