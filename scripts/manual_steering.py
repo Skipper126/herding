@@ -1,4 +1,5 @@
 from herding import Herding
+from herding.data.configuration import get_default_configuration
 from pyglet.window import key
 import argparse
 import sys
@@ -78,9 +79,10 @@ def play(my_env=None):
 if __name__ == '__main__':
     args = {}
     if len(sys.argv) > 1:
+        config = get_default_configuration()
         parser = argparse.ArgumentParser()
-        parser.add_argument('--dogs_count', type=int)
-        parser.add_argument('--sheep_count', type=int)
+        for name, value in config.items():
+            parser.add_argument('--' + name, type=type(value))
         args_all = vars(parser.parse_args())
         for name, value in args_all.items():
             if args_all[name] is not None:

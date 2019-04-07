@@ -17,6 +17,8 @@ def create_env_data(params):
 def _create_config(params):
     config_dict = configuration.get_default_configuration()
     config_dict.update(params)
+    config_internal = configuration.get_internal_configuration()
+    config_dict.update(config_internal)
     config = Config(**config_dict)
 
     return config
@@ -46,6 +48,6 @@ def _init_seed(env_data):
         np.random.seed(env_data.config.seed)
     seed_buffer = env_data.shared_buffers.seed
     seed_array = seed_buffer.map_write()
-    rand_array = np.random.randint(0, 2147483647, seed_array.shape)
+    rand_array = np.random.randint(0, np.iinfo(np.uint32).max, seed_array.shape, dtype=np.uint32)
     np.copyto(seed_array, rand_array)
     seed_buffer.unmap()

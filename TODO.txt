@@ -1,14 +1,12 @@
 improve README.md
 rework benchmark
 add barrier env entity
-dog movement dependent on rotation
 add locked_on_target dogs mode
 add spaces info to herding
 update names.py
 make rays_length optional if rendering is used
-add herding zone as episode target + render
 maybe delete BufferInfo class
 add complex sheep movement
-add sheep flee distance as env_data.config
 rework colors (rays colors etc)
 check multiline text drawing
+check fully concurrent observation calculation

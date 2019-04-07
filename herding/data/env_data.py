@@ -14,10 +14,12 @@ class Config(NamedTuple):
     max_movement_speed: int
     max_rotation_speed: int
     max_episode_reward: int
+    sheep_flee_distance: int
     rays_count: int
     ray_length: int
     field_of_view: int
-    agents_layout_range: int
+    agents_layout_width: int
+    agents_layout_height: int
     skip_frames: int
     window_width: int
     window_height: int

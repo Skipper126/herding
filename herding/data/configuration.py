@@ -39,33 +39,40 @@ def get_shared_buffers_info(config: Config) -> List[BufferInfo]:
         BufferInfo(
             name='seed',
             shape=(config.dogs_count + config.sheep_count + 1,),
-            dtype=np.int32
+            dtype=np.uint32
         )
     ]
 
 
 def get_default_configuration() -> Dict:
     return {
-        "dogs_count": 1,
-        "sheep_count": 3,
-        "agents_layout": "random",
-        "sheep_type": "simple",
-        "herd_target_radius": 100,
-        "rotation_mode": "free",
-        "reward_type": "furthest_sheep",
-        "agent_radius": 10,
-        "max_movement_speed": 5,
-        "max_rotation_speed": 90,
-        "max_episode_reward": 100,
-        "rays_count": 128,
-        "ray_length": 300,
-        "field_of_view": 180,
-        "agents_layout_range": 750,
-        "skip_frames": 1,
-        "window_width": 1000,
-        "window_height": 800,
-        "channels_count": 3,
-        "seed": None
+        'dogs_count': 1,
+        'sheep_count': 3,
+        'agents_layout': 'random',
+        'sheep_type': 'simple',
+        'rotation_mode': 'free',
+        'reward_type': 'furthest_sheep',
+        'skip_frames': 1,
+    }
+
+
+def get_internal_configuration() -> Dict:
+    return {
+        'herd_target_radius': 100,
+        'agent_radius': 10,
+        'max_movement_speed': 5,
+        'max_rotation_speed': 45,  # In degrees
+        'max_episode_reward': 100,
+        'sheep_flee_distance': 300,
+        'rays_count': 128,
+        'ray_length': 500,
+        'field_of_view': 180,
+        'agents_layout_width': 900,
+        'agents_layout_height': 600,
+        'window_width': 1000,
+        'window_height': 800,
+        'channels_count': 3,
+        'seed': None
     }
 
 
@@ -78,10 +85,12 @@ def get_kernel_definitions(config: Config) -> Dict[str, int]:
         'max_movement_speed',
         'max_rotation_speed',
         'max_episode_reward',
+        'sheep_flee_distance',
         'rays_count',
         'ray_length',
         'field_of_view',
-        'agents_layout_range',
+        'agents_layout_width',
+        'agents_layout_height',
         'channels_count'
     ]
     config_dict = config._asdict()
