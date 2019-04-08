@@ -51,14 +51,14 @@ def get_default_configuration() -> Dict:
         'agents_layout': 'random',
         'sheep_type': 'simple',
         'rotation_mode': 'free',
-        'reward_type': 'furthest_sheep',
+        'reward_type': 'medium_distance',
         'skip_frames': 1,
     }
 
 
 def get_internal_configuration() -> Dict:
     return {
-        'herd_target_radius': 100,
+        'herd_target_radius': 200,
         'agent_radius': 10,
         'max_movement_speed': 5,
         'max_rotation_speed': 45,  # In degrees

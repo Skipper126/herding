@@ -1,10 +1,12 @@
 from herding.data import EnvData
 from herding.reward.furthest_sheep import FurthestSheepRewardCounter
+from herding.reward.medium_distance import MediumDistanceRewardCounter
 from herding.reward import RewardCounter
 
 
 reward_counter_type = {
-    'furthest_sheep': FurthestSheepRewardCounter
+    'furthest_sheep': FurthestSheepRewardCounter,
+    'medium_distance': MediumDistanceRewardCounter
 }
 
 
