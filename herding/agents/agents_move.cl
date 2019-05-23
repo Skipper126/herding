@@ -88,3 +88,22 @@ __kernel void move_sheep_simple(__global float (*dogs_positions)[3],
     sheep_positions[id][0] += delta_x;
     sheep_positions[id][1] += delta_y;
 }
+/*
+__kernel void move_sheep_complex(__global float (*dogs_positions)[3],
+                                 __global float (*sheep_positions)[2],
+                                 __global float (*seed))
+{
+    int id = get_global_id(0);
+    unsigned int seed_value = seed[id];
+
+    move_sheep_simple(dogs_positions, sheep_positions);
+    seed[id] = seed_value;
+
+    if (rand(&seed_value, 100) > 10)
+        return;
+
+    sheep_positions[id][0] += 1;
+    sheep_positions[id][1] += 1;
+
+}
+*/

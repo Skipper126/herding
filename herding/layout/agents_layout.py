@@ -1,4 +1,3 @@
-from herding import opencl
 from herding.data import EnvData
 
 
