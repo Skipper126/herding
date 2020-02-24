@@ -42,12 +42,16 @@ class ManualSteering:
         elif k == key.PERIOD:
             self.player_input[2] = 0
 
+    def on_close(self):
+        self.quit = True
+
     def run_env(self):
         self.env.reset()
         self.env.render()
 
         self.env.viewer.viewer.window.on_key_press = self.key_press
         self.env.viewer.viewer.window.on_key_release = self.key_release
+        self.env.viewer.viewer.window.on_close = self.on_close
 
         episode_reward = 0
 
