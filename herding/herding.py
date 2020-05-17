@@ -23,18 +23,18 @@ class Herding(gym.Env):
 
     def step(self, action):
         self.agents_controller.move_agents(action)
-        state = self.agents_controller.get_observation()
+        observation = self.agents_controller.get_observation()
         reward = self.reward_counter.get_reward()
         is_done = self.reward_counter.is_done()
 
-        return state, reward, is_done, {}
+        return observation, reward, is_done, {}
 
     def reset(self):
         self.agents_layout.set_up_agents()
         self.reward_counter.reset()
-        state = self.agents_controller.get_observation()
+        observation = self.agents_controller.get_observation()
 
-        return state
+        return observation
 
     def render(self, mode='human', close=False):
         if close:

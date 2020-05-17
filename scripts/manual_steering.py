@@ -4,6 +4,7 @@ from pyglet.window import key
 import argparse
 import sys
 
+
 class ManualSteering:
 
     def __init__(self, env):
@@ -57,7 +58,7 @@ class ManualSteering:
 
         while not self.quit:
             env_input = (self.player_input,) + self.other_dogs_input
-            state, reward, terminal, _ = self.env.step(env_input)
+            observation, reward, terminal, _ = self.env.step(env_input)
             episode_reward += reward
             self.env.render()
 
@@ -75,7 +76,7 @@ class ManualSteering:
 
 
 def play(my_env=None):
-    env = my_env if my_env is not None else Herding()
+    env = my_env or Herding()
     manual_steering = ManualSteering(env)
     manual_steering.run_env()
 
