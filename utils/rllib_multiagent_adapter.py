@@ -1,6 +1,6 @@
 from typing import Dict, List
 import numpy as np
-from scripts.rllib.multiagent_env import MultiAgentEnv
+from ray.rllib import MultiAgentEnv
 from herding import Herding
 
 

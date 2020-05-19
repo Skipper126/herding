@@ -1,7 +1,7 @@
 from typing import Dict
 import numpy as np
 import pytest
-from scripts.rllib.multiagent_adapter import MultiAgentHerding
+from utils.rllib_multiagent_adapter import MultiAgentHerding
 
 
 base_test_case = {
@@ -68,6 +68,7 @@ test_cases = [
     }
 ]
 
+pytest.importorskip('ray.rllib')
 
 @pytest.mark.parametrize('test_config', test_cases)
 def test_rllib_adapter_step(test_config):
