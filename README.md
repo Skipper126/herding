@@ -32,7 +32,6 @@ env = herding.Herding(
 ```
 ## 3. Manual steering
 You can play the scenario yourself.
-Go to \<herding directory>/scripts and execute:
 ```
-python manual_steering.py
+python utils/manual_steering.py
 ```
