@@ -1,13 +1,13 @@
-from typing import Dict
+from typing import Dict, cast
 import numpy as np
 import pytest
 from utils.rllib_multiagent_adapter import MultiAgentHerding
-
+from herding import Herding
+pytest.importorskip('ray.rllib')
 
 base_test_case = {
     'env_config': {
-        'dogs_count': 3,
-        'agents_names': ['dog_0', 'dog_1', 'dog_2']
+        'dogs_count': 3
     },
     'action': np.stack((
         np.full((3,), 0),
@@ -68,20 +68,9 @@ test_cases = [
     }
 ]
 
-pytest.importorskip('ray.rllib')
-
 @pytest.mark.parametrize('test_config', test_cases)
 def test_rllib_adapter_step(test_config):
-    class HerdingMock:
-        def step(self, action):
-            assert np.array_equal(action, test_config['action'])
-            state = test_config['observation']
-            reward = test_config['reward']
-            is_done = test_config['is_done']
-
-            return state, reward, is_done, {}
-
-    env = MultiAgentHerding(test_config['env_config'], HerdingMock())
+    env = MultiAgentHerding(env=_get_herding_mock(test_config))
 
     rllib_observation, rllib_reward, rllib_dones, _ = env.step(test_config['rllib_action'])
 
@@ -92,11 +81,7 @@ def test_rllib_adapter_step(test_config):
 
 @pytest.mark.parametrize('test_config', test_cases)
 def test_rllib_adapter_reset(test_config):
-    class HerdingMock:
-        def reset(self):
-            return test_config['observation']
-
-    env = MultiAgentHerding(test_config['env_config'], HerdingMock())
+    env = MultiAgentHerding(env=_get_herding_mock(test_config))
 
     rllib_observation = env.reset()
     assert _compare_rllib_dicts(rllib_observation, test_config['rllib_observation'])
@@ -110,3 +95,24 @@ def _compare_rllib_dicts(dict_a: Dict[str, np.array], dict_b: Dict[str, np.array
         return False
 
     return all([np.array_equal(dict_a[k], dict_b[k]) for k in k1])
+
+def _get_herding_mock(test_config: Dict) -> Herding:
+
+    class HerdingMock():
+        env_data = _create_env_data_property(test_config)
+        def step(self, action):
+            assert np.array_equal(action, test_config['action'])
+            state = test_config['observation']
+            reward = test_config['reward']
+            is_done = test_config['is_done']
+
+            return state, reward, is_done, {}
+
+        def reset(self):
+            return test_config['observation']
+
+    return cast(Herding, HerdingMock())
+
+
+def _create_env_data_property(test_config: Dict) -> object:
+    return type('',(),{'config': type('',(),{'dogs_count': test_config['env_config']['dogs_count']})})

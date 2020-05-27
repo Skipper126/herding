@@ -57,6 +57,17 @@ class Herding(gym.Env):
         if self.viewer is not None:
             self.viewer.close()
 
+    @property
+    def action_space(self) -> gym.spaces.Box:
+        '''Returns action space for a single dog.'''
+        return gym.spaces.Box(low=-1, high=1, shape=(self.env_data.config.channels_count,))
+
+    @property
+    def observation_space(self) -> gym.spaces.Box:
+        '''Returns observation space for a single dog.'''
+        return gym.spaces.Box(low=0, high=1, shape=(self.env_data.config.rays_count,
+                                                    self.env_data.config.channels_count))
+
     def _get_debug_text(self):
         reward_text = 'Reward: {:.2f}'.format(self.reward_counter.get_episode_reward())
 

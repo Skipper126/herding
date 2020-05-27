@@ -6,10 +6,10 @@ from herding import Herding
 
 class MultiAgentHerding(MultiAgentEnv):
 
-    def __init__(self, env_config, env=None):
+    def __init__(self, env_config: Dict=None, env: Herding=None):
         self.env = env or Herding(**env_config)
-        self.dogs_count = env_config['dogs_count']
-        self.agents_names: List[str] = env_config['agents_names']
+        self.dogs_count = env.env_data.config.dogs_count
+        self.agents_names = ['dog_{}'.format(i) for i in range(self.dogs_count)]
 
     def step(self, action_dict):
         observation, reward, is_done, _ = self.env.step(self._transform_action(action_dict))
@@ -32,7 +32,6 @@ class MultiAgentHerding(MultiAgentEnv):
 
         return dict
 
-
     def _transform_reward(self, reward: int) -> Dict[str, int]:
         dict = {}
         for key in self.agents_names:
@@ -48,4 +47,3 @@ class MultiAgentHerding(MultiAgentEnv):
         dict['__all__'] = is_done
 
         return dict
-
