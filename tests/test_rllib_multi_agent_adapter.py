@@ -54,18 +54,6 @@ test_cases = [
             "dog_2": np.full((3,), 2)
         }
     },
-    {   # Omitting action input for dog_2 in rllib_action should result in zero array for it
-        **base_test_case,
-        'action': np.stack((
-            np.full((3,), 0),
-            np.full((3,), 1),
-            np.full((3,), 0)
-        )),
-        'rllib_action': {
-            "dog_0": np.full((3,), 0),
-            "dog_1": np.full((3,), 1)
-        }
-    }
 ]
 
 @pytest.mark.parametrize('test_config', test_cases)
@@ -86,6 +74,9 @@ def test_rllib_adapter_reset(test_config):
     rllib_observation = env.reset()
     assert _compare_rllib_dicts(rllib_observation, test_config['rllib_observation'])
 
+
+
+# ===================================== Helpers =====================================
 
 def _compare_rllib_dicts(dict_a: Dict[str, np.array], dict_b: Dict[str, np.array]) -> bool:
     k1 = sorted(dict_a.keys())
