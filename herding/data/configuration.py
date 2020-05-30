@@ -1,3 +1,4 @@
+import dataclasses
 from typing import Dict, List, Tuple, NamedTuple, Any
 from herding.data.env_data import Config
 import numpy as np
@@ -93,5 +94,5 @@ def get_kernel_definitions(config: Config) -> Dict[str, int]:
         'agents_layout_height',
         'channels_count'
     ]
-    config_dict = config._asdict()
+    config_dict = dataclasses.asdict(config)
     return dict((name, config_dict[name]) for name in names if name in config_dict)

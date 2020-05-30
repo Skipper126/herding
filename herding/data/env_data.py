@@ -1,8 +1,9 @@
-from typing import NamedTuple
+from dataclasses import dataclass
 from herding import opencl
 
 
-class Config(NamedTuple):
+@dataclass
+class Config:
     dogs_count: int
     sheep_count: int
     agents_layout: str
@@ -27,7 +28,8 @@ class Config(NamedTuple):
     seed: int
 
 
-class Buffers(NamedTuple):
+@dataclass
+class Buffers:
     dogs_positions: opencl.Buffer
     sheep_positions: opencl.Buffer
     target_position: opencl.Buffer
@@ -36,7 +38,8 @@ class Buffers(NamedTuple):
     seed: opencl.Buffer
 
 
-class EnvData(NamedTuple):
-    config: Config
-    shared_buffers: Buffers
-    ocl: opencl.OpenCL
+@dataclass
+class EnvData:
+    config: Config = None
+    shared_buffers: Buffers = None
+    ocl: opencl.OpenCL = None

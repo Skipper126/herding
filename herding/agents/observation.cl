@@ -74,6 +74,7 @@ __kernel void get_observation(__global float (*dogs_positions)[3],
             if (fabs(angle - ray_angle) < atan(AGENT_RADIUS / distance))
             {
                 min_distance = distance;
+                observation[dog_index][ray_index][SHEEP] = 0;
                 observation[dog_index][ray_index][DOG] = 1;
                 rays_lengths[dog_index][ray_index] = distance / RAY_LENGTH;
             }

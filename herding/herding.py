@@ -1,25 +1,21 @@
 import gym
-import numpy as np
-from herding.data import create_env_data
-from herding.agents import AgentsController
-from herding.layout import AgentsLayout
-from herding.reward import create_reward_counter
+from herding import data, agents, layout, reward
 import warnings
 
 
 class Herding(gym.Env):
-
     metadata = {
         'render.modes': ['human']
     }
 
     def __init__(self, **params):
-        self.env_data = create_env_data(params)
-        self._check_params(self.env_data)
-        self.reward_counter = create_reward_counter(self.env_data)
-        self.agents_controller = AgentsController(self.env_data)
-        self.agents_layout = AgentsLayout(self.env_data)
+        self.env_data = data.EnvData(config=data.create_config(params))
+        # OpenCL and other modules are lazy loaded when calling reset() for the first time
+        self.reward_counter: reward.RewardCounter
+        self.agents_controller: agents.AgentsController
+        self.agents_layout: layout.AgentsLayout
         self.viewer = None
+        self.env_initialised = False
 
     def step(self, action):
         self.agents_controller.move_agents(action)
@@ -30,6 +26,10 @@ class Herding(gym.Env):
         return observation, reward, is_done, {}
 
     def reset(self):
+        if not self.env_initialised:
+            self._init_env_modules()
+            self.env_initialised = True
+
         self.agents_layout.set_up_agents()
         self.reward_counter.reset()
         observation = self.agents_controller.get_observation()
@@ -68,14 +68,13 @@ class Herding(gym.Env):
         return gym.spaces.Box(low=0, high=1, shape=(self.env_data.config.rays_count,
                                                     self.env_data.config.channels_count))
 
+    def _init_env_modules(self):
+        data.init_opencl(self.env_data)
+        self.reward_counter = reward.create_reward_counter(self.env_data)
+        self.agents_controller = agents.AgentsController(self.env_data)
+        self.agents_layout = layout.AgentsLayout(self.env_data)
+
     def _get_debug_text(self):
         reward_text = 'Reward: {:.2f}'.format(self.reward_counter.get_episode_reward())
 
         return reward_text
-
-    @staticmethod
-    def _check_params(env_data):
-        max_workgroup_size = env_data.ocl.get_max_work_group_size()
-        if max_workgroup_size < env_data.config.sheep_count:
-            raise ValueError('Sheep count should be below ' + \
-                             str(max_workgroup_size) + '.')
