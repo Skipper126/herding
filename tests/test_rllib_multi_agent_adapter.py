@@ -56,6 +56,10 @@ test_cases = [
     },
 ]
 
+def test_parameters():
+    MultiAgentHerding()
+    MultiAgentHerding({'dogs_count': 1})
+
 @pytest.mark.parametrize('test_config', test_cases)
 def test_rllib_adapter_step(test_config):
     env = MultiAgentHerding(env=_get_herding_mock(test_config))

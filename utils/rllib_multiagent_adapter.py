@@ -8,8 +8,9 @@ from herding import Herding
 class MultiAgentHerding(MultiAgentEnv):
 
     def __init__(self, env_config: Dict=None, env: Herding=None):
-        self.env = env or Herding(**env_config)
-        self.agents_names = ['dog_{}'.format(i) for i in range(env.env_data.config.dogs_count)]
+        params = env_config or {}
+        self.env = env or Herding(**params)
+        self.agents_names = ['dog_{}'.format(i) for i in range(self.env.env_data.config.dogs_count)]
 
     def step(self, action_dict):
         observation, reward, is_done, _ = self.env.step(np.stack([val for key, val in sorted(action_dict.items())]))
