@@ -60,7 +60,7 @@ class Herding(gym.Env):
     @property
     def action_space(self) -> gym.spaces.Box:
         '''Returns action space for a single dog.'''
-        return gym.spaces.Box(low=-1, high=1, shape=(self.env_data.config.channels_count,))
+        return gym.spaces.Box(low=-1, high=1, shape=(3,))
 
     @property
     def observation_space(self) -> gym.spaces.Box:
