@@ -17,7 +17,6 @@ results = tune.run(
     stop=stop,
     config={
         "horizon": 2000,
-        "monitor": True,
         "env": MultiAgentHerding,
         "multiagent": {
             "policies": {
