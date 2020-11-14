@@ -15,7 +15,7 @@ class BenchmarkParams(NamedTuple):
     single_benchmark_max_time = 10
     benchmark_iterations = 1000
 
-def run_benchmark(iterations, **env_params):
+def run_benchmark(iterations, env_params):
     env = Herding(**env_params)
     dogs_count = env.env_data.config.dogs_count
     env.reset()
@@ -23,6 +23,7 @@ def run_benchmark(iterations, **env_params):
     for i in range(iterations):
         env.step(np.random.rand(dogs_count, 3).astype(np.float32))
     end_time = time.time()
+    env.close()
     result = end_time - start_time
     print(str(int(iterations / result)) + " iterations / s")
 
@@ -71,3 +72,7 @@ def _get_actions(dogs_counts):
         actions.append(np.empty((dogs_count, 3)))
 
     return actions
+
+if __name__ == "__main__":
+    run_benchmark(10000, {"dogs_count": 3, "sheep_count": 50 })
+    run_benchmark(10000, {"dogs_count": 3, "sheep_count": 50, "use_cpu": True})

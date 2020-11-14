@@ -6,16 +6,16 @@ import numpy as np
 
 def create_config(params) -> Config:
     config_dict = configuration.get_default_configuration()
-    config_dict.update(params)
     config_internal = configuration.get_internal_configuration()
     config_dict.update(config_internal)
+    config_dict.update(params)
 
     return Config(**config_dict)
 
 
 def init_opencl(env_data: EnvData):
     definitions = configuration.get_kernel_definitions(env_data.config)
-    env_data.ocl = opencl.OpenCL(definitions)
+    env_data.ocl = opencl.OpenCL(env_data, definitions)
     env_data.shared_buffers = _create_buffers(env_data.ocl, env_data.config)
     _init_seed(env_data)
 

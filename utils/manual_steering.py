@@ -23,9 +23,9 @@ class ManualSteering:
         elif k == key.DOWN:
             self.player_input[1] = 1
         elif k == key.COMMA:
-            self.player_input[2] = 0.1
+            self.player_input[2] = 1
         elif k == key.PERIOD:
-            self.player_input[2] = -0.1
+            self.player_input[2] = -1
         elif k == key.ESCAPE:
             self.quit = True
 

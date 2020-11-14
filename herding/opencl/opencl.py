@@ -1,19 +1,16 @@
-import pyopencl as cl
+from pathlib import Path
 from typing import Dict, Tuple, List
-import numpy as np
+import itertools
+import pyopencl as cl
+
 from herding.opencl.buffer import Buffer
 from herding.opencl.module import Module
-from pathlib import Path
 
 
 class OpenCL:
 
-    def __init__(self, definitions: Dict[str, int]):
-        platform = cl.get_platforms()[0]
-        device = platform.get_devices(cl.device_type.GPU)[0]
-        if device is None:
-            device = platform.get_devices(cl.device_type.CPU)[0]
-
+    def __init__(self, env_data, definitions: Dict[str, int]):
+        device = _get_device(env_data)
         self.context = cl.Context([device])
         self.queue = cl.CommandQueue(self.context)
         self.project_root = _get_project_root_path()
@@ -50,3 +47,24 @@ def _convert_definitions(definitions):
     options = ['-D ' + name.upper() + '=' + str(value) for name, value in definitions.items()]
 
     return options
+
+
+def _get_device(env_data) -> cl.Device:
+    device = None
+    platforms = cl.get_platforms()
+
+    if env_data.config.use_cpu == False:
+        device = next(itertools.chain(*[p.get_devices(cl.device_type.GPU) for p in platforms]), None)
+        print(device.get_info(cl.device_info.VENDOR))
+
+    if device is None:
+        device = next(itertools.chain(*[p.get_devices(cl.device_type.CPU) for p in platforms]), None)
+        if env_data.config.use_cpu == 2:
+            print('single_core')
+            device = device.create_sub_devices([
+                cl.device_partition_property.BY_COUNTS,
+                1
+            ])[0]
+        print(device.get_info(cl.device_info.VENDOR))
+
+    return device

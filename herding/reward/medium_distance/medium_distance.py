@@ -31,7 +31,7 @@ class MediumDistanceRewardCounter(RewardCounter):
 
         reward = (self.previous_distance - medium_distance) * self.target_reward / self.start_distance
         self.previous_distance = medium_distance
-        self.total_reward += reward
+        self.total_reward += reward - 0.01
         return reward
 
     def is_done(self):

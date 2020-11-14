@@ -1,7 +1,7 @@
 from typing import Dict, cast
 import numpy as np
 import pytest
-from utils.rllib_multiagent_adapter import MultiAgentHerding
+from rl.rllib_multiagent_adapter import MultiAgentHerding
 from herding import Herding
 pytest.importorskip('ray.rllib')
 

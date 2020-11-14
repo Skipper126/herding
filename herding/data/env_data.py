@@ -11,6 +11,7 @@ class Config:
     herd_target_radius: int
     rotation_mode: str
     reward_type: str
+    use_cpu: bool
     agent_radius: int
     max_movement_speed: int
     max_rotation_speed: int

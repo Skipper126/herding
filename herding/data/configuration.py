@@ -53,6 +53,7 @@ def get_default_configuration() -> Dict:
         'sheep_type': 'simple',
         'rotation_mode': 'free',
         'reward_type': 'medium_distance',
+        'use_cpu': False,
         'skip_frames': 1,
     }
 
@@ -62,7 +63,7 @@ def get_internal_configuration() -> Dict:
         'herd_target_radius': 200,
         'agent_radius': 10,
         'max_movement_speed': 5,
-        'max_rotation_speed': 45,  # In degrees
+        'max_rotation_speed': 10,  # In degrees
         'max_episode_reward': 100,
         'sheep_flee_distance': 300,
         'rays_count': 128,
