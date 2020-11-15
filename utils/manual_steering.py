@@ -9,8 +9,8 @@ class ManualSteering:
 
     def __init__(self, env):
         self.env = env
-        self.player_input = [0, 0, 0]
-        self.other_dogs_input = ([0, 0, 0],) * (env.env_data.config.dogs_count - 1)
+        self.player_input = [0, 0]
+        self.other_dogs_input = ([0, 0],) * (env.env_data.config.dogs_count - 1)
         self.quit = False
 
     def key_press(self, k, mod):
@@ -19,13 +19,9 @@ class ManualSteering:
         elif k == key.RIGHT:
             self.player_input[0] = 1
         elif k == key.UP:
-            self.player_input[1] = -1
-        elif k == key.DOWN:
             self.player_input[1] = 1
-        elif k == key.COMMA:
-            self.player_input[2] = 1
-        elif k == key.PERIOD:
-            self.player_input[2] = -1
+        elif k == key.DOWN:
+            self.player_input[1] = -1
         elif k == key.ESCAPE:
             self.quit = True
 
@@ -38,10 +34,6 @@ class ManualSteering:
             self.player_input[1] = 0
         elif k == key.DOWN:
             self.player_input[1] = 0
-        elif k == key.COMMA:
-            self.player_input[2] = 0
-        elif k == key.PERIOD:
-            self.player_input[2] = 0
 
     def on_close(self):
         self.quit = True

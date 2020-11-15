@@ -10,7 +10,7 @@ class AgentsController:
         self.sheep_count = env_data.config.sheep_count
         self.skip_frames = env_data.config.skip_frames
 
-        self.action_buffer = env_data.ocl.create_buffer((self.dogs_count, 3), np.float32)
+        self.action_buffer = env_data.ocl.create_buffer((self.dogs_count, 2), np.float32)
         self.observation_buffer = env_data.shared_buffers.observation
 
         self.move_dogs_kernel = env_data.ocl.create_module('herding/agents/agents_move.cl',

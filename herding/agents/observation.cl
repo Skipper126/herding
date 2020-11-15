@@ -22,7 +22,7 @@ float get_distance(float x1, float y1, float x2, float y2)
     return sqrt((x_diff * x_diff) + (y_diff * y_diff));
 }
 
-__kernel void get_observation(__global float (*dogs_positions)[3],
+__kernel void get_observation(__global float (*dogs_positions)[2],
                               __global float (*sheep_positions)[2],
                               __global float (*target_position),
                               __global float (*observation)[RAYS_COUNT][3],
@@ -33,12 +33,9 @@ __kernel void get_observation(__global float (*dogs_positions)[3],
     clear_observation(observation, rays_lengths);
     float dog_pos_x = dogs_positions[dog_index][0];
     float dog_pos_y = dogs_positions[dog_index][1];
-    float ray_angle = dogs_positions[dog_index][2] + (((float)ray_index / RAYS_COUNT) * PI);
+    float ray_angle = 2 * (((float)ray_index / (RAYS_COUNT - 1)) * PI);
     float min_distance = RAY_LENGTH;
-    if (ray_angle > 2 * PI)
-    {
-        ray_angle = ray_angle - 2 * PI;
-    }
+
     for (int i = 0; i < SHEEP_COUNT; ++i)
     {
         float agent_pos_x = sheep_positions[i][0];

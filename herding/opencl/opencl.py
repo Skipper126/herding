@@ -53,18 +53,10 @@ def _get_device(env_data) -> cl.Device:
     device = None
     platforms = cl.get_platforms()
 
-    if env_data.config.use_cpu == False:
+    if env_data.config.device == 'gpu':
         device = next(itertools.chain(*[p.get_devices(cl.device_type.GPU) for p in platforms]), None)
-        print(device.get_info(cl.device_info.VENDOR))
 
     if device is None:
         device = next(itertools.chain(*[p.get_devices(cl.device_type.CPU) for p in platforms]), None)
-        if env_data.config.use_cpu == 2:
-            print('single_core')
-            device = device.create_sub_devices([
-                cl.device_partition_property.BY_COUNTS,
-                1
-            ])[0]
-        print(device.get_info(cl.device_info.VENDOR))
 
     return device

@@ -1,7 +1,7 @@
 #include "herding/opencl/rand.h"
 #define PI 3.141592
 
-__kernel void set_up_agents(__global float (*dogs_positions)[3],
+__kernel void set_up_agents(__global float (*dogs_positions)[2],
                             __global float (*sheep_positions)[2],
                             __global float (*target_position),
                             __global unsigned int (*seed))
@@ -13,10 +13,8 @@ __kernel void set_up_agents(__global float (*dogs_positions)[3],
 
     if (id < DOGS_COUNT)
     {
-        float rotation = rand(&seed_value, (int)(2 * PI));
         dogs_positions[id][0] = x_pos;
         dogs_positions[id][1] = y_pos;
-        dogs_positions[id][2] = rotation;
     }
     else if (id - DOGS_COUNT < SHEEP_COUNT)
     {
