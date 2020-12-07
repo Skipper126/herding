@@ -15,7 +15,6 @@ class ConfigName:
     ROTATION_MODE = 'rotation_mode'
     MAP_HEIGHT = 'map_height'
     MAP_WIDTH = 'map_width'
-    SKIP_FRAMES = 'skip_frames'
 
 
 class SheepType:

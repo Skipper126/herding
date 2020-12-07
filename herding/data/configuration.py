@@ -53,7 +53,6 @@ def get_default_configuration() -> Dict:
         'sheep_type': 'simple',
         'reward_type': 'medium_distance',
         'device': 'gpu',
-        'skip_frames': 1,
     }
 
 
@@ -63,6 +62,7 @@ def get_internal_configuration() -> Dict:
         'agent_radius': 10,
         'max_movement_speed': 5,
         'max_episode_reward': 100,
+        'time_penalty_rate': 0.01,
         'sheep_flee_distance': 300,
         'rays_count': 180,
         'ray_length': 500,

@@ -10,9 +10,11 @@ class MediumDistanceRewardCounter(RewardCounter):
         self.sheep_count = env_data.config.sheep_count
         self.target_reward = env_data.config.max_episode_reward
         self.herd_target_radius = env_data.config.herd_target_radius
+        self.time_penalty_rate = env_data.config.time_penalty_rate
         self.start_distance = 0
         self.previous_distance = 0
         self.total_reward = 0
+        self.time_penalty_reward_adjustment = 0
         self.distance_buffer = env_data.ocl.create_buffer((1,), np.int32)
         self.reward_module = env_data.ocl.create_module(
                                                   'herding/reward/medium_distance/medium_distance.cl',
@@ -31,16 +33,19 @@ class MediumDistanceRewardCounter(RewardCounter):
 
         reward = (self.previous_distance - medium_distance) * self.target_reward / self.start_distance
         self.previous_distance = medium_distance
-        self.total_reward += reward - 0.01
+        self.total_reward += reward
+        self._decrease_reward()
+
         return reward
 
     def is_done(self):
-        return self.total_reward >= self.target_reward - 0.5  # some space for numeric error
+        return self.total_reward >= self.target_reward - 0.5 - self.time_penalty_reward_adjustment # some space for numeric error
 
     def reset(self):
         medium_distance = self._get_medium_distance()
         self.start_distance = self.previous_distance = medium_distance
         self.total_reward = 0
+        self.time_penalty_reward_adjustment = 0
 
     def _get_medium_distance(self):
         self.reward_module.run((self.sheep_count,), (self.sheep_count,))
@@ -48,6 +53,10 @@ class MediumDistanceRewardCounter(RewardCounter):
         self.distance_buffer.unmap()
 
         return medium_distance
+
+    def _decrease_reward(self):
+        self.time_penalty_reward_adjustment += self.time_penalty_rate
+        self.total_reward -= self.time_penalty_rate
 
     def get_episode_reward(self):
         return self.total_reward

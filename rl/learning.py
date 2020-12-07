@@ -22,6 +22,7 @@ config = {
         },
         "policy_mapping_fn": lambda agent_id: "policy",
     },
+    "replay_sequence_length": 5,
     "horizon": 5000,
     "num_gpus": 1,
     "num_workers": 6,

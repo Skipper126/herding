@@ -14,12 +14,12 @@ class Config:
     agent_radius: int
     max_movement_speed: int
     max_episode_reward: int
+    time_penalty_rate: int
     sheep_flee_distance: int
     rays_count: int
     ray_length: int
     agents_layout_width: int
     agents_layout_height: int
-    skip_frames: int
     window_width: int
     window_height: int
     channels_count: int
