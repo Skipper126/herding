@@ -34,8 +34,7 @@ class AgentsController:
 
     def move_agents(self, action):
         action_map = self.action_buffer.map_write()
-        input_action = self._sanitize_action_input(action)
-        np.copyto(action_map, input_action)
+        np.copyto(action_map, action)
         self.action_buffer.unmap()
         self.move_dogs_kernel.run((self.dogs_count,))
         self.move_sheep_kernel.run((self.sheep_count,))
@@ -46,10 +45,3 @@ class AgentsController:
         observation = self.observation_buffer.map_read()
 
         return observation
-
-    @staticmethod
-    def _sanitize_action_input(action):
-        if type(action) is np.ndarray:
-            return action
-        else:
-            return np.array(list(action), dtype=np.float32)

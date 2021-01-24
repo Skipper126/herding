@@ -1,3 +1,5 @@
+from threading import local
+
 import ray
 from ray.rllib.agents import ppo
 from ray.rllib.models import ModelCatalog
@@ -27,18 +29,20 @@ config = {
     },
     "horizon": 2000,
     "num_gpus": 1,
+    "explore": False
+    #"replay_sequence_length": 5,
     #"num_workers": 4,
     #"num_envs_per_worker": 2,
 }
 
-ray.init()
+ray.init(local_mode=True)
 
 env = Herding(**{
         "sheep_count": 3
         #"agents_layout": "simple"
     })
 agent = ppo.PPOTrainer(config=config, env=MultiAgentHerding)
-agent.restore(r"C:\Users\Mateusz\ray_results\Herding\Herding_543a\checkpoint_125\checkpoint-125")
+agent.restore(r"C:\Users\Mateusz\ray_results\Herding\Herding\checkpoint_635\checkpoint-635")
 
 episode_reward = 0
 done = False

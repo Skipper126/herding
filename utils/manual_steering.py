@@ -55,6 +55,7 @@ class ManualSteering:
             self.env.render()
 
             if terminal:
+                print(episode_reward)
                 self.env.reset()
                 episode_reward = 0
 

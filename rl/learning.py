@@ -1,6 +1,8 @@
 import ray
 from ray import tune
 from ray.rllib.models import ModelCatalog
+from ray.tune import CLIReporter
+
 from rl.model import HerdingModel
 from rl.rllib_multiagent_adapter import MultiAgentHerding
 
@@ -22,12 +24,13 @@ config = {
         },
         "policy_mapping_fn": lambda agent_id: "policy",
     },
-    "replay_sequence_length": 5,
-    "horizon": 5000,
+    #"replay_sequence_length": 500,
+    "horizon": 300,
+    "explore": True,
     "num_gpus": 1,
-    "num_workers": 6,
-    "num_envs_per_worker": 4,
-    "lr": 0.001,
+    "num_workers": 7,
+    "num_envs_per_worker": 1,
+    "batch_mode": "complete_episodes"
 }
 
 def run_learning(env_config):
@@ -44,11 +47,12 @@ def run_learning(env_config):
         trial_dirname_creator=lambda trial: 'Herding',
         keep_checkpoints_num=1,
         checkpoint_freq=5,
-        resume=True
+        progress_reporter=CLIReporter(max_report_frequency=60)
+        #resume=True
     )
 
 if __name__ == "__main__":
-    ray.init()
+    ray.init(local_mode=True)
 
     run_learning({
         'dogs_count': 1,
