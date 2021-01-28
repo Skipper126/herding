@@ -3,37 +3,38 @@ from herding.data.configuration import get_default_configuration
 from pyglet.window import key
 import argparse
 import sys
+import numpy as np
 
 
 class ManualSteering:
 
     def __init__(self, env):
         self.env = env
-        self.player_input = [0, 0]
+        self.player_input = [1, 1]
         self.other_dogs_input = ([0, 0],) * (env.env_data.config.dogs_count - 1)
         self.quit = False
 
     def key_press(self, k, mod):
-        if k == key.LEFT:
-            self.player_input[0] = -1
-        elif k == key.RIGHT:
-            self.player_input[0] = 1
-        elif k == key.UP:
-            self.player_input[1] = 1
+        if k == key.UP:
+            self.player_input[0] = 0
         elif k == key.DOWN:
-            self.player_input[1] = -1
+            self.player_input[0] = 2
+        elif k == key.LEFT:
+            self.player_input[1] = 0
+        elif k == key.RIGHT:
+            self.player_input[1] = 2
         elif k == key.ESCAPE:
             self.quit = True
 
     def key_release(self, k, mod):
-        if k == key.LEFT:
-            self.player_input[0] = 0
-        elif k == key.RIGHT:
-            self.player_input[0] = 0
-        elif k == key.UP:
-            self.player_input[1] = 0
+        if k == key.UP:
+            self.player_input[0] = 1
         elif k == key.DOWN:
-            self.player_input[1] = 0
+            self.player_input[0] = 1
+        elif k == key.LEFT:
+            self.player_input[1] = 1
+        elif k == key.RIGHT:
+            self.player_input[1] = 1
 
     def on_close(self):
         self.quit = True

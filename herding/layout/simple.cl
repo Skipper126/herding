@@ -1,6 +1,6 @@
 #define PI 3.141592
 
-__kernel void set_up_agents(__global float (*dogs_positions)[2],
+__kernel void set_up_agents(__global float (*dogs_positions)[3],
                             __global float (*sheep_positions)[2],
                             __global float (*target_position),
                             __global unsigned int (*seed))
@@ -11,6 +11,7 @@ __kernel void set_up_agents(__global float (*dogs_positions)[2],
     {
         dogs_positions[id][0] = 500;
         dogs_positions[id][1] = 100;
+        dogs_positions[id][2] = 0;
     }
     else if (id - DOGS_COUNT < SHEEP_COUNT)
     {

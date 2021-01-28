@@ -9,15 +9,18 @@ class Config:
     agents_layout: str
     sheep_type: str
     herd_target_radius: int
+    rotation_mode: str
     reward_type: str
-    device: str
+    device: bool
     agent_radius: int
-    max_movement_speed: int
+    movement_speed: int
+    rotation_speed: int
     max_episode_reward: int
     time_penalty_rate: int
     sheep_flee_distance: int
     rays_count: int
     ray_length: int
+    field_of_view: int
     agents_layout_width: int
     agents_layout_height: int
     window_width: int

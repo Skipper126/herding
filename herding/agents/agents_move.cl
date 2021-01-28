@@ -2,26 +2,31 @@
 #define DEG2RAD 0.01745329252
 
 
-__kernel void move_dogs(__global float (*dogs_positions)[2],
-                        __global float (*action)[2])
+__kernel void move_dogs(__global float (*dogs_positions)[3],
+                        __global int (*action)[2])
 {
     int id = get_global_id(0);
-    float delta_x = action[id][0] * MAX_MOVEMENT_SPEED;
-    float delta_y = action[id][1] * MAX_MOVEMENT_SPEED;
 
-    float move_vector = sqrt(delta_x * delta_x + delta_y * delta_y);
-    if (move_vector > MAX_MOVEMENT_SPEED)
+    int delta_movement = (action[id][0] - 1) * MOVEMENT_SPEED * -1;
+    float rotation = dogs_positions[id][2] - (action[id][1] - 1) * ROTATION_SPEED * DEG2RAD;
+    if (rotation < 0)
     {
-        float scale_down = MAX_MOVEMENT_SPEED / move_vector;
-        delta_x *= scale_down;
-        delta_y *= scale_down;
+        rotation = 2 * PI + rotation;
+    }
+    else if (rotation > 2 * PI)
+    {
+        rotation = rotation - 2 * PI;
     }
 
-    dogs_positions[id][0] += delta_x;
-    dogs_positions[id][1] += delta_y;
+    float cos_rotation = cos(-rotation);
+    float sin_rotation = sin(-rotation);
+
+    dogs_positions[id][0] += delta_movement * sin_rotation;
+    dogs_positions[id][1] += delta_movement * cos_rotation;
+    dogs_positions[id][2] = rotation;
 }
 
-__kernel void move_sheep_simple(__global float (*dogs_positions)[2],
+__kernel void move_sheep_simple(__global float (*dogs_positions)[3],
                                 __global float (*sheep_positions)[2])
 {
     int id = get_global_id(0);
@@ -68,8 +73,8 @@ __kernel void move_sheep_simple(__global float (*dogs_positions)[2],
         }
     }
 
-    delta_x = (delta_x / dog_min_distance) * MAX_MOVEMENT_SPEED;
-    delta_y = (delta_y / dog_min_distance) * MAX_MOVEMENT_SPEED;
+    delta_x = (delta_x / dog_min_distance) * MOVEMENT_SPEED;
+    delta_y = (delta_y / dog_min_distance) * MOVEMENT_SPEED;
 
     sheep_positions[id][0] += delta_x;
     sheep_positions[id][1] += delta_y;

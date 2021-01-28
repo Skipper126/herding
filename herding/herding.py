@@ -58,9 +58,14 @@ class Herding(gym.Env):
             self.viewer.close()
 
     @property
-    def action_space(self) -> gym.spaces.Box:
-        '''Returns action space for a single dog.'''
-        return gym.spaces.Box(low=-1, high=1, shape=(2,))
+    def action_space(self) -> gym.spaces.MultiDiscrete:
+        '''
+        Returns action space for a single dog.
+        Actions are:
+        1) Movement: BACK[0], NOOP[1], FORWARD[2]
+        2) Rotation: LEFT[0], NOOP[1], RIGHT[2]
+        '''
+        return gym.spaces.MultiDiscrete([3, 3])
 
     @property
     def observation_space(self) -> gym.spaces.Box:

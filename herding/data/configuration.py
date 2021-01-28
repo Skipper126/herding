@@ -14,7 +14,7 @@ def get_shared_buffers_info(config: Config) -> List[BufferInfo]:
     return [
         BufferInfo(
             name='dogs_positions',
-            shape=(config.dogs_count, 2),
+            shape=(config.dogs_count, 3),
             dtype=np.float32
         ),
         BufferInfo(
@@ -51,6 +51,7 @@ def get_default_configuration() -> Dict:
         'sheep_count': 3,
         'agents_layout': 'random',
         'sheep_type': 'simple',
+        'rotation_mode': 'free',
         'reward_type': 'medium_distance',
         'device': 'gpu',
     }
@@ -60,12 +61,14 @@ def get_internal_configuration() -> Dict:
     return {
         'herd_target_radius': 200,
         'agent_radius': 10,
-        'max_movement_speed': 5,
+        'movement_speed': 5,
+        'rotation_speed': 5,  # In degrees
         'max_episode_reward': 100,
         'time_penalty_rate': 0.01,
         'sheep_flee_distance': 300,
-        'rays_count': 180,
+        'rays_count': 128,
         'ray_length': 500,
+        'field_of_view': 180,
         'agents_layout_width': 900,
         'agents_layout_height': 600,
         'window_width': 1000,
@@ -81,12 +84,13 @@ def get_kernel_definitions(config: Config) -> Dict[str, int]:
         'sheep_count',
         'herd_target_radius',
         'agent_radius',
-        'max_movement_speed',
-        'max_rotation_speed',
+        'movement_speed',
+        'rotation_speed',
         'max_episode_reward',
         'sheep_flee_distance',
         'rays_count',
         'ray_length',
+        'field_of_view',
         'agents_layout_width',
         'agents_layout_height',
         'channels_count'

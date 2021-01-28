@@ -30,9 +30,9 @@ class DogGeom(Geom):
             ray.set_scale(arrays.rays_lengths[self.index][i], 0)
             color = tuple(arrays.observation[self.index][i])
             if sum(color) == 0:
-                color = (0.95, 0.95, 0.95)
+                color = (0.8, 0.8, 0.8)
             ray.set_color(*color)
-            rot = 2 * (i / (self.rays_count - 1)) * math.pi
+            rot = arrays.dogs_positions[self.index][2] + (i / self.rays_count) * math.pi
             ray.set_rotation(rot)
             x = math.cos(rot) * self.agent_radius
             y = math.sin(rot) * self.agent_radius
