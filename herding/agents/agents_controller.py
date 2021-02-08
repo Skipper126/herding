@@ -34,7 +34,7 @@ class AgentsController:
 
     def move_agents(self, action):
         action_map = self.action_buffer.map_write()
-        np.copyto(action_map, action)
+        np.copyto(action_map, action.astype(np.int32))
         self.action_buffer.unmap()
         self.move_dogs_kernel.run((self.dogs_count,))
         self.move_sheep_kernel.run((self.sheep_count,))

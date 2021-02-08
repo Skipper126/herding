@@ -1,1 +1,0 @@
-from herding.reward.furthest_sheep.furthest_sheep import FurthestSheepRewardCounter

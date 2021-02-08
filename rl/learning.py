@@ -4,17 +4,17 @@ from ray.rllib.models import ModelCatalog
 from ray.tune import CLIReporter
 
 from rl.model import HerdingModel
-from rl.rllib_multiagent_adapter import MultiAgentHerding
+from rl.herding_env_wrapper import HerdingEnvWrapper
 
 
 ModelCatalog.register_custom_model("herding_model", HerdingModel)
 
-env = MultiAgentHerding()
-obs_space = env.env.observation_space
-act_space = env.env.action_space
+env = HerdingEnvWrapper()
+obs_space = env.observation_space
+act_space = env.action_space
 
 config = {
-    "env": MultiAgentHerding,
+    "env": HerdingEnvWrapper,
     "model": {
         "custom_model": "herding_model"
     },
@@ -26,7 +26,6 @@ config = {
     },
     #"replay_sequence_length": 500,
     "horizon": 300,
-    "explore": True,
     "num_gpus": 1,
     "num_workers": 7,
     "num_envs_per_worker": 1,
@@ -52,7 +51,7 @@ def run_learning(env_config):
     )
 
 if __name__ == "__main__":
-    ray.init(local_mode=True)
+    ray.init()
 
     run_learning({
         'dogs_count': 1,

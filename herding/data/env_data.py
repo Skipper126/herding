@@ -9,8 +9,6 @@ class Config:
     agents_layout: str
     sheep_type: str
     herd_target_radius: int
-    rotation_mode: str
-    reward_type: str
     device: bool
     agent_radius: int
     movement_speed: int

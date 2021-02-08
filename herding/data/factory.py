@@ -8,7 +8,8 @@ def create_config(params) -> Config:
     config_dict = configuration.get_default_configuration()
     config_internal = configuration.get_internal_configuration()
     config_dict.update(config_internal)
-    config_dict.update(params)
+    if params is not None:
+        config_dict.update(params)
 
     return Config(**config_dict)
 

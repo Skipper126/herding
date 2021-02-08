@@ -6,14 +6,14 @@ from ray.rllib.models import ModelCatalog
 
 from herding import Herding
 from rl.model import HerdingModel
-from rl.rllib_multiagent_adapter import MultiAgentHerding
+from rl.herding_env_wrapper import HerdingEnvWrapper
 ModelCatalog.register_custom_model("herding_model", HerdingModel)
 
-env = MultiAgentHerding()
-obs_space = env.env.observation_space
-act_space = env.env.action_space
+env = HerdingEnvWrapper()
+obs_space = env.observation_space
+act_space = env.action_space
 config = {
-    "env": MultiAgentHerding,
+    "env": HerdingEnvWrapper,
     "env_config": {
         "sheep_count": 1,
         "agents_layout": "simple"
@@ -41,7 +41,7 @@ env = Herding(**{
         "sheep_count": 3
         #"agents_layout": "simple"
     })
-agent = ppo.PPOTrainer(config=config, env=MultiAgentHerding)
+agent = ppo.PPOTrainer(config=config, env=HerdingEnvWrapper)
 agent.restore(r"C:\Users\Mateusz\ray_results\Herding\Herding\checkpoint_635\checkpoint-635")
 
 episode_reward = 0

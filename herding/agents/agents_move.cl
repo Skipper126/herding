@@ -7,7 +7,7 @@ __kernel void move_dogs(__global float (*dogs_positions)[3],
 {
     int id = get_global_id(0);
 
-    int delta_movement = (action[id][0] - 1) * MOVEMENT_SPEED * -1;
+    int delta_movement = (action[id][0] - 1) * MOVEMENT_SPEED;
     float rotation = dogs_positions[id][2] - (action[id][1] - 1) * ROTATION_SPEED * DEG2RAD;
     if (rotation < 0)
     {

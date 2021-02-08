@@ -16,9 +16,9 @@ class ManualSteering:
 
     def key_press(self, k, mod):
         if k == key.UP:
-            self.player_input[0] = 0
-        elif k == key.DOWN:
             self.player_input[0] = 2
+        elif k == key.DOWN:
+            self.player_input[0] = 0
         elif k == key.LEFT:
             self.player_input[1] = 0
         elif k == key.RIGHT:
@@ -87,4 +87,4 @@ if __name__ == '__main__':
             if args_all[name] is not None:
                 args[name] = value
 
-    play(Herding(**args))
+    play(Herding(args))

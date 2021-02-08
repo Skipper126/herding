@@ -10,12 +10,13 @@ class HerdingModel(TFModelV2):
         super(HerdingModel, self).__init__(obs_space, action_space, num_outputs, model_config, name)
 
         self.inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
-        x = tf.keras.layers.Conv1D(filters=32, kernel_size=4, strides=2)(self.inputs)
+        x = tf.keras.layers.MaxPooling1D(pool_size=2)(self.inputs)
+        x = tf.keras.layers.Conv1D(filters=16, kernel_size=4, strides=2)(x)
         x = tf.keras.layers.MaxPooling1D(pool_size=2)(x)
         x = tf.keras.layers.Flatten()(x)
         x = tf.keras.layers.Dense(units=70)(x)
         x = tf.keras.layers.Dense(units=30)(x)
-        layer_out = tf.keras.layers.Dense(units=num_outputs, name='action', activation=activations.tanh)(x)
+        layer_out = tf.keras.layers.Dense(units=num_outputs, name='action')(x)
 
         value_out = tf.keras.layers.Dense(units=1)(x)
         self.base_model = tf.keras.Model(self.inputs, [layer_out, value_out])

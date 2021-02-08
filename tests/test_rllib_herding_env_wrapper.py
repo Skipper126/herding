@@ -1,7 +1,7 @@
 from typing import Dict, cast
 import numpy as np
 import pytest
-from rl.rllib_multiagent_adapter import MultiAgentHerding
+from rl.herding_env_wrapper import HerdingEnvWrapper
 from herding import Herding
 pytest.importorskip('ray.rllib')
 
@@ -10,9 +10,9 @@ base_test_case = {
         'dogs_count': 3
     },
     'action': np.stack((
-        np.full((3,), 0),
-        np.full((3,), 1),
-        np.full((3,), 2)
+        [2, 0],
+        [2, 1],
+        [2, 2]
     )),
     'observation': np.stack((
         np.full((128, 3), 0),
@@ -22,9 +22,9 @@ base_test_case = {
     'reward': 10,
     'is_done': False,
     'rllib_action': {
-        "dog_0": np.full((3,), 0),
-        "dog_1": np.full((3,), 1),
-        "dog_2": np.full((3,), 2)
+        "dog_0": 0,
+        "dog_1": 1,
+        "dog_2": 2
     },
     'rllib_observation': {
         "dog_0": np.full((128, 3), 0),
@@ -49,20 +49,17 @@ test_cases = [
     {   # Swapping agents keys in rllib_action dict should not influence transformation
         **base_test_case,
         'rllib_action': {
-            "dog_1": np.full((3,), 1),
-            "dog_0": np.full((3,), 0),
-            "dog_2": np.full((3,), 2)
+            "dog_1": 1,
+            "dog_0": 0,
+            "dog_2": 2
         }
     },
 ]
 
-def test_parameters():
-    MultiAgentHerding()
-    MultiAgentHerding({'dogs_count': 1})
 
 @pytest.mark.parametrize('test_config', test_cases)
 def test_rllib_adapter_step(test_config):
-    env = MultiAgentHerding(env=_get_herding_mock(test_config))
+    env = HerdingEnvWrapper(env=_get_herding_mock(test_config))
 
     rllib_observation, rllib_reward, rllib_dones, _ = env.step(test_config['rllib_action'])
 
@@ -73,7 +70,7 @@ def test_rllib_adapter_step(test_config):
 
 @pytest.mark.parametrize('test_config', test_cases)
 def test_rllib_adapter_reset(test_config):
-    env = MultiAgentHerding(env=_get_herding_mock(test_config))
+    env = HerdingEnvWrapper(env=_get_herding_mock(test_config))
 
     rllib_observation = env.reset()
     assert _compare_rllib_dicts(rllib_observation, test_config['rllib_observation'])

@@ -1,3 +1,5 @@
+from typing import Dict
+
 import gym
 from herding import data, agents, layout, reward
 import warnings
@@ -8,7 +10,7 @@ class Herding(gym.Env):
         'render.modes': ['human']
     }
 
-    def __init__(self, **params):
+    def __init__(self, params: Dict=None):
         self.env_data = data.EnvData(config=data.create_config(params))
         # OpenCL and other modules are lazy loaded when calling reset() for the first time
         self.reward_counter: reward.RewardCounter
@@ -75,7 +77,7 @@ class Herding(gym.Env):
 
     def _init_env_modules(self):
         data.init_opencl(self.env_data)
-        self.reward_counter = reward.create_reward_counter(self.env_data)
+        self.reward_counter = reward.RewardCounter(self.env_data)
         self.agents_controller = agents.AgentsController(self.env_data)
         self.agents_layout = layout.AgentsLayout(self.env_data)
 
