@@ -50,13 +50,13 @@ class ManualSteering:
         episode_reward = 0
 
         while not self.quit:
-            env_input = (self.player_input,) + self.other_dogs_input
+            env_input = np.array((self.player_input,) + self.other_dogs_input)
             observation, reward, terminal, _ = self.env.step(env_input)
             episode_reward += reward
             self.env.render()
 
             if terminal:
-                print(episode_reward)
+                print(f'episode reward: {episode_reward}')
                 self.env.reset()
                 episode_reward = 0
 

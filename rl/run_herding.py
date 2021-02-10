@@ -3,7 +3,7 @@ from threading import local
 import ray
 from ray.rllib.agents import ppo
 from ray.rllib.models import ModelCatalog
-
+import numpy as np
 from herding import Herding
 from rl.model import HerdingModel
 from rl.herding_env_wrapper import HerdingEnvWrapper
@@ -15,8 +15,6 @@ act_space = env.action_space
 config = {
     "env": HerdingEnvWrapper,
     "env_config": {
-        "sheep_count": 1,
-        "agents_layout": "simple"
     },
     "model": {
         "custom_model": "herding_model"
@@ -37,20 +35,25 @@ config = {
 
 ray.init(local_mode=True)
 
-env = Herding(**{
+checkpoint_number = 790
+
+env = Herding({
         "sheep_count": 3
         #"agents_layout": "simple"
     })
 agent = ppo.PPOTrainer(config=config, env=HerdingEnvWrapper)
-agent.restore(r"C:\Users\Mateusz\ray_results\Herding\Herding\checkpoint_635\checkpoint-635")
+agent.restore(rf"C:\Users\Mateusz\ray_results\Herding\Herding\checkpoint_{checkpoint_number}\checkpoint-{checkpoint_number}")
 
-episode_reward = 0
-done = False
-obs = env.reset()
-while not done:
-    action = agent.compute_action(obs[0], policy_id="policy")
-    obs, reward, done, info = env.step([action])
-    env.render()
-    episode_reward += reward
+while True:
+    episode_reward = 0
+    done = False
+    steps = 0
+    obs = env.reset()
+    while (not done) and (steps != 300):
+        action = agent.compute_action(obs[0], policy_id="policy")
+        obs, reward, done, info = env.step(np.array([[2, action]]))
+        env.render()
+        episode_reward += reward
+        steps += 1
 
 ray.shutdown()
