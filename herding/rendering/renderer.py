@@ -1,17 +1,9 @@
-from gym.envs.classic_control import rendering
-from herding.rendering.geoms import dog_geom, sheep_geom, target_geom
+from herding.rendering.env_buffers_mapper import EnvArraysMapper
 from herding import data
-from typing import NamedTuple
-import numpy as np
-import pyglet
+import pygame
 
-
-class Arrays(NamedTuple):
-    dogs_positions: np.ndarray
-    sheep_positions: np.ndarray
-    target_position: np.ndarray
-    observation: np.ndarray
-    rays_lengths: np.ndarray
+from herding.rendering.sprites.dog_geom import DogGeom
+from herding.rendering.sprites.sheep_geom import SheepGeom
 
 
 class Renderer:
@@ -19,59 +11,30 @@ class Renderer:
     def __init__(self, env_data: data.EnvData):
         self.window_width = env_data.config.window_width
         self.window_height = env_data.config.window_height
-        self.geom_list = self._init_render_objects(env_data)
-        self.viewer = rendering.Viewer(self.window_width, self.window_height)
-        self.label = self._create_text_label(env_data)
-        self.buffers = [
-            env_data.shared_buffers.dogs_positions,
-            env_data.shared_buffers.sheep_positions,
-            env_data.shared_buffers.target_position,
-            env_data.shared_buffers.observation,
-            env_data.shared_buffers.rays_lengths
-        ]
-        for geom in self.geom_list:
-            self.viewer.geoms.extend(geom.get_parts())
-        self.viewer.add_geom(self.label)
+        self.env_arrays_mapper = EnvArraysMapper(env_data)
+
+
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.window_width, self.window_height))
+
+        self.sheep_geoms = [SheepGeom(env_data, self.screen, index) for index in range(env_data.config.sheep_count)]
+        self.dogs_geoms = [DogGeom(env_data, self.screen, index) for index in range(env_data.config.dogs_count)]
 
     def render(self):
-        arrays = Arrays(*[buffer.map_read() for buffer in self.buffers])
-        for geom in self.geom_list:
-            geom.update(arrays)
+        arrays = self.env_arrays_mapper.map_env_arrays()
+        self.screen.fill('white')
 
-        self.viewer.render()
-        for buffer in self.buffers:
-            buffer.unmap()
+        for sheep in self.sheep_geoms:
+            sheep.update(arrays)
+
+        for dog in self.dogs_geoms:
+            dog.update(arrays)
+
+        pygame.display.flip()
+        self.env_arrays_mapper.unmap_env_arrays()
 
     def set_text(self, text: str):
-        self.label.text = text
+        pass
 
     def close(self):
-        self.viewer.close()
-
-    @staticmethod
-    def _init_render_objects(env_data):
-        geom_list = []
-        dogs_count = env_data.config.dogs_count
-        sheep_count = env_data.config.sheep_count
-
-        for i in range(dogs_count):
-            geom_list.append(dog_geom.DogGeom(env_data, i))
-
-        for i in range(sheep_count):
-            geom_list.append(sheep_geom.SheepGeom(env_data, i))
-
-        geom_list.append(target_geom.Target(env_data))
-
-        return geom_list
-
-    @staticmethod
-    def _create_text_label(env_data):
-        label = pyglet.text.Label('',
-                                  font_name='Consolas',
-                                  font_size=15,
-                                  x=5, y=env_data.config.window_height - 5,
-                                  anchor_x='left', anchor_y='top',
-                                  color=(0, 0, 0, 255))
-        setattr(label, 'render', lambda: label.draw())
-
-        return label
+        pass
