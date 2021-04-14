@@ -15,7 +15,7 @@ class Renderer:
 
 
         pygame.init()
-        self.screen = pygame.display.set_mode((self.window_width, self.window_height))
+        self.screen = pygame.display.set_mode((self.window_width, self.window_height), pygame.RESIZABLE)
 
         self.sheep_geoms = [SheepGeom(env_data, self.screen, index) for index in range(env_data.config.sheep_count)]
         self.dogs_geoms = [DogGeom(env_data, self.screen, index) for index in range(env_data.config.dogs_count)]
@@ -31,6 +31,7 @@ class Renderer:
             dog.update(arrays)
 
         pygame.display.flip()
+
         self.env_arrays_mapper.unmap_env_arrays()
 
     def set_text(self, text: str):

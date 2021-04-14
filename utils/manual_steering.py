@@ -22,7 +22,7 @@ class ManualSteering:
     def __init__(self, env):
         self.env = env
         self.player_input = [1, 1]
-        self.other_dogs_input = ([0, 0],) * (env.env_data.config.dogs_count - 1)
+        self.other_dogs_input = ([1, 1],) * (env.env_data.config.dogs_count - 1)
         self.quit = False
 
     def key_press(self, event):

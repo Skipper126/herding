@@ -10,7 +10,7 @@ class Buffer:
         self.dtype = dtype
         self.mapping = None
         self.map_count = 0
-        self.buffer = cl.Buffer(context, cl.mem_flags.ALLOC_HOST_PTR, np.prod(shape) * 4)
+        self.buffer = cl.Buffer(context, cl.mem_flags.ALLOC_HOST_PTR, np.prod(shape).astype(np.int32) * 4)
 
     def map_read(self) -> np.ndarray:
         if self.mapping is None:
