@@ -21,17 +21,17 @@ def test_matrix_sorter_sort_rows_single_pass(matrix_sorter, matrix_buffer, unsor
     assert np.array_equal(sorted_matrix, expected_sorted_matrix)
 
 
-def test_matrix_sorter_sort_complete(matrix_sorter, matrix_buffer, sorted_matrix):
+def test_matrix_sorter_sort_complete(matrix_sorter, matrix_buffer, expected_sorted_matrix):
     matrix_sorter.sort_complete(matrix_buffer)
-    gpu_sorted_matrix = matrix_buffer.map_read()
+    sorted_matrix = matrix_buffer.map_read()
 
-    assert np.array_equal(gpu_sorted_matrix, sorted_matrix)
+    assert np.array_equal(sorted_matrix, expected_sorted_matrix)
 
 
-def test_helper_sorter(unsorted_matrix, sorted_matrix):
-    sort_result_matrix = sort(unsorted_matrix)
+def test_helper_sorter(unsorted_matrix, expected_sorted_matrix):
+    sorted_matrix = sort_complete(unsorted_matrix)
 
-    assert np.array_equal(sort_result_matrix, sorted_matrix)
+    assert np.array_equal(sorted_matrix, expected_sorted_matrix)
 
 
 # =================== Fixtures =============================
@@ -39,12 +39,12 @@ def test_helper_sorter(unsorted_matrix, sorted_matrix):
 
 @pytest.fixture
 def unsorted_matrix():
-    return _get_sample_matrix(size=101, direction='desc')
+    return _get_unsorted_matrix(size=101)
 
 
 @pytest.fixture
-def sorted_matrix():
-    return _get_sample_matrix(size=101, direction='asc')
+def expected_sorted_matrix():
+    return sort_complete(_get_unsorted_matrix(size=101))
 
 
 @pytest.fixture
@@ -99,7 +99,7 @@ def sort_rows_single_pass(input_matrix: np.ndarray, offset: int) -> np.ndarray:
 
     return matrix
 
-def sort(matrix: np.ndarray) -> np.ndarray:
+def sort_complete(matrix: np.ndarray) -> np.ndarray:
     out_matrix = np.copy(matrix)
     for i in range(matrix.shape[0]):
         out_matrix = sort_columns_single_pass(out_matrix, 0)
@@ -112,11 +112,11 @@ def sort(matrix: np.ndarray) -> np.ndarray:
     return out_matrix
 
 
-def _get_sample_matrix(size: int, direction: str) -> np.ndarray:
-    list_range = list(range(size)) if direction == 'asc' else list(range(size - 1, -1, -1))
+def _get_unsorted_matrix(size: int) -> np.ndarray:
+    list_range = list(range(size - 1, -1, -1))
 
     value_matrix = np.array(np.meshgrid(list_range, list_range, indexing='ij')).T.reshape(-1, 2)
-    zero_padding = np.zeros((size * size, 2))
+    zero_padding = np.arange(size * size * 2, dtype=np.float32).reshape((size * size, 2))
     complete_matrix = np.hstack((value_matrix, zero_padding)).reshape((size, size, 4))
 
     return complete_matrix.astype(np.float32)
