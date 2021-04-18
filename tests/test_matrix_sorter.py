@@ -21,6 +21,13 @@ def test_matrix_sorter_sort_rows_single_pass(matrix_sorter, matrix_buffer, unsor
     assert np.array_equal(sorted_matrix, expected_sorted_matrix)
 
 
+def test_matrix_sorter_sort_complete(matrix_sorter, matrix_buffer, sorted_matrix):
+    matrix_sorter.sort_complete(matrix_buffer)
+    gpu_sorted_matrix = matrix_buffer.map_read()
+
+    assert np.array_equal(gpu_sorted_matrix, sorted_matrix)
+
+
 def test_helper_sorter(unsorted_matrix, sorted_matrix):
     sort_result_matrix = sort(unsorted_matrix)
 

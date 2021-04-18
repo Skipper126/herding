@@ -1,8 +1,6 @@
 import pytest
 from herding.reward import RewardCounter
 
-def test_basic_herding():
-    reward_counter = RewardCounter()
 
 
 
