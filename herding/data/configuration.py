@@ -11,9 +11,11 @@ class BufferInfo(NamedTuple):
 
 
 def get_shared_buffers_info(config: Config) -> List[BufferInfo]:
-    agents_matrix_side_length = int((config.dogs_count + config.sheep_count) / 2)
+    # side length must be odd number
+    agents_matrix_side_length = int((config.dogs_count + config.sheep_count + 1) / 2)
     return [
         BufferInfo(
+            # Pos X, Pos Y, Direction, Velocity, Type, UNUSED, UNUSED, UNUSED
             name='agents_matrix1',
             shape=(agents_matrix_side_length, agents_matrix_side_length, 8),
             dtype=np.float32
@@ -49,8 +51,9 @@ def get_shared_buffers_info(config: Config) -> List[BufferInfo]:
             dtype=np.float32
         ),
         BufferInfo(
+            # Each matrix cell will have it's corresponding seed
             name='seed',
-            shape=(config.dogs_count + config.sheep_count + 1,),
+            shape=(agents_matrix_side_length, agents_matrix_side_length),
             dtype=np.uint32
         )
     ]
@@ -79,7 +82,7 @@ def get_internal_configuration() -> Dict:
         'ray_length': 500,
         'field_of_view': 180,
         'agents_layout_width': 900,
-        'agents_layout_height': 600,
+        'agents_layout_height': 700,
         'window_width': 1000,
         'window_height': 800,
         'channels_count': 3,

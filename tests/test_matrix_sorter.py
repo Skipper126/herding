@@ -1,7 +1,10 @@
 import pytest
 from herding import data, agents
+import tests.shared
 import numpy as np
 
+
+# tests for single columns/rows pass are here until there is a way to do that in a single kernel invocation.
 
 @pytest.mark.parametrize('offset', [0, 1])
 def test_matrix_sorter_sort_columns_single_pass(matrix_sorter, matrix_buffer, unsorted_matrix, offset):
@@ -46,7 +49,7 @@ def test_helper_sorter(unsorted_matrix, expected_sorted_matrix):
 
 @pytest.fixture
 def unsorted_matrix(env_data):
-    side_length = int((env_data.config.dogs_count + env_data.config.sheep_count) / 2)
+    side_length = int((env_data.config.dogs_count + env_data.config.sheep_count + 1) / 2)
 
     return _get_unsorted_matrix(side_length)
 
@@ -64,11 +67,11 @@ def expected_sorted_matrix_single_pass(unsorted_matrix):
 @pytest.fixture
 def env_data():
     params = {
-        'sheep_count': 101,
+        'sheep_count': 100,
         'dogs_count': 1
     }
 
-    return _get_env_data(params)
+    return tests.shared.get_env_data(params)
 
 
 @pytest.fixture

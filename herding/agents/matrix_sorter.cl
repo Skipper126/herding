@@ -1,6 +1,6 @@
 
 
-__kernel void sort_columns_single_pass(__global float8 (*agents_matrix)[(DOGS_COUNT + SHEEP_COUNT) / 2], __global int *offset)
+__kernel void sort_columns_single_pass(__global float8 (*agents_matrix)[(DOGS_COUNT + SHEEP_COUNT + 1) / 2], __global int *offset)
 {
     int i = get_global_id(0);
     int j = get_global_id(1) * 2 + *offset;
@@ -15,7 +15,7 @@ __kernel void sort_columns_single_pass(__global float8 (*agents_matrix)[(DOGS_CO
     }
 }
 
-__kernel void sort_rows_single_pass(__global float8 (*agents_matrix)[(DOGS_COUNT + SHEEP_COUNT) / 2], __global int *offset)
+__kernel void sort_rows_single_pass(__global float8 (*agents_matrix)[(DOGS_COUNT + SHEEP_COUNT + 1) / 2], __global int *offset)
 {
     int i = get_global_id(0) * 2 + *offset;
     int j = get_global_id(1);
