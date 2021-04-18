@@ -11,7 +11,18 @@ class BufferInfo(NamedTuple):
 
 
 def get_shared_buffers_info(config: Config) -> List[BufferInfo]:
+    agents_matrix_side_length = int((config.dogs_count + config.sheep_count) / 2)
     return [
+        BufferInfo(
+            name='agents_matrix1',
+            shape=(agents_matrix_side_length, agents_matrix_side_length, 8),
+            dtype=np.float32
+        ),
+        BufferInfo(
+            name='agents_matrix2',
+            shape=(agents_matrix_side_length, agents_matrix_side_length, 8),
+            dtype=np.float32
+        ),
         BufferInfo(
             name='dogs_positions',
             shape=(config.dogs_count, 3),

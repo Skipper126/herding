@@ -30,6 +30,8 @@ def _create_buffers(ocl: opencl.OpenCL, config: Config) -> Buffers:
         dtype = buffer_info.dtype
         buffers_dict[name] = ocl.create_buffer(shape, dtype)
 
+    buffers_dict['current_agents_matrix'] = buffers_dict['agents_matrix1']
+
     return Buffers(**buffers_dict)
 
 

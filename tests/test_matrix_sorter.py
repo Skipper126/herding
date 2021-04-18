@@ -5,7 +5,7 @@ import numpy as np
 
 @pytest.mark.parametrize('offset', [0, 1])
 def test_matrix_sorter_sort_columns_single_pass(matrix_sorter, matrix_buffer, unsorted_matrix, offset):
-    matrix_sorter.sort_columns_single_pass(matrix_buffer, offset)
+    matrix_sorter._sort_columns_single_pass(matrix_buffer, offset)
     sorted_matrix = matrix_buffer.map_read()
 
     expected_sorted_matrix = sort_columns_single_pass(unsorted_matrix, offset)
@@ -14,15 +14,22 @@ def test_matrix_sorter_sort_columns_single_pass(matrix_sorter, matrix_buffer, un
 
 @pytest.mark.parametrize('offset', [0, 1])
 def test_matrix_sorter_sort_rows_single_pass(matrix_sorter, matrix_buffer, unsorted_matrix, offset):
-    matrix_sorter.sort_rows_single_pass(matrix_buffer, offset)
+    matrix_sorter._sort_rows_single_pass(matrix_buffer, offset)
     sorted_matrix = matrix_buffer.map_read()
 
     expected_sorted_matrix = sort_rows_single_pass(unsorted_matrix, offset)
     assert np.array_equal(sorted_matrix, expected_sorted_matrix)
 
 
+def test_matrix_sorter_sort_single_pass(matrix_sorter, matrix_buffer, expected_sorted_matrix_single_pass):
+    matrix_sorter.sort_single_pass()
+    sorted_matrix = matrix_buffer.map_read()
+
+    assert np.array_equal(sorted_matrix, expected_sorted_matrix_single_pass)
+
+
 def test_matrix_sorter_sort_complete(matrix_sorter, matrix_buffer, expected_sorted_matrix):
-    matrix_sorter.sort_complete(matrix_buffer)
+    matrix_sorter.sort_complete()
     sorted_matrix = matrix_buffer.map_read()
 
     assert np.array_equal(sorted_matrix, expected_sorted_matrix)
@@ -38,18 +45,30 @@ def test_helper_sorter(unsorted_matrix, expected_sorted_matrix):
 
 
 @pytest.fixture
-def unsorted_matrix():
-    return _get_unsorted_matrix(size=101)
+def unsorted_matrix(env_data):
+    side_length = int((env_data.config.dogs_count + env_data.config.sheep_count) / 2)
+
+    return _get_unsorted_matrix(side_length)
 
 
 @pytest.fixture
-def expected_sorted_matrix():
-    return sort_complete(_get_unsorted_matrix(size=101))
+def expected_sorted_matrix(unsorted_matrix):
+    return sort_complete(unsorted_matrix)
+
+
+@pytest.fixture
+def expected_sorted_matrix_single_pass(unsorted_matrix):
+    return sort_single_pass(unsorted_matrix)
 
 
 @pytest.fixture
 def env_data():
-    return _get_env_data()
+    params = {
+        'sheep_count': 101,
+        'dogs_count': 1
+    }
+
+    return _get_env_data(params)
 
 
 @pytest.fixture
@@ -59,7 +78,7 @@ def matrix_sorter(env_data):
 
 @pytest.fixture
 def matrix_buffer(env_data, matrix_sorter, unsorted_matrix):
-    matrix_buffer = env_data.ocl.create_buffer(unsorted_matrix.shape, unsorted_matrix.dtype)
+    matrix_buffer = env_data.shared_buffers.current_agents_matrix
     matrix = matrix_buffer.map_write()
     np.copyto(matrix, unsorted_matrix)
     matrix_buffer.unmap()
@@ -99,6 +118,17 @@ def sort_rows_single_pass(input_matrix: np.ndarray, offset: int) -> np.ndarray:
 
     return matrix
 
+
+def sort_single_pass(matrix: np.ndarray) -> np.ndarray:
+    out_matrix = np.copy(matrix)
+    out_matrix = sort_columns_single_pass(out_matrix, 0)
+    out_matrix = sort_columns_single_pass(out_matrix, 1)
+    out_matrix = sort_rows_single_pass(out_matrix, 0)
+    out_matrix = sort_rows_single_pass(out_matrix, 1)
+
+    return out_matrix
+
+
 def sort_complete(matrix: np.ndarray) -> np.ndarray:
     out_matrix = np.copy(matrix)
     for i in range(matrix.shape[0]):
@@ -112,21 +142,17 @@ def sort_complete(matrix: np.ndarray) -> np.ndarray:
     return out_matrix
 
 
-def _get_unsorted_matrix(size: int) -> np.ndarray:
-    list_range = list(range(size - 1, -1, -1))
+def _get_unsorted_matrix(side_length: int) -> np.ndarray:
+    list_range = list(range(side_length - 1, -1, -1))
 
     value_matrix = np.array(np.meshgrid(list_range, list_range, indexing='ij')).T.reshape(-1, 2)
-    zero_padding = np.arange(size * size * 2, dtype=np.float32).reshape((size * size, 2))
-    complete_matrix = np.hstack((value_matrix, zero_padding)).reshape((size, size, 4))
+    zero_padding = np.arange(side_length * side_length * 6, dtype=np.float32).reshape((side_length * side_length, 6))
+    complete_matrix = np.hstack((value_matrix, zero_padding)).reshape((side_length, side_length, 8))
 
     return complete_matrix.astype(np.float32)
 
 
-def _get_env_data() -> data.EnvData:
-    params = {
-        'sheep_count': 300,
-        'dogs_count': 5
-    }
+def _get_env_data(params) -> data.EnvData:
     env_data = data.EnvData(config=data.create_config(params))
     data.init_opencl(env_data)
 

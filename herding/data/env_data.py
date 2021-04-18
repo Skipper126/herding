@@ -29,6 +29,9 @@ class Config:
 
 @dataclass
 class Buffers:
+    current_agents_matrix: opencl.Buffer
+    agents_matrix1: opencl.Buffer
+    agents_matrix2: opencl.Buffer
     dogs_positions: opencl.Buffer
     sheep_positions: opencl.Buffer
     target_position: opencl.Buffer
