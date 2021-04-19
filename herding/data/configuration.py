@@ -11,18 +11,17 @@ class BufferInfo(NamedTuple):
 
 
 def get_shared_buffers_info(config: Config) -> List[BufferInfo]:
-    # side length must be odd number
-    agents_matrix_side_length = int((config.dogs_count + config.sheep_count + 1) / 2)
+
     return [
         BufferInfo(
             # Pos X, Pos Y, Direction, Velocity, Type, UNUSED, UNUSED, UNUSED
             name='agents_matrix1',
-            shape=(agents_matrix_side_length, agents_matrix_side_length, 8),
+            shape=(config.agents_matrix_side_length, config.agents_matrix_side_length, 8),
             dtype=np.float32
         ),
         BufferInfo(
             name='agents_matrix2',
-            shape=(agents_matrix_side_length, agents_matrix_side_length, 8),
+            shape=(config.agents_matrix_side_length, config.agents_matrix_side_length, 8),
             dtype=np.float32
         ),
         BufferInfo(
@@ -53,8 +52,8 @@ def get_shared_buffers_info(config: Config) -> List[BufferInfo]:
         BufferInfo(
             # Each matrix cell will have it's corresponding seed
             name='seed',
-            shape=(agents_matrix_side_length, agents_matrix_side_length),
-            dtype=np.uint32
+            shape=(config.agents_matrix_side_length, config.agents_matrix_side_length),
+            dtype=np.uint64
         )
     ]
 
@@ -94,6 +93,7 @@ def get_kernel_definitions(config: Config) -> Dict[str, int]:
     names = [
         'dogs_count',
         'sheep_count',
+        'agents_matrix_side_length',
         'herd_target_radius',
         'agent_radius',
         'movement_speed',

@@ -1,3 +1,5 @@
+import math
+
 from herding.data import configuration
 from herding.data.env_data import Config, EnvData, Buffers
 from herding import opencl
@@ -10,6 +12,10 @@ def create_config(params) -> Config:
     config_dict.update(config_internal)
     if params is not None:
         config_dict.update(params)
+
+    agents_matrix_side_length = math.sqrt(config_dict['dogs_count'] + config_dict['sheep_count'] + 1)
+    assert agents_matrix_side_length % 1 == 0 and agents_matrix_side_length % 2 == 1
+    config_dict['agents_matrix_side_length'] = int(agents_matrix_side_length)
 
     return Config(**config_dict)
 

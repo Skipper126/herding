@@ -8,7 +8,7 @@ def test_random_layout(agents_layout, agents_matrix_buffer, expected_random_layo
     agents_layout.set_up_agents()
     agents_matrix = agents_matrix_buffer.map_read()
 
-    assert np.array_equal(agents_matrix, expected_random_layout)
+    np.testing.assert_array_equal(agents_matrix, expected_random_layout)
 
 
 @pytest.fixture
@@ -24,7 +24,7 @@ def agents_layout(env_data):
 @pytest.fixture
 def env_data():
     params = {
-        'sheep_count': 101,
+        'sheep_count': 79,
         'dogs_count': 1,
         'agents_layout': 'random',
         'seed': 100,
@@ -57,16 +57,20 @@ def expected_random_layout(env_data) -> np.ndarray:
             agents_matrix[i, j, 1] = _rand(seed_array, i, j, range_y)
             agents_matrix[i, j, 2] = _rand(seed_array, i, j, int(2 * pi))
             agents_matrix[i, j, 3] = 0
-            agents_matrix[i, j, 4] = 0 if i + j < sheep_count else 1 if i + j < sheep_count + dogs_count else 2
-            agents_matrix[i, j, 5:7] = 0
+            agents_matrix[i, j, 4] = \
+                2 if i == 0 and j == 0 else\
+                1 if i * agents_matrix.shape[1] + j - 1 < dogs_count else\
+                0
+            agents_matrix[i, j, 5:8] = 0
 
-    return agents_matrix
+    return agents_matrix.astype(np.float32)
 
 
 
 # This must match herding/opencl/rand.h
 def _rand(seed_array: np.ndarray, i: int, j: int, range: int):
-    new_seed = (seed_array[i, j] * 214013 + 2531011) >> 16
+    seed_value = np.uint64(seed_array[i, j]) * np.uint64(214013) + np.uint64(2531011)
+    new_seed = seed_value >> np.uint64(16)
     seed_array[i, j] = new_seed
 
-    return new_seed % range
+    return new_seed % np.uint64(range)
