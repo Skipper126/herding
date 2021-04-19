@@ -1,5 +1,6 @@
 import pytest
 import tests.shared
+import tests.test_matrix_sorter
 from herding.layout import AgentsLayout
 import numpy as np
 
@@ -36,7 +37,12 @@ def env_data():
 
 
 @pytest.fixture
-def expected_random_layout(env_data) -> np.ndarray:
+def expected_random_layout(expected_random_layout_unsorted):
+    return tests.test_matrix_sorter.sort_complete(expected_random_layout_unsorted)
+
+
+@pytest.fixture
+def expected_random_layout_unsorted(env_data) -> np.ndarray:
     agents_matrix = np.empty(env_data.shared_buffers.current_agents_matrix.shape, np.float32)
     # seed array is used by every worker during its computations. Following similar approach
     seed_array = np.copy(env_data.shared_buffers.seed.map_read())
