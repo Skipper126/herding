@@ -150,8 +150,8 @@ def _get_unsorted_matrix(side_length: int) -> np.ndarray:
     list_range = list(range(side_length - 1, -1, -1))
 
     value_matrix = np.array(np.meshgrid(list_range, list_range, indexing='ij')).T.reshape(-1, 2)
-    zero_padding = np.arange(side_length * side_length * 6, dtype=np.float32).reshape((side_length * side_length, 6))
-    complete_matrix = np.hstack((value_matrix, zero_padding)).reshape((side_length, side_length, 8))
+    data_padding = np.arange(side_length * side_length * 6, dtype=np.float32).reshape((side_length * side_length, 6))
+    complete_matrix = np.hstack((value_matrix, data_padding)).reshape((side_length, side_length, 8))
 
     return complete_matrix.astype(np.float32)
 

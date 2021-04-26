@@ -32,6 +32,9 @@ class AgentsController:
         # It is only unmapped in get_observation and mapped again.
         self.observation_buffer.map_read()
 
+    def step(self):
+        pass
+
     def move_agents(self, action):
         action_map = self.action_buffer.map_write()
         np.copyto(action_map, action.astype(np.int32))

@@ -14,7 +14,7 @@ def get_shared_buffers_info(config: Config) -> List[BufferInfo]:
 
     return [
         BufferInfo(
-            # Pos X, Pos Y, Direction, Velocity, Type, UNUSED, UNUSED, UNUSED
+            # Pos X, Pos Y, Direction, Velocity, Type, aux_id, UNUSED, UNUSED
             name='agents_matrix1',
             shape=(config.agents_matrix_side_length, config.agents_matrix_side_length, 8),
             dtype=np.float32
