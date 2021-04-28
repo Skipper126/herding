@@ -65,7 +65,7 @@ class ManualSteering:
             self.process_events()
 
             env_input = np.array((self.player_input,) + self.other_dogs_input)
-            observation, reward, terminal, _ = self.env.step(env_input)
+            _, reward, terminal, _ = self.env.step(env_input)
             episode_reward += reward
             self.env.render()
 
@@ -90,7 +90,7 @@ def play(my_env=None):
 
 
 if __name__ == '__main__':
-    args = {'sheep_count' : 1000}
+    args = {'sheep_count' : 2399, 'dogs_count': 1}
     if len(sys.argv) > 1:
         config = get_default_configuration()
         parser = argparse.ArgumentParser()

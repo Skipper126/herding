@@ -6,7 +6,10 @@ from herding import opencl
 class Config:
     dogs_count: int
     sheep_count: int
+    scan_radius: int
+    neighbours_count: int
     agents_matrix_side_length: int
+    neighbours_matrix_side_length: int
     agents_layout: str
     sheep_type: str
     herd_target_radius: int

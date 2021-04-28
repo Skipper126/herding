@@ -13,9 +13,15 @@ def create_config(params) -> Config:
     if params is not None:
         config_dict.update(params)
 
-    agents_matrix_side_length = math.sqrt(config_dict['dogs_count'] + config_dict['sheep_count'] + 1)
+    agents_matrix_side_length = math.isqrt(config_dict['dogs_count'] + config_dict['sheep_count'] + 1)
     assert agents_matrix_side_length % 1 == 0 and agents_matrix_side_length % 2 == 1
     config_dict['agents_matrix_side_length'] = int(agents_matrix_side_length)
+
+    neighbours_matrix_side_length = config_dict['scan_radius'] * 2 + 1
+    config_dict['neighbours_matrix_side_length'] = int(neighbours_matrix_side_length)
+
+    neighbours_count = neighbours_matrix_side_length**2 - 1
+    config_dict['neighbours_count'] = int(neighbours_count)
 
     return Config(**config_dict)
 

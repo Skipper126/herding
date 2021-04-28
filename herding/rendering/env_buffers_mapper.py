@@ -4,22 +4,16 @@ import numpy as np
 
 
 class EnvArrays(NamedTuple):
-    dogs_positions: np.ndarray
-    sheep_positions: np.ndarray
-    target_position: np.ndarray
+    current_agents_matrix: np.ndarray
     observation: np.ndarray
-    rays_lengths: np.ndarray
 
 
 class EnvArraysMapper:
 
     def __init__(self, env_data: data.EnvData):
         self._buffers = [
-            env_data.shared_buffers.dogs_positions,
-            env_data.shared_buffers.sheep_positions,
-            env_data.shared_buffers.target_position,
-            env_data.shared_buffers.observation,
-            env_data.shared_buffers.rays_lengths
+            env_data.shared_buffers.current_agents_matrix,
+            env_data.shared_buffers.observation
         ]
 
     def map_env_arrays(self):

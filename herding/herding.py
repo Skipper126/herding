@@ -20,6 +20,7 @@ class Herding(gym.Env):
         self.env_initialised = False
 
     def step(self, action):
+        return (None, 0, False, None)
         self.agents_controller.move_agents(action)
         observation = self.agents_controller.get_observation()
         reward = self.reward_counter.get_reward()
@@ -33,10 +34,10 @@ class Herding(gym.Env):
             self.env_initialised = True
 
         self.agents_layout.set_up_agents()
-        self.reward_counter.reset()
-        observation = self.agents_controller.get_observation()
+        #self.reward_counter.reset()
+        #observation = self.agents_controller.get_observation()
 
-        return observation
+        return None
 
     def render(self, mode='human', close=False):
         if close:

@@ -70,6 +70,7 @@ def get_default_configuration() -> Dict:
 
 def get_internal_configuration() -> Dict:
     return {
+        'scan_radius': 2,
         'herd_target_radius': 200,
         'agent_radius': 10,
         'movement_speed': 20,

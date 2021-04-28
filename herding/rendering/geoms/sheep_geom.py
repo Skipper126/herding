@@ -1,16 +1,11 @@
 import pygame as pygame
-
-from .geom import *
-from gym.envs.classic_control import rendering
-
-from ..env_buffers_mapper import EnvArrays
+import numpy as np
 from ...data import EnvData
 
 
-class SheepGeom(Geom):
+class SheepGeom():
 
-    def __init__(self, env_data: EnvData, screen: pygame.Surface, index: int):
-        self.index = index
+    def __init__(self, env_data: EnvData, screen: pygame.Surface):
         self.screen = screen
 
         self.agent_radius = env_data.config.agent_radius
@@ -21,7 +16,10 @@ class SheepGeom(Geom):
         pygame.draw.circle(self.surf, 'grey', (self.agent_radius, self.agent_radius), self.agent_radius)
 
 
-    def update(self, env_arrays: EnvArrays):
-        self.rect.x = env_arrays.sheep_positions[self.index][0] - self.agent_radius
-        self.rect.y = env_arrays.sheep_positions[self.index][1] - self.agent_radius
+    def draw(self, agent: np.ndarray):
+        pos_x = agent[0]
+        pos_y = agent[1]
+
+        self.rect.x = pos_x - self.agent_radius
+        self.rect.y = pos_y - self.agent_radius
         self.screen.blit(self.surf, self.rect)

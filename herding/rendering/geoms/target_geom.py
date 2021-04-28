@@ -1,8 +1,7 @@
-from .geom import *
 from gym.envs.classic_control import rendering
 
 
-class Target(Geom):
+class Target():
     BODY = 0
 
     def __init__(self, env_data):
