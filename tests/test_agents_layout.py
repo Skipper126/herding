@@ -25,8 +25,8 @@ def agents_layout(env_data):
 @pytest.fixture
 def env_data():
     params = {
-        'sheep_count': 79,
-        'dogs_count': 1,
+        'sheep_count': 46,
+        'dogs_count': 35,
         'agents_layout': 'random',
         'seed': 100,
         'agents_layout_width': 1000,
@@ -63,11 +63,9 @@ def expected_random_layout_unsorted(env_data) -> np.ndarray:
             agents_matrix[i, j, 1] = _rand(seed_array, i, j, range_y)
             agents_matrix[i, j, 2] = _rand(seed_array, i, j, int(2 * pi))
             agents_matrix[i, j, 3] = 0
-            agents_matrix[i, j, 4] = \
-                2 if i == 0 and j == 0 else\
-                1 if i * agents_matrix.shape[1] + j - 1 < dogs_count else\
-                0
-            agents_matrix[i, j, 5:8] = 0
+            agents_matrix[i, j, 4] = 1 if i * agents_matrix.shape[1] + j < dogs_count else 0
+            agents_matrix[i, j, 5] = i * agents_matrix.shape[1] + j if agents_matrix[i, j, 4] == 1 else 0
+            agents_matrix[i, j, 6:8] = 0
 
     return agents_matrix.astype(np.float32)
 

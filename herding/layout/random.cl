@@ -19,22 +19,18 @@ __kernel void set_up_agents(__global float8 (*agents_matrix)[AGENTS_MATRIX_SIDE_
     agents_matrix[i][j].s1 = pos_y;
     agents_matrix[i][j].s2 = direction;
     agents_matrix[i][j].s3 = 0;
-    agents_matrix[i][j].s5 = 0.0;
     agents_matrix[i][j].s6 = 0.0;
     agents_matrix[i][j].s7 = 0.0;
 
-    // Put target entity first
-    if (i == 0 && j == 0)
-    {
-        agents_matrix[i][j].s4 = 2;
-    }
-    else if (i * AGENTS_MATRIX_SIDE_LENGTH + j - 1 < DOGS_COUNT)
+    if (i * AGENTS_MATRIX_SIDE_LENGTH + j < DOGS_COUNT)
     {
         agents_matrix[i][j].s4 = 1;
+        agents_matrix[i][j].s5 = i * AGENTS_MATRIX_SIDE_LENGTH + j;
     }
     else
     {
         agents_matrix[i][j].s4 = 0;
+        agents_matrix[i][j].s5 = 0.0;
     }
 
     seed[i][j] = seed_value;

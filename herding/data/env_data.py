@@ -29,6 +29,8 @@ class Config:
     window_height: int
     channels_count: int
     seed: int
+    target_x: int
+    target_y: int
 
 
 @dataclass

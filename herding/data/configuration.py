@@ -86,7 +86,9 @@ def get_internal_configuration() -> Dict:
         'window_width': 1000,
         'window_height': 800,
         'channels_count': 3,
-        'seed': None
+        'seed': None,
+        'target_x': 0,
+        'target_y': 0
     }
 
 
@@ -106,7 +108,9 @@ def get_kernel_definitions(config: Config) -> Dict[str, int]:
         'field_of_view',
         'agents_layout_width',
         'agents_layout_height',
-        'channels_count'
+        'channels_count',
+        'target_x',
+        'target_y'
     ]
     config_dict = dataclasses.asdict(config)
     return dict((name, config_dict[name]) for name in names if name in config_dict)

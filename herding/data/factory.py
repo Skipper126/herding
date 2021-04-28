@@ -13,7 +13,7 @@ def create_config(params) -> Config:
     if params is not None:
         config_dict.update(params)
 
-    agents_matrix_side_length = math.isqrt(config_dict['dogs_count'] + config_dict['sheep_count'] + 1)
+    agents_matrix_side_length = math.isqrt(config_dict['dogs_count'] + config_dict['sheep_count'])
     assert agents_matrix_side_length % 1 == 0 and agents_matrix_side_length % 2 == 1
     config_dict['agents_matrix_side_length'] = int(agents_matrix_side_length)
 
