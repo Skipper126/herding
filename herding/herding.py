@@ -1,7 +1,7 @@
 from typing import Dict
-
+import numpy as np
 import gym
-from herding import data, agents, layout, reward
+from herding import data, agents, layout #, reward
 import warnings
 
 
@@ -13,20 +13,16 @@ class Herding(gym.Env):
     def __init__(self, params: Dict=None):
         self.env_data = data.EnvData(config=data.create_config(params))
         # OpenCL and other modules are lazy loaded when calling reset() for the first time
-        self.reward_counter: reward.RewardCounter
+        #self.reward_counter: reward.RewardCounter
         self.agents_controller: agents.AgentsController
         self.agents_layout: layout.AgentsLayout
         self.viewer = None
         self.env_initialised = False
 
     def step(self, action):
-        return (None, 0, False, None)
-        self.agents_controller.move_agents(action)
-        observation = self.agents_controller.get_observation()
-        reward = self.reward_counter.get_reward()
-        is_done = self.reward_counter.is_done()
+        observation, reward = self.agents_controller.step(action)
 
-        return observation, reward, is_done, {}
+        return observation, reward, False, {}
 
     def reset(self):
         if not self.env_initialised:
@@ -35,9 +31,9 @@ class Herding(gym.Env):
 
         self.agents_layout.set_up_agents()
         #self.reward_counter.reset()
-        #observation = self.agents_controller.get_observation()
+        observation, _ = self.agents_controller.step(np.array(([1, 1],) * self.env_data.config.dogs_count))
 
-        return None
+        return observation
 
     def render(self, mode='human', close=False):
         if close:
@@ -78,11 +74,11 @@ class Herding(gym.Env):
 
     def _init_env_modules(self):
         data.init_opencl(self.env_data)
-        self.reward_counter = reward.RewardCounter(self.env_data)
+        #self.reward_counter = reward.RewardCounter(self.env_data)
         self.agents_controller = agents.AgentsController(self.env_data)
         self.agents_layout = layout.AgentsLayout(self.env_data)
 
     def _get_debug_text(self):
-        reward_text = 'Reward: {:.2f}'.format(self.reward_counter.get_episode_reward())
+        reward_text = 'Reward: {:.2f}'.format(0) #self.reward_counter.get_episode_reward())
 
         return reward_text

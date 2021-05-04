@@ -42,9 +42,10 @@ def _create_buffers(ocl: opencl.OpenCL, config: Config) -> Buffers:
         dtype = buffer_info.dtype
         buffers_dict[name] = ocl.create_buffer(shape, dtype)
 
-    # current_agents_matrix will be used to access either agents_matrix1 and agents_matrix2
+    # input_matrix will be used to access either agents_matrix1 and agents_matrix2
     # the values will be swapped with every iteration
-    buffers_dict['current_agents_matrix'] = buffers_dict['agents_matrix1']
+    buffers_dict['input_matrix'] = buffers_dict['agents_matrix1']
+    buffers_dict['output_matrix'] = buffers_dict['agents_matrix2']
 
     return Buffers(**buffers_dict)
 

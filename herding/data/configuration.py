@@ -54,6 +54,11 @@ def get_shared_buffers_info(config: Config) -> List[BufferInfo]:
             name='seed',
             shape=(config.agents_matrix_side_length, config.agents_matrix_side_length),
             dtype=np.uint64
+        ),
+        BufferInfo(
+            name='reward',
+            shape=(1,),
+            dtype=np.int32
         )
     ]
 
@@ -79,7 +84,7 @@ def get_internal_configuration() -> Dict:
         'time_penalty_rate': 0.01,
         'sheep_flee_distance': 300,
         'rays_count': 128,
-        'ray_length': 500,
+        'ray_length': 50,
         'field_of_view': 180,
         'agents_layout_width': 900,
         'agents_layout_height': 700,

@@ -6,7 +6,7 @@ class MatrixSorter:
 
     def __init__(self, env_data: data.EnvData):
         self.env_data = env_data
-        self.matrix = env_data.shared_buffers.current_agents_matrix
+        self.matrix = env_data.shared_buffers.input_matrix
 
     def sort_single_pass(self):
         # TODO This should work as a single kernel invocation

@@ -11,7 +11,7 @@ class AgentsLayout:
         self.workers_shape = (agents_matrix_side_length, agents_matrix_side_length)
         self.layout_kernel = env_data.ocl.create_module('herding/layout/' + env_data.config.agents_layout + '.cl',
                                                         'set_up_agents',
-                                                        [env_data.shared_buffers.current_agents_matrix,
+                                                        [env_data.shared_buffers.input_matrix,
                                                          env_data.shared_buffers.seed])
 
     def set_up_agents(self):

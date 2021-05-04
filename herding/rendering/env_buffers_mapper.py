@@ -4,19 +4,22 @@ import numpy as np
 
 
 class EnvArrays(NamedTuple):
-    current_agents_matrix: np.ndarray
+    input_matrix: np.ndarray
     observation: np.ndarray
 
 
 class EnvArraysMapper:
 
     def __init__(self, env_data: data.EnvData):
-        self._buffers = [
-            env_data.shared_buffers.current_agents_matrix,
-            env_data.shared_buffers.observation
-        ]
+        self.shared_buffers = env_data.shared_buffers
+        self._buffers = []
 
     def map_env_arrays(self):
+        self._buffers = []
+        self._buffers = [
+            self.shared_buffers.output_matrix,
+            self.shared_buffers.observation
+        ]
         return EnvArrays(*[buffer.map_read() for buffer in self._buffers])
 
     def unmap_env_arrays(self):

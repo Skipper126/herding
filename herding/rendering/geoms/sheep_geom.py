@@ -15,7 +15,6 @@ class SheepGeom():
         self.surf.fill('white')
         pygame.draw.circle(self.surf, 'grey', (self.agent_radius, self.agent_radius), self.agent_radius)
 
-
     def draw(self, agent: np.ndarray):
         pos_x = agent[0]
         pos_y = agent[1]

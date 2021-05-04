@@ -26,7 +26,7 @@ class Renderer:
         self.screen.fill('white')
 
         for i, j in itertools.product(range(self.agents_matrix_side_length), range(self.agents_matrix_side_length)):
-            agent = arrays.current_agents_matrix[i, j]
+            agent = arrays.input_matrix[i, j]
             if agent[4] == 0:
                 self.sheep_geom.draw(agent)
             else:

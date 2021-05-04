@@ -68,7 +68,7 @@ def expected_sorted_matrix_single_pass(unsorted_matrix):
 @pytest.fixture
 def env_data():
     params = {
-        'sheep_count': 79,
+        'sheep_count': 80,
         'dogs_count': 1
     }
 
@@ -82,7 +82,7 @@ def matrix_sorter(env_data):
 
 @pytest.fixture
 def matrix_buffer(env_data, matrix_sorter, unsorted_matrix):
-    matrix_buffer = env_data.shared_buffers.current_agents_matrix
+    matrix_buffer = env_data.shared_buffers.input_matrix
     matrix = matrix_buffer.map_write()
     np.copyto(matrix, unsorted_matrix)
     matrix_buffer.unmap()

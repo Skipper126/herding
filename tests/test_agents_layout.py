@@ -14,7 +14,7 @@ def test_random_layout(agents_layout, agents_matrix_buffer, expected_random_layo
 
 @pytest.fixture
 def agents_matrix_buffer(env_data):
-    return env_data.shared_buffers.current_agents_matrix
+    return env_data.shared_buffers.input_matrix
 
 
 @pytest.fixture
@@ -43,7 +43,7 @@ def expected_random_layout(expected_random_layout_unsorted):
 
 @pytest.fixture
 def expected_random_layout_unsorted(env_data) -> np.ndarray:
-    agents_matrix = np.empty(env_data.shared_buffers.current_agents_matrix.shape, np.float32)
+    agents_matrix = np.empty(env_data.shared_buffers.input_matrix.shape, np.float32)
     # seed array is used by every worker during its computations. Following similar approach
     seed_array = np.copy(env_data.shared_buffers.seed.map_read())
     env_data.shared_buffers.seed.unmap()
@@ -68,7 +68,6 @@ def expected_random_layout_unsorted(env_data) -> np.ndarray:
             agents_matrix[i, j, 6:8] = 0
 
     return agents_matrix.astype(np.float32)
-
 
 
 # This must match herding/opencl/rand.h

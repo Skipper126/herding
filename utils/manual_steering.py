@@ -1,3 +1,5 @@
+import time
+
 import pygame
 
 from herding import Herding
@@ -68,7 +70,6 @@ class ManualSteering:
             _, reward, terminal, _ = self.env.step(env_input)
             episode_reward += reward
             self.env.render()
-
             if terminal:
                 print(f'episode reward: {episode_reward}')
                 self.env.reset()
@@ -90,7 +91,7 @@ def play(my_env=None):
 
 
 if __name__ == '__main__':
-    args = {'sheep_count' : 2399, 'dogs_count': 1}
+    args = {'sheep_count' : 8, 'dogs_count': 1}
     if len(sys.argv) > 1:
         config = get_default_configuration()
         parser = argparse.ArgumentParser()

@@ -8,7 +8,7 @@ __kernel void sort_columns_single_pass(__global float8 (*agents_matrix)[AGENTS_M
     float8 agent1 = agents_matrix[i][j];
     float8 agent2 = agents_matrix[i][j + 1];
 
-    if (agent1.x > agent2.x)
+    if (agent1.s0 > agent2.s0)
     {
         agents_matrix[i][j] = agent2;
         agents_matrix[i][j + 1] = agent1;
@@ -23,7 +23,7 @@ __kernel void sort_rows_single_pass(__global float8 (*agents_matrix)[AGENTS_MATR
     float8 agent1 = agents_matrix[i][j];
     float8 agent2 = agents_matrix[i + 1][j];
 
-    if (agent1.y > agent2.y)
+    if (agent1.s1 > agent2.s1)
     {
         agents_matrix[i][j] = agent2;
         agents_matrix[i + 1][j] = agent1;

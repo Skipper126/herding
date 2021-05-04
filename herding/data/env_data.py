@@ -35,7 +35,8 @@ class Config:
 
 @dataclass
 class Buffers:
-    current_agents_matrix: opencl.Buffer
+    input_matrix: opencl.Buffer
+    output_matrix: opencl.Buffer
     agents_matrix1: opencl.Buffer
     agents_matrix2: opencl.Buffer
     dogs_positions: opencl.Buffer
@@ -44,6 +45,7 @@ class Buffers:
     observation: opencl.Buffer
     rays_lengths: opencl.Buffer
     seed: opencl.Buffer
+    reward: opencl.Buffer
 
 
 @dataclass
