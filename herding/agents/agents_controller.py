@@ -10,6 +10,8 @@ class AgentsController:
         self.dogs_count = env_data.config.dogs_count
         self.rays_count = env_data.config.rays_count
         self.sheep_count = env_data.config.sheep_count
+        self.matrix_side_length = env_data.config.agents_matrix_side_length
+        self.n_matrix_side_length = env_data.config.neighbours_matrix_side_length
         self.env_data = env_data
         self.matrix_sorter = MatrixSorter(env_data)
         self.action_buffer = env_data.ocl.create_buffer((self.dogs_count, 2), np.int32)
@@ -37,6 +39,31 @@ class AgentsController:
         self.env_data.shared_buffers.reward.map_read()
 
     def step(self, action):
+        action_map = self.action_buffer.map_write()
+        np.copyto(action_map, action.astype(np.int32))
+        self.action_buffer.unmap()
+        self.observation_buffer.unmap()
+
+        env_step_kernel = self.env_data.ocl.create_module('herding/agents/agents_move.cl',
+                                                     'env_step',
+                                                     [self.env_data.shared_buffers.input_matrix,
+                                                      self.env_data.shared_buffers.output_matrix,
+                                                      self.action_buffer,
+                                                      self.env_data.shared_buffers.observation])
+
+        env_step_kernel.run((self.matrix_side_length, self.matrix_side_length, self.n_matrix_side_length ** 2),
+                                 (1, 1, self.n_matrix_side_length ** 2))
+
+        self.env_data.shared_buffers.output_matrix, self.env_data.shared_buffers.input_matrix = \
+            self.env_data.shared_buffers.input_matrix, self.env_data.shared_buffers.output_matrix
+
+        self.matrix_sorter.sort_single_pass()
+
+        return self.observation_buffer.map_read(), 0
+
+
+
+    def step_cpu(self, action):
         input_matrix = self.env_data.shared_buffers.input_matrix.map_read()
         output_matrix = self.env_data.shared_buffers.output_matrix.map_write()
 

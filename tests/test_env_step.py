@@ -15,6 +15,33 @@ def test_dogs_move(agents_controller, agents_matrix_buffer, input_action, expect
     np.testing.assert_array_equal(agents_matrix, expected_matrix_after_move)
 
 
+def test_iteration():
+    scan_radius = 2
+    side_length = 9
+    n_side_length = scan_radius * 2 + 1
+
+    prod_4d = []
+    for i, j, n_i, n_j in itertools.product(range(side_length), range(side_length),
+                                              range(n_side_length), range(n_side_length)):
+        n_i = n_i + i - scan_radius
+        n_j = n_j + j - scan_radius
+        prod_4d.append([i, j, n_i, n_j])
+
+    prod_4d = np.array(prod_4d)
+
+    prod_3d = []
+    for i, j, k in itertools.product(range(side_length), range(side_length),
+                                              range(n_side_length ** 2)):
+        n_i = int(k / n_side_length) + i - scan_radius
+        n_j = k - int(k / n_side_length) * n_side_length + j - scan_radius
+        prod_3d.append([i, j, n_i, n_j])
+
+    prod_3d = np.array(prod_3d)
+
+    np.testing.assert_array_equal(prod_4d, prod_3d)
+
+
+
 @pytest.fixture
 def input_action():
     # 1) Movement: BACK[0], NOOP[1], FORWARD[2]

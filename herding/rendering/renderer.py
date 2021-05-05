@@ -30,7 +30,7 @@ class Renderer:
             if agent[4] == 0:
                 self.sheep_geom.draw(agent, i, j)
             else:
-                self.dog_geom.draw(agent, arrays.observation)
+                self.dog_geom.draw(agent, arrays.observation, i, j)
 
         pygame.display.flip()
 

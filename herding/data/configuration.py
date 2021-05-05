@@ -84,7 +84,7 @@ def get_internal_configuration() -> Dict:
         'time_penalty_rate': 0.01,
         'sheep_flee_distance': 300,
         'rays_count': 128,
-        'ray_length': 50,
+        'ray_length': 40,
         'field_of_view': 180,
         'agents_layout_width': 900,
         'agents_layout_height': 700,
@@ -115,7 +115,8 @@ def get_kernel_definitions(config: Config) -> Dict[str, int]:
         'agents_layout_height',
         'channels_count',
         'target_x',
-        'target_y'
+        'target_y',
+        'scan_radius'
     ]
     config_dict = dataclasses.asdict(config)
     return dict((name, config_dict[name]) for name in names if name in config_dict)
