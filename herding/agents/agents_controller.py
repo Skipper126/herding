@@ -1,4 +1,5 @@
 import tests.test_env_step
+from herding.agents.matrix_sorter import MatrixSorter
 from herding.data import EnvData
 import numpy as np
 
@@ -10,6 +11,7 @@ class AgentsController:
         self.rays_count = env_data.config.rays_count
         self.sheep_count = env_data.config.sheep_count
         self.env_data = env_data
+        self.matrix_sorter = MatrixSorter(env_data)
         self.action_buffer = env_data.ocl.create_buffer((self.dogs_count, 2), np.int32)
         self.observation_buffer = env_data.shared_buffers.observation
 
@@ -60,6 +62,8 @@ class AgentsController:
         self.env_data.shared_buffers.reward.unmap()
         observation = self.observation_buffer.map_read()
         reward = self.env_data.shared_buffers.reward.map_read()
+
+        self.matrix_sorter.sort_single_pass()
 
         return observation, reward
 

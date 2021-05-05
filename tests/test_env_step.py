@@ -76,13 +76,13 @@ def step(input_matrix: np.ndarray,
     sight_distance = env_data.config.ray_length
     n_side_length = env_data.config.neighbours_matrix_side_length
     n_count = n_side_length**2
-    delta_movement = np.zeros((2,))
+    delta_movement = np.zeros((side_length, side_length, 2,))
 
 
     for i, j, n_i, n_j in itertools.product(range(side_length), range(side_length), range(n_side_length),
                                             range(n_side_length)):
         n_i = n_i + i - scan_radius
-        n_j = n_j + i - scan_radius
+        n_j = n_j + j - scan_radius
 
         if n_i < 0 or n_i >= side_length or n_j < 0 or n_j >= side_length:
             continue
@@ -105,7 +105,7 @@ def step(input_matrix: np.ndarray,
     for i, j, n_i, n_j in itertools.product(range(side_length), range(side_length), range(n_side_length),
                                             range(n_side_length)):
         n_i = n_i + i - scan_radius
-        n_j = n_j + i - scan_radius
+        n_j = n_j + j - scan_radius
 
         if n_i < 0 or n_i >= side_length or n_j < 0 or n_j >= side_length:
             continue
@@ -115,8 +115,8 @@ def step(input_matrix: np.ndarray,
 
         if i == n_i and j == n_j:  # processing self
             if agent[TYPE] == AGENT_TYPE_SHEEP:
-                output_matrix[i, j][POS_X] = agent[POS_X] + delta_movement[0]
-                output_matrix[i, j][POS_Y] = agent[POS_Y] + delta_movement[1]
+                output_matrix[i, j][POS_X] = agent[POS_X] + delta_movement[i, j, 0]
+                output_matrix[i, j][POS_Y] = agent[POS_Y] + delta_movement[i, j, 1]
                 output_matrix[i, j][ROT] = agent[ROT]
                 output_matrix[i, j][VEL] = env_data.config.movement_speed
                 output_matrix[i, j][TYPE] = 0
@@ -142,7 +142,6 @@ def _process_action(env_data, i, j, output_matrix, actions, agent):
     output_matrix[i, j][VEL] = env_data.config.movement_speed
     output_matrix[i, j][TYPE] = 1
     output_matrix[i, j][AUX_ID] = dog_id
-
 
 
 def _process_reward(env_data, agent, target_pos_x, target_pos_y, target_radius, reward):
@@ -175,8 +174,8 @@ def _process_flock_behaviour(env_data, i, j, agent, n_agent, delta_movement):
     delta_x = (delta_x / 50) * env_data.config.movement_speed
     delta_y = (delta_y / 50) * env_data.config.movement_speed
 
-    delta_movement[0] += delta_x
-    delta_movement[1] += delta_y
+    delta_movement[i, j, 0] += delta_x
+    delta_movement[i, j, 1] += delta_y
 
 
 def _distance(agent1, agent2) -> float:

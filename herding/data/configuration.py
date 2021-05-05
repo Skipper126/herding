@@ -78,8 +78,8 @@ def get_internal_configuration() -> Dict:
         'scan_radius': 2,
         'herd_target_radius': 200,
         'agent_radius': 10,
-        'movement_speed': 20,
-        'rotation_speed': 10,  # In degrees
+        'movement_speed': 1,
+        'rotation_speed': 2,  # In degrees
         'max_episode_reward': 100,
         'time_penalty_rate': 0.01,
         'sheep_flee_distance': 300,

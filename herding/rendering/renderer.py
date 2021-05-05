@@ -28,7 +28,7 @@ class Renderer:
         for i, j in itertools.product(range(self.agents_matrix_side_length), range(self.agents_matrix_side_length)):
             agent = arrays.input_matrix[i, j]
             if agent[4] == 0:
-                self.sheep_geom.draw(agent)
+                self.sheep_geom.draw(agent, i, j)
             else:
                 self.dog_geom.draw(agent, arrays.observation)
 
