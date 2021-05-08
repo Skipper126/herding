@@ -75,7 +75,17 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
         delta_movement[0] = 0;
         delta_movement[1] = 0;
     }
-    barrier(CLK_LOCAL_MEM_FENCE);
+    float8 agent = input_matrix[i][j];
+
+    if (agent.TYPE == AGENT_TYPE_DOG)
+    {
+        int dog_id = (int)agent.AUX_ID;
+        observations[dog_id][k][0] = 0;
+        observations[dog_id][k][1] = 0;
+        observations[dog_id][k][2] = 0;
+    }
+
+    barrier(CLK_GLOBAL_MEM_FENCE);
 
     if (n_i < 0 || n_i >= AGENTS_MATRIX_SIDE_LENGTH ||
         n_j < 0 || n_j >= AGENTS_MATRIX_SIDE_LENGTH)
@@ -83,7 +93,6 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
         goto sync;
     }
 
-    float8 agent = input_matrix[i][j];
     float8 n_agent = input_matrix[n_i][n_j];
 
     if (i == n_i && j == n_j)
@@ -100,9 +109,56 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
             process_flock_behaviour(i, j, agent, n_agent, delta_movement);
         }
     }
+    
+    if (agent.TYPE == AGENT_TYPE_DOG && get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < RAY_LENGTH)
+    {
+        float x = agent.POS_X;
+        float y = agent.POS_Y;
+        float n_x = (i == n_i && j == n_j) ? TARGET_X : n_agent.POS_X;
+        float n_y = (i == n_i && j == n_j) ? TARGET_Y : n_agent.POS_Y;
+        float n_angle = atan2(y - n_y, x - n_x) + PI;
+        float first_ray_angle = agent.ROT;
+        float last_ray_angle = agent.ROT < PI ? agent.ROT + PI : agent.ROT - PI;
+        int n_k = (int)(((n_angle - first_ray_angle) / PI) * RAYS_COUNT);
+
+        if (!(n_k >= 0 && n_k < RAYS_COUNT))
+        {
+            n_k = RAYS_COUNT - (int)(((last_ray_angle - n_angle) / PI) * RAYS_COUNT);
+        }
+
+        if (n_k >= 0 && n_k < RAYS_COUNT)
+        {
+            int dog_id = (int)agent.AUX_ID;
+
+            if (i == n_i && j == n_j)
+            {
+                observations[dog_id][n_k][0] = 0;
+                observations[dog_id][n_k][1] = 0;
+                observations[dog_id][n_k][2] = 1;                
+            }
+            else
+            {
+                
+                observations[dog_id][n_k][0] = 0;
+                observations[dog_id][n_k][1] = 1;
+                observations[dog_id][n_k][2] = 0;                
+            }
+        }
+    }
 
     sync:
-    barrier(CLK_LOCAL_MEM_FENCE);
+    barrier(CLK_GLOBAL_MEM_FENCE);
+
+    // if (agent.TYPE == AGENT_TYPE_DOG)
+    // {
+    //     int dog_id = (int)agent.AUX_ID;
+    //     if (observations[dog_id][k][0] == 1)
+    //     {
+    //         observations[dog_id][k][0] = 0;
+    //         observations[dog_id][k][1] = 0;
+    //         observations[dog_id][k][2] = 1;            
+    //     }
+    // }
 
     if (n_i < 0 || n_i >= AGENTS_MATRIX_SIDE_LENGTH ||
         n_j < 0 || n_j >= AGENTS_MATRIX_SIDE_LENGTH)

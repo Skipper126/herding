@@ -22,6 +22,7 @@ def create_config(params) -> Config:
 
     neighbours_count = neighbours_matrix_side_length**2 - 1
     config_dict['neighbours_count'] = int(neighbours_count)
+    config_dict['rays_count'] = int(neighbours_count)
 
     return Config(**config_dict)
 

@@ -9,7 +9,7 @@ class DogGeom():
 
     def __init__(self, env_data: EnvData, screen: pygame.Surface):
         self.agent_radius = env_data.config.agent_radius
-        self.rays_count = env_data.config.neighbours_count
+        self.rays_count = env_data.config.rays_count
         self.ray_length = env_data.config.ray_length
 
         self.screen = screen
@@ -25,7 +25,7 @@ class DogGeom():
         pos_x = agent[0]
         pos_y = agent[1]
         rotation = agent[2]
-
+        observation = observations[int(agent[5])]
 
         self.rect.x = pos_x - self.surface_size / 2
         self.rect.y = pos_y - self.surface_size / 2
@@ -41,7 +41,7 @@ class DogGeom():
 
             x2 = x1 + (self.ray_length - self.agent_radius) * math.cos(ray_angle)
             y2 = y1 + (self.ray_length - self.agent_radius) * math.sin(ray_angle)
-            pygame.draw.aaline(self.surf, (0, 0, 0), (x1, y1), (x2, y2))
+            pygame.draw.aaline(self.surf, tuple(observation[ray_id] * 255), (x1, y1), (x2, y2))
 
         self.surf.blit(textsurf, (self.surface_size / 2 - 10, self.surface_size / 2 - 10))
         self.screen.blit(self.surf, self.rect)

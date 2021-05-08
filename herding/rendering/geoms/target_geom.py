@@ -1,20 +1,23 @@
+import pygame
 from gym.envs.classic_control import rendering
+import numpy as np
+from herding.data import EnvData
 
 
 class Target():
-    BODY = 0
 
-    def __init__(self, env_data):
-        self.body = Part(rendering.make_circle(4, res=4))
-        self.body.set_color(0, 0, 1)
-        self.region = Part(rendering.make_circle(env_data.config.herd_target_radius, 30, False))
-        self.region.set_color(0, 0, 0)
+    def __init__(self, env_data: EnvData, screen: pygame.Surface):
+        self.screen = screen
+        self.pos_x = env_data.config.target_x
+        self.pos_y = env_data.config.target_y
+        self.agent_radius = env_data.config.agent_radius
+        self.surf = pygame.Surface((self.agent_radius * 2, self.agent_radius * 2), pygame.SRCALPHA)
+        self.rect = self.surf.get_rect()
+        self.rect.x = self.pos_x
+        self.rect.y = self.pos_y
+        self.surf.set_colorkey('white')
+        self.surf.fill('white')
+        pygame.draw.circle(self.surf, 'blue', (self.agent_radius, self.agent_radius), self.agent_radius)
 
-    def get_parts(self):
-        return [self.body.body, self.region.body]
-
-    def update(self, arrays):
-        pos_x = arrays.target_position[0]
-        pos_y = arrays.target_position[1]
-        self.body.set_pos(pos_x, pos_y)
-        self.region.set_pos(pos_x, pos_y)
+    def draw(self):
+        self.screen.blit(self.surf, self.rect)

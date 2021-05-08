@@ -6,6 +6,7 @@ import pygame
 
 from herding.rendering.geoms.dog_geom import DogGeom
 from herding.rendering.geoms.sheep_geom import SheepGeom
+from herding.rendering.geoms.target_geom import Target
 
 
 class Renderer:
@@ -20,6 +21,7 @@ class Renderer:
         self.screen = pygame.display.set_mode((self.window_width, self.window_height), pygame.RESIZABLE)
         self.sheep_geom = SheepGeom(env_data, self.screen)
         self.dog_geom = DogGeom(env_data, self.screen)
+        self.target_getom = Target(env_data, self.screen)
 
     def render(self):
         arrays = self.env_arrays_mapper.map_env_arrays()
@@ -32,6 +34,7 @@ class Renderer:
             else:
                 self.dog_geom.draw(agent, arrays.observation, i, j)
 
+        self.target_getom.draw()
         pygame.display.flip()
 
         self.env_arrays_mapper.unmap_env_arrays()

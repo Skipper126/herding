@@ -83,7 +83,6 @@ def get_internal_configuration() -> Dict:
         'max_episode_reward': 100,
         'time_penalty_rate': 0.01,
         'sheep_flee_distance': 50,
-        'rays_count': 128,
         'ray_length': 200,
         'field_of_view': 180,
         'agents_layout_width': 900,
@@ -92,8 +91,8 @@ def get_internal_configuration() -> Dict:
         'window_height': 800,
         'channels_count': 3,
         'seed': None,
-        'target_x': 0,
-        'target_y': 0
+        'target_x': 100,
+        'target_y': 100
     }
 
 

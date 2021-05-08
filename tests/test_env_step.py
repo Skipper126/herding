@@ -185,7 +185,7 @@ def _process_observation(env_data, agent, n_agent, observations: np.ndarray):
     ray_id = int(n_count * (n_angle - agent[ROT]) / PI)
     if ray_id < 0 or ray_id > n_count:
         return
-    observation[ray_id][:] = [0, 1, 0]
+    observation[ray_id][:] = [0, 1,0]
 
 
 def _process_flock_behaviour(env_data, i, j, agent, n_agent, delta_movement):
