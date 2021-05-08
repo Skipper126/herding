@@ -34,15 +34,14 @@ class DogGeom():
         pygame.draw.circle(self.surf, 'red', (self.surface_size / 2, self.surface_size / 2), self.agent_radius)
         textsurf = self.font.render(f'{i}, {j}', False, (0, 0, 0))
 
-        for i in range (self.rays_count):
-            rotation = rotation + (i / self.rays_count) * math.pi
-            base_x = math.cos(rotation) * self.agent_radius + self.surface_size / 2
-            base_y = math.sin(rotation) * self.agent_radius + self.surface_size / 2
-            x1 = base_x
-            y1 = base_y
-            x2 = x1 + (self.ray_length - self.agent_radius * 3) * math.cos(rotation)
-            y2 = y1 + (self.ray_length - self.agent_radius * 3) * math.sin(rotation)
-            pygame.draw.aaline(self.surf, 'black', (x1, y1), (x2, y2))
+        for ray_id in range(self.rays_count):
+            ray_angle = rotation + ray_id * math.pi / self.rays_count
+            x1 = (math.cos(ray_angle) * self.agent_radius) + (self.surface_size / 2)
+            y1 = (math.sin(ray_angle) * self.agent_radius) + (self.surface_size / 2)
+
+            x2 = x1 + (self.ray_length - self.agent_radius) * math.cos(ray_angle)
+            y2 = y1 + (self.ray_length - self.agent_radius) * math.sin(ray_angle)
+            pygame.draw.aaline(self.surf, (0, 0, 0), (x1, y1), (x2, y2))
 
         self.surf.blit(textsurf, (self.surface_size / 2 - 10, self.surface_size / 2 - 10))
         self.screen.blit(self.surf, self.rect)

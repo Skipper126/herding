@@ -68,7 +68,6 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
     int k = get_local_id(2);
     int n_i = (int)(k / N_SIDE_LENGTH) + i - SCAN_RADIUS;
     int n_j = k - (int)(k / N_SIDE_LENGTH) * N_SIDE_LENGTH + j - SCAN_RADIUS;
-
     __local float delta_movement[2];
 
     if (i == n_i && j == n_j)
@@ -94,7 +93,7 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
             process_action(i, j, output_matrix, actions, agent);
         }
     }
-    else if (get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < RAY_LENGTH)
+    else if (get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < SHEEP_FLEE_DISTANCE)
     {
         if (agent.TYPE == AGENT_TYPE_SHEEP)
         {
