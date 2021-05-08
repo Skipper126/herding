@@ -11,14 +11,28 @@
 
 #define N_SIDE_LENGTH (SCAN_RADIUS * 2 + 1)
 
+float get_distance(float x1, float y1, float x2, float y2)
+{
+    float x_diff = x1 - x2;
+    float y_diff = y1 - y2;
+    return sqrt((x_diff * x_diff) + (y_diff * y_diff));
+}
 
 void process_flock_behaviour(int i, int j, float8 agent, float8 n_agent, __local float *delta_movement)
 {
     float pos_x_diff = agent.POS_X - n_agent.POS_X;
     float pos_y_diff = agent.POS_Y - n_agent.POS_Y;
 
-    delta_movement[0] += (pos_x_diff / 15) * MOVEMENT_SPEED;
-    delta_movement[1] += (pos_y_diff / 15) * MOVEMENT_SPEED;
+    if (n_agent.TYPE == AGENT_TYPE_DOG && get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < 50)
+    {
+        delta_movement[0] += (pos_x_diff / 2) * MOVEMENT_SPEED;
+        delta_movement[1] += (pos_y_diff / 2) * MOVEMENT_SPEED;
+    }
+    else if (n_agent.TYPE == AGENT_TYPE_SHEEP && get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < 10)
+    {
+        delta_movement[0] += (pos_x_diff / 15) * MOVEMENT_SPEED;
+        delta_movement[1] += (pos_y_diff / 15) * MOVEMENT_SPEED;
+    }
 }
 
 void process_action(int i, int j,
@@ -51,12 +65,7 @@ void process_action(int i, int j,
     output_matrix[i][j].AUX_ID = dog_id;
 }
 
-float get_distance(float x1, float y1, float x2, float y2)
-{
-    float x_diff = x1 - x2;
-    float y_diff = y1 - y2;
-    return sqrt((x_diff * x_diff) + (y_diff * y_diff));
-}
+
 
 __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH],
                        __global float8 (*output_matrix)[AGENTS_MATRIX_SIDE_LENGTH],
@@ -102,12 +111,9 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
             process_action(i, j, output_matrix, actions, agent);
         }
     }
-    else if (get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < SHEEP_FLEE_DISTANCE)
+    else if (agent.TYPE == AGENT_TYPE_SHEEP)
     {
-        if (agent.TYPE == AGENT_TYPE_SHEEP)
-        {
-            process_flock_behaviour(i, j, agent, n_agent, delta_movement);
-        }
+        process_flock_behaviour(i, j, agent, n_agent, delta_movement);
     }
     
     if (agent.TYPE == AGENT_TYPE_DOG && get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < RAY_LENGTH)

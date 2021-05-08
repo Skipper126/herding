@@ -91,7 +91,7 @@ def play(my_env=None):
 
 
 if __name__ == '__main__':
-    args = {'sheep_count': 80, 'dogs_count': 1}
+    args = {'sheep_count': 2024, 'dogs_count': 1}
     if len(sys.argv) > 1:
         config = get_default_configuration()
         parser = argparse.ArgumentParser()

@@ -75,14 +75,14 @@ def get_default_configuration() -> Dict:
 
 def get_internal_configuration() -> Dict:
     return {
-        'scan_radius': 2,
+        'scan_radius': 3,
         'herd_target_radius': 200,
         'agent_radius': 10,
-        'movement_speed': 2,
+        'movement_speed': 5,
         'rotation_speed': 5,  # In degrees
         'max_episode_reward': 100,
         'time_penalty_rate': 0.01,
-        'sheep_flee_distance': 50,
+        'sheep_flee_distance': 10,
         'ray_length': 200,
         'field_of_view': 180,
         'agents_layout_width': 900,
