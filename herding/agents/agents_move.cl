@@ -23,16 +23,19 @@ void process_flock_behaviour(int i, int j, float8 agent, float8 n_agent, __local
 {
     float pos_x_diff = agent.POS_X - n_agent.POS_X;
     float pos_y_diff = agent.POS_Y - n_agent.POS_Y;
+    float distance = get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y);
+    float max_distance = n_agent.TYPE == AGENT_TYPE_DOG ? 80 : 10;
+    float min_distance = n_agent.TYPE == AGENT_TYPE_DOG ? 40 : 5;
 
-    if (n_agent.TYPE == AGENT_TYPE_DOG && get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < 50 )
+    if (distance < max_distance)
     {
-        delta_movement[0] += (pos_x_diff / 2) * MOVEMENT_SPEED;
-        delta_movement[1] += (pos_y_diff / 2) * MOVEMENT_SPEED;
-    }
-    else if (n_agent.TYPE == AGENT_TYPE_SHEEP && get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < 10)
-    {
-        delta_movement[0] += (pos_x_diff / 15) * MOVEMENT_SPEED;
-        delta_movement[1] += (pos_y_diff / 15) * MOVEMENT_SPEED;
+        if (distance < min_distance)
+        {
+            distance = min_distance;
+        }
+
+        delta_movement[0] += (pos_x_diff / distance) * (max_distance - distance);
+        delta_movement[1] += (pos_y_diff / distance) * (max_distance - distance);
     }
 }
 
@@ -189,6 +192,26 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
     {
         if (agent.TYPE == AGENT_TYPE_SHEEP)
         {
+            float max_distance = n_agent.TYPE == AGENT_TYPE_DOG ? 80 : 10;
+            float min_distance = n_agent.TYPE == AGENT_TYPE_DOG ? 40 : 5;
+            if (delta_movement[0] > min_distance || delta_movement[1] > min_distance)
+            {
+                if (delta_movement[0] > delta_movement[1])
+                {
+                    delta_movement[1] = (delta_movement[1] / delta_movement[0]) * min_distance;
+                    delta_movement[0] = min_distance;
+                }
+                else
+                {
+                    delta_movement[0] = (delta_movement[0] / delta_movement[1]) * min_distance;
+                    delta_movement[1] = min_distance;
+                }
+            }
+
+            delta_movement[0] = (delta_movement[0] / min_distance) * MOVEMENT_SPEED;
+            delta_movement[1] = (delta_movement[1] / min_distance) * MOVEMENT_SPEED;
+
+
             output_matrix[i][j].POS_X = agent.POS_X + delta_movement[0];
             output_matrix[i][j].POS_Y = agent.POS_Y + delta_movement[1];
             output_matrix[i][j].ROT = agent.ROT;
@@ -205,31 +228,6 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
 
 }
 
-
-
-__kernel void move_dogs(__global float (*dogs_positions)[3],
-                        __global int (*action)[2])
-{
-    int id = get_global_id(0);
-
-    int delta_movement = (action[id][0] - 1) * MOVEMENT_SPEED;
-    float rotation = dogs_positions[id][2] + (action[id][1] - 1) * ROTATION_SPEED * DEG2RAD;
-    if (rotation < 0)
-    {
-        rotation = 2 * PI + rotation;
-    }
-    else if (rotation > 2 * PI)
-    {
-        rotation = rotation - 2 * PI;
-    }
-
-    float cos_rotation = cos(-rotation);
-    float sin_rotation = sin(-rotation);
-
-    dogs_positions[id][0] += delta_movement * sin_rotation;
-    dogs_positions[id][1] += delta_movement * cos_rotation;
-    dogs_positions[id][2] = rotation;
-}
 
 __kernel void move_sheep_simple(__global float (*dogs_positions)[3],
                                 __global float (*sheep_positions)[2])
