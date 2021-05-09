@@ -21,12 +21,11 @@ class Renderer:
         self.screen = pygame.display.set_mode((self.window_width, self.window_height), pygame.RESIZABLE)
         self.sheep_geom = SheepGeom(env_data, self.screen)
         self.dog_geom = DogGeom(env_data, self.screen)
-        self.target_getom = Target(env_data, self.screen)
+        self.target_geom = Target(env_data, self.screen)
 
     def render(self):
         arrays = self.env_arrays_mapper.map_env_arrays()
         self.screen.fill('white')
-
         for i, j in itertools.product(range(self.agents_matrix_side_length), range(self.agents_matrix_side_length)):
             agent = arrays.input_matrix[i, j]
             if agent[4] == 0:
@@ -34,9 +33,8 @@ class Renderer:
             else:
                 self.dog_geom.draw(agent, arrays.observation, i, j)
 
-        self.target_getom.draw()
+        self.target_geom.draw()
         pygame.display.flip()
-
         self.env_arrays_mapper.unmap_env_arrays()
 
     def set_text(self, text: str):

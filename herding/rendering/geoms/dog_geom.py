@@ -25,6 +25,9 @@ class DogGeom():
         pos_x = agent[0]
         pos_y = agent[1]
         rotation = agent[2]
+        radius = 3
+        dir_x = int(round(math.cos(rotation)) * radius)
+        dir_y = -1 * int(round(math.sin(rotation)) * radius)
         observation = observations[int(agent[5])]
 
         self.rect.x = pos_x - self.surface_size / 2
@@ -32,7 +35,7 @@ class DogGeom():
 
         self.surf.fill('white')
         pygame.draw.circle(self.surf, 'red', (self.surface_size / 2, self.surface_size / 2), self.agent_radius)
-        textsurf = self.font.render(f'{i}, {j}', False, (0, 0, 0))
+        textsurf = self.font.render(f'{dir_x}, {dir_y}', False, (0, 0, 0))
 
         for ray_id in range(self.rays_count):
             ray_angle = rotation + ray_id * math.pi / self.rays_count

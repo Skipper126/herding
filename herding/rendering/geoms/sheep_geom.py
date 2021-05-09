@@ -14,7 +14,7 @@ class SheepGeom():
         self.rect = self.surf.get_rect()
         self.surf.set_colorkey('white')
         self.surf.fill('white')
-        pygame.draw.rect(self.surf, 'grey', self.rect)
+        #pygame.draw.rect(self.surf, 'grey', self.rect)
 
     def draw(self, agent: np.ndarray, i, j):
         pos_x = agent[0]
@@ -23,6 +23,8 @@ class SheepGeom():
         self.rect.x = pos_x - self.agent_radius
         self.rect.y = pos_y - self.agent_radius
 
+        color = 'grey' if agent[5] == 0 else 'blue'
+        pygame.draw.rect(self.surf, color, (0, 0, 5, 5))
         # self.surf.fill('white')
         # pygame.draw.circle(self.surf, 'grey', (self.agent_radius, self.agent_radius), self.agent_radius)
         # textsurf = self.font.render(f'{i}, {j}', False, (0, 0, 0))

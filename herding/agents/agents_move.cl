@@ -11,6 +11,7 @@
 
 #define N_SIDE_LENGTH (SCAN_RADIUS * 2 + 1)
 
+
 float get_distance(float x1, float y1, float x2, float y2)
 {
     float x_diff = x1 - x2;
@@ -23,7 +24,7 @@ void process_flock_behaviour(int i, int j, float8 agent, float8 n_agent, __local
     float pos_x_diff = agent.POS_X - n_agent.POS_X;
     float pos_y_diff = agent.POS_Y - n_agent.POS_Y;
 
-    if (n_agent.TYPE == AGENT_TYPE_DOG && get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < 50)
+    if (n_agent.TYPE == AGENT_TYPE_DOG && get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < 50 )
     {
         delta_movement[0] += (pos_x_diff / 2) * MOVEMENT_SPEED;
         delta_movement[1] += (pos_y_diff / 2) * MOVEMENT_SPEED;
@@ -65,7 +66,41 @@ void process_action(int i, int j,
     output_matrix[i][j].AUX_ID = dog_id;
 }
 
+void process_observation(int i, int j, int n_i, int n_j, float8 agent, float8 n_agent, __global float (*observations)[RAYS_COUNT][3])
+{
+    float x = agent.POS_X;
+    float y = agent.POS_Y;
+    float n_x = (i == n_i && j == n_j) ? TARGET_X : n_agent.POS_X;
+    float n_y = (i == n_i && j == n_j) ? TARGET_Y : n_agent.POS_Y;
+    float n_angle = atan2(y - n_y, x - n_x) + PI;
+    float first_ray_angle = agent.ROT;
+    float last_ray_angle = agent.ROT < PI ? agent.ROT + PI : agent.ROT - PI;
+    int n_k = (int)(((n_angle - first_ray_angle) / PI) * RAYS_COUNT);
 
+    if (!(n_k >= 0 && n_k < RAYS_COUNT))
+    {
+        n_k = RAYS_COUNT - (int)(((last_ray_angle - n_angle) / PI) * RAYS_COUNT);
+    }
+
+    if (n_k >= 0 && n_k < RAYS_COUNT)
+    {
+        int dog_id = (int)agent.AUX_ID;
+
+        if (i == n_i && j == n_j)
+        {
+            observations[dog_id][n_k][0] = 0;
+            observations[dog_id][n_k][1] = 0;
+            observations[dog_id][n_k][2] = 1;                
+        }
+        else
+        {
+            
+            observations[dog_id][n_k][0] = 0;
+            observations[dog_id][n_k][1] = 1;
+            observations[dog_id][n_k][2] = 0;                
+        }
+    }    
+}
 
 __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH],
                        __global float8 (*output_matrix)[AGENTS_MATRIX_SIDE_LENGTH],
@@ -77,24 +112,31 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
     int k = get_local_id(2);
     int n_i = (int)(k / N_SIDE_LENGTH) + i - SCAN_RADIUS;
     int n_j = k - (int)(k / N_SIDE_LENGTH) * N_SIDE_LENGTH + j - SCAN_RADIUS;
+
     __local float delta_movement[2];
+    __local float dog_neighbour;
+
+    float8 agent = input_matrix[i][j];
 
     if (i == n_i && j == n_j)
     {
         delta_movement[0] = 0;
         delta_movement[1] = 0;
+        dog_neighbour = 0;
     }
-    float8 agent = input_matrix[i][j];
-
+    
     if (agent.TYPE == AGENT_TYPE_DOG)
     {
         int dog_id = (int)agent.AUX_ID;
         observations[dog_id][k][0] = 0;
         observations[dog_id][k][1] = 0;
         observations[dog_id][k][2] = 0;
+
+        n_i = n_i + (int)(round(cos(agent.ROT)) * SCAN_RADIUS);
+        n_j = n_j - (int)(round(sin(agent.ROT)) * SCAN_RADIUS);
     }
 
-    barrier(CLK_GLOBAL_MEM_FENCE);
+    barrier(CLK_GLOBAL_MEM_FENCE | CLK_LOCAL_MEM_FENCE);
 
     if (n_i < 0 || n_i >= AGENTS_MATRIX_SIDE_LENGTH ||
         n_j < 0 || n_j >= AGENTS_MATRIX_SIDE_LENGTH)
@@ -115,45 +157,16 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
     {
         process_flock_behaviour(i, j, agent, n_agent, delta_movement);
     }
+
+
     
     if (agent.TYPE == AGENT_TYPE_DOG && get_distance(agent.POS_X, agent.POS_Y, n_agent.POS_X, n_agent.POS_Y) < RAY_LENGTH)
     {
-        float x = agent.POS_X;
-        float y = agent.POS_Y;
-        float n_x = (i == n_i && j == n_j) ? TARGET_X : n_agent.POS_X;
-        float n_y = (i == n_i && j == n_j) ? TARGET_Y : n_agent.POS_Y;
-        float n_angle = atan2(y - n_y, x - n_x) + PI;
-        float first_ray_angle = agent.ROT;
-        float last_ray_angle = agent.ROT < PI ? agent.ROT + PI : agent.ROT - PI;
-        int n_k = (int)(((n_angle - first_ray_angle) / PI) * RAYS_COUNT);
-
-        if (!(n_k >= 0 && n_k < RAYS_COUNT))
-        {
-            n_k = RAYS_COUNT - (int)(((last_ray_angle - n_angle) / PI) * RAYS_COUNT);
-        }
-
-        if (n_k >= 0 && n_k < RAYS_COUNT)
-        {
-            int dog_id = (int)agent.AUX_ID;
-
-            if (i == n_i && j == n_j)
-            {
-                observations[dog_id][n_k][0] = 0;
-                observations[dog_id][n_k][1] = 0;
-                observations[dog_id][n_k][2] = 1;                
-            }
-            else
-            {
-                
-                observations[dog_id][n_k][0] = 0;
-                observations[dog_id][n_k][1] = 1;
-                observations[dog_id][n_k][2] = 0;                
-            }
-        }
+        process_observation(i, j, n_i, n_j, agent, n_agent, observations);
     }
 
     sync:
-    barrier(CLK_GLOBAL_MEM_FENCE);
+    barrier(CLK_GLOBAL_MEM_FENCE | CLK_LOCAL_MEM_FENCE);
 
     // if (agent.TYPE == AGENT_TYPE_DOG)
     // {
@@ -181,9 +194,15 @@ __kernel void env_step(__global float8 (*input_matrix)[AGENTS_MATRIX_SIDE_LENGTH
             output_matrix[i][j].ROT = agent.ROT;
             output_matrix[i][j].VEL = MOVEMENT_SPEED;
             output_matrix[i][j].TYPE = 0;
-            output_matrix[i][j].AUX_ID = 0;
+            output_matrix[i][j].AUX_ID = dog_neighbour;
         }
     }
+
+    if (agent.TYPE == AGENT_TYPE_DOG && !(i == n_i && j == n_j))
+    {
+        output_matrix[n_i][n_j].AUX_ID = 10;
+    }
+
 }
 
 
